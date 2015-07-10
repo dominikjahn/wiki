@@ -1,0 +1,114 @@
+* { box-sizing:border-box; }
+
+body
+{
+	font-size: 11pt;
+}
+
+#statusbar {
+	background-color: #e7e7e7;
+	height: 30px;
+	border: none;
+	line-height:30px;
+	text-align: center;
+	margin-top: 50px;
+	display: none;
+}
+
+.navbar-logo { color: #F3C649; }
+.green { color: #5cb85c !important; }
+.red { color: #dd0000 !important; }
+
+#NavDropChanges { color: #dd0000; }
+
+.scrollable-dropdown {
+    height: auto;
+    max-height: 400px;
+    overflow-x: hidden;
+}
+
+.scrollable-dropdown::-webkit-scrollbar { 
+    display: none; 
+}
+
+#content
+{
+	margin-top: 60px;
+	padding: 0 20px 20px 20px;
+}
+
+#SignInForm, #PageNotFound, #DisplayPage, #EditPage, #NewPage, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavSaveChanges, #NavGetVersions,
+#NavPublicPage, #NavProtectedPage, #NavPrivatePage
+{
+	display: none;
+}
+
+.hide-on-desktop
+{
+	display: none !important;
+}
+
+@media (min-width: 768px)
+{
+	.collapsed-navbar
+	{
+		display: none;
+	}
+}
+
+/*480*/
+@media (max-width: 768px) {
+	
+	.hide-on-desktop
+	{
+		display: block;
+	}
+	
+	.expanded-navbar
+	{
+		display: none;
+	}
+}
+
+.inverse-dropdown
+{
+  background-color: #222;
+  border-color: #080808;
+}
+
+.inverse-dropdown > li > a
+{
+ color: #999;
+}
+
+.inverse-dropdown > li > a:hover
+{
+	color: #fff;
+    background-color: #000;
+}
+
+.inverse-dropdown > .divider
+{
+ background-color: #000;
+}
+
+
+/*
+ * Animation of the animation icon
+ * (http://www.bootply.com/128062)
+ */
+ 
+ .glyphicon-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
