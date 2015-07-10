@@ -1,10 +1,20 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class PageManager extends DomainManager
 	{
 		  //
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
@@ -27,6 +37,11 @@
 			return $object;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function GetByName($name) {
 			$db = DatabaseConnection::GetInstance();
 			
@@ -53,6 +68,11 @@
 		 // FUNCTIONS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
 				self::$instance = new PageManager();

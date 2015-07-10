@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class DatabaseStatement
 	{
 		  //
@@ -11,6 +16,11 @@
 		 // CONSTRUCTOR
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __construct(\PDOStatement $statement) {
 			$this->statement = $statement;
 		}
@@ -19,6 +29,11 @@
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function Execute($parameters = []) {
 			
 			foreach($parameters as $name => $value) {
@@ -38,6 +53,11 @@
 			return $this->statement->execute();
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function Read($parameters = []) {
 			
 			$this->Execute($parameters);
@@ -47,6 +67,11 @@
 			
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function ReadSingle($parameters = []) {
 			
 			$resultset = $this->Read($parameters);
@@ -55,10 +80,20 @@
 			return $row;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function Close() {
 			$this->statement->closeCursor();
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetAffectedRows() {
 			return $this->statement->rowCount();
 		}
@@ -67,6 +102,11 @@
 		 // PROPERTIES
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __get($field) {
 			switch($field) {
 				case "AffectedRows": return $this->GetAffectedRows(); break;

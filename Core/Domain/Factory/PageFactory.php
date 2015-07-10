@@ -1,10 +1,20 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class PageFactory extends DomainFactory
 	{
 		  //
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
 			$userManager = UserManager::GetInstance();
 			
@@ -21,6 +31,11 @@
 		 // FUNCTIONS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
 				self::$instance = new PageFactory();

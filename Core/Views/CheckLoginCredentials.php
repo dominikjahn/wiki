@@ -1,4 +1,10 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
+	
 	$loginname = $_GET["loginname"];
 	$password = $_GET["password"]; // This should already be md5'ed
 	$found = false;

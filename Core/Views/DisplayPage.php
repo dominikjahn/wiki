@@ -1,4 +1,10 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
+	
 	require_once "Core/ThirdParty/ParseDown.php";
 	
 	$pagename = $_GET["page"];

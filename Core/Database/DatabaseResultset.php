@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class DatabaseResultset
 	{
 		  //
@@ -11,6 +16,11 @@
 		 // CONSTRUCTOR
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __construct(PDOStatement $statement) {
 			$this->statement = $statement;
 		}
@@ -19,6 +29,11 @@
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function NextRow() {
 			$row = $this->statement->fetch(\PDO::FETCH_ASSOC);
 			
@@ -29,6 +44,11 @@
 			return new DatabaseRow($row);
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function Close() {
 			$this->statement->closeCursor();
 		}

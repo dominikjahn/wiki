@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class UserManager extends DomainManager
 	{
 	
@@ -6,6 +11,11 @@
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
@@ -28,6 +38,11 @@
 			return $user;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function GetByLoginname($loginname) {
 			$db = DatabaseConnection::GetInstance();
 			
@@ -54,6 +69,11 @@
 		 // FUNCTIONS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
 				self::$instance = new UserManager();

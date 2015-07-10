@@ -1,10 +1,20 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	abstract class Domain
 	{
 		  //
 		 // PROPERTIES
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __get($field) {
 			$getter = "Get".$field;
 			
@@ -15,6 +25,11 @@
 			return static::$getter();
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __set($field, $value) {
 			$setter = "Set".$field;
 			
@@ -45,20 +60,40 @@
 		
 		# ID
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetID() {
 			return $this->id;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function SetID($value) {
 			$this->id = $value;
 		}
 		
 		# Status
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetStatus() {
 			return $this->status;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function SetStatus($value) {
 			$this->status = $value;
 		}

@@ -1,4 +1,10 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
+	
 	$pageID = (isset($_GET["pageID"]) ? (int) $_GET["pageID"] : null);
 	
 	$title = $_POST["title"];

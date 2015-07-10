@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 * @version 0.1
+	 * @since 0.1
+	 */
 	class DatabaseColumn
 	{
 		  //
@@ -12,6 +17,11 @@
 		 // CONSTRUCTOR
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __construct($name, $value) {
 			$this->name = $name;
 			$this->value = $value;
@@ -21,10 +31,20 @@
 		 // METHODS
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetIsNull() {
 			return is_null($this->value);
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetString($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -33,6 +53,11 @@
 			return (string) $this->value;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetInteger($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -41,6 +66,11 @@
 			return (integer) $this->value;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetFloat($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -49,6 +79,11 @@
 			return (float) $this->value;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetBoolean($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -65,6 +100,11 @@
 			return true;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetUnixTimestamp($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -73,6 +113,11 @@
 			return strtotime((string) $this->value);
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetDateTime($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -81,6 +126,11 @@
 			return new \DateTime((string) $this->value);
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		protected function GetObject($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
@@ -107,6 +157,11 @@
 		 // PROPERTIES
 		//
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function __get($field) {
 			switch($field) {
 				case "IsNull": return $this->GetIsNull(); break;

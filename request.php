@@ -1,4 +1,10 @@
 <?php
+	/**
+	 * @version 0.1
+	 * @since 0.1
+	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+	 */
+	
 	header("Content-Type: application/json; charset=UTF-8");
 	http_response_code(200);
 	
@@ -31,7 +37,9 @@
 		die();
 	}
 	
-	$db = DatabaseConnection::GetInstance();
+	/*
+	 * Check login information (currently using HTTP Basic authentification, which is not secure at all, but for now that's good enough)
+	 */
 	
 	$loginname = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null);
 	$password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
@@ -39,10 +47,14 @@
 	if($loginname && $password) {
 		$user = $userManager->GetByLoginname($loginname);
 		
-		if($user->Password == $password) {
+		if($user->MatchPassword($password)) {
 			User::SetCurrentUser($user);
 		}
 	}
+	
+	/*
+	 * Redirect to command handler
+	 */
 	
 	switch($command)
 	{
@@ -82,5 +94,6 @@
 		case "ConnectivityCheck": print 1; break;
 	}
 	
+	$db = DatabaseConnection::GetInstance();
 	$db->Close();
 ?>
