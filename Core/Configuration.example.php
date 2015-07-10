@@ -1,7 +1,7 @@
 <?php
 	class Configuration
 	{
-		const DATABASE_DRIVER = "MySQL";
+		const DATABASE_DRIVER = DatabaseConnection::DRIVER_MYSQL;
 		const DATABASE_HOST = "localhost";
 		const DATABASE_USER = "root";
 		const DATABASE_PASSWORD = "";

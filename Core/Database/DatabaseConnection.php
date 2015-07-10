@@ -23,7 +23,7 @@
 		 */
 		private function __construct() {
 			switch(Configuration::DATABASE_DRIVER) {
-				case "MySQL":
+				case DatabaseConnection::DRIVER_MYSQL:
 					$this->connection = new \PDO("mysql:host=".Configuration::DATABASE_HOST.";dbname=".Configuration::DATABASE_NAME.";charset=".Configuration::DATABASE_CHARSET, Configuration::DATABASE_USER, Configuration::DATABASE_PASSWORD);
 					break;
 					
@@ -181,5 +181,11 @@
 			
 			return self::$instance;
 		}
+		
+		  //
+		 // CONSTANTS
+		//
+		
+		const DRIVER_MYSQL = "MySQL";
 	}
 ?>
