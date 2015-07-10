@@ -24,7 +24,9 @@
 			$object->Title = $row->title->String;
 			$object->Content = $row->content->String;
 			$object->Visibility = $row->visibility->String;
-			$object->Owner = $userManager->GetByID($row->owner_id->Integer);
+			$object->Owner = $userManager->GetByID($row->user_owner_id->Integer);
+			
+			$object->IsLoadedFromDatabase = true;
 		}
 		
 		  //

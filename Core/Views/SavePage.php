@@ -15,75 +15,61 @@
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
-		if(!SIGNED_IN) {
+		$db = DatabaseConnection::GetInstance();
+		
+		$currentUser = User::GetCurrentUser();
+		
+		if(!$currentUser) {
 			throw new \Exception("You are not authorized to perform this action");
 		}
 		
-		$userID = SIGNED_IN;
 		$isNewPage = true;
 		$timestamp =  date("Y-m-d H:i:s");
 		
 		$db->BeginTransaction();
 		
-		if(is_null($pageID)) {
+		$page = null;
+		$name = null;
+		
+		if(!is_null($pageID)) {
+			$page = PageManager::GetInstance()->GetByID($pageID);
+			
+			$isNewPage = false;
+		} else {
+			$page = new Page();
+			
 			$name = NormalizeTitle($title);
 			$name = CheckForDuplicatePageName($name);
 			
-			$sqlCreatePage = "INSERT INTO page (`status`, `name`, `title`, `content`, `owner_id`, `visibility`) VALUES (100, :name, :title, :content, :owner_id, :visibility);";
-			$stmCreatePage = $db->Prepare($sqlCreatePage);
-			$success = $stmCreatePage->Execute(["name" => $name, "title" => $title, "content" => $content, "user_id" => $userID, "visibility" => $visibility]);
-			$stmCreatePage->Close();
-			
-			if(!$success) {
-				$db->Rollback();
-				throw new \Exception("Storing the page failed");
-			}
-			
-			$pageID = $db->insert_id;
-		} else {
-			$isNewPage = false;
-			
-			$sqlUpdatePage = "UPDATE page SET `title` = :title, `content` = :content, `visibility` = :visibility WHERE `page_id` = :page_id;";
-			$stmUpdatePage = $db->Prepare($sqlUpdatePage);
-			$success = $stmUpdatePage->Execute(["title" => $title, "content" => $content, "visibility" => $visibility, "page_id" => $pageID]);
-			$stmUpdatePage->Close();
-			
-			if(!$success) {
-				$db->Rollback();
-				throw new \Exception("Storing the page failed");
-			}
+			$page->Status = 100;
+			$page->Name = $name;
+			$page->Owner = $currentUser;
 		}
-			
-		$sqlCreateVersion = "INSERT INTO version (`status`, `page_id`, `title`, `content`, `summary`, `minor_edit`) VALUES (100, :page_id, :title, :content, :summary, :minor_edit);";
-		$stmCreateVersion = $db->Prepare($sqlCreateVersion);
-		$success = $stmCreateVersion->Execute(["page_id" => $pageID, "title" => $title, "content" => $content, "summary" => $summary]);
-		$stmCreateVersion->Close();
+		
+		$page->Title = $title;
+		$page->Content = $content;
+		$page->Visibility = $visibility;
+		
+		$success = $page->Save();
+		
+		if(!$success) {
+			$db->Rollback();
+			throw new \Exception("Storing the page failed");
+		}
+		
+		$version = new Version();
+		$version->Status = 100;
+		$version->Page = $page;
+		$version->Title = $title;
+		$version->Content = $content;
+		$version->Summary = $summary;
+		$version->MinorEdit = $minor_edit;
+		
+		$success = $version->Save();
 		
 		if(!$success) {
 			$db->Rollback();
 			throw new \Exception("Storing the revision failed");
-		}
-		
-		$versionID = $db->insert_id;
-		
-		$sqlCreateLogForPage = "INSERT INTO log (`object_table`, `object_id`, `user_id`, `type`, `timestamp`) VALUES ('page', :object_id, :user_id, '".($isNewPage ? "CREATE" : "MODIFY")."', :timestamp);";
-		$stmCreateLogForPage = $db->Prepare($sqlCreateLogForPage);
-		$success = $stmCreateLogForPage->Execute(["object_id" => $pageID, "user_id" => $userID, "timestamp" => $timestamp]);
-		$stmCreateLogForPage->Close();
-		
-		if(!$success) {
-			$db->Rollback();
-			throw new \Exception("Storing the log for the page failed");
-		}
-		
-		$sqlCreateLogForVersion = "INSERT INTO log (`object_table`, `object_id`, `user_id`, `type`, `timestamp`) VALUES ('version', :object_id, :user_id, 'CREATE', :timestamp);";
-		$stmCreateLogForVersion = $db->Prepare($sqlCreateLogForVersion);
-		$success = $stmCreateLogForVersion->execute(["object_id" => $versionID, "user_id" => $userID, "timestamp" => $timestamp]);
-		$stmCreateLogForVersion->Close();
-		
-		if(!$success) {
-			$db->Rollback();
-			throw new \Exception("Storing the log for the version failed");
 		}
 		
 		$db->Commit();
@@ -143,9 +129,7 @@
 			$rowPage = $stmPage->ReadSingle(["name" => $name]);
 			$stmPage->Close();
 			
-			$pageID = $rowPage->page_id->IntegerOrNull;
-			
-			if(!$pageID) {
+			if(!$rowPage || !$rowPage->page_id->IntegerOrNull) {
 				break;
 			} else {
 				$attempt++;

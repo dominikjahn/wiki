@@ -18,7 +18,7 @@
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT page_id, status, name, title, content, owner_id, visibility FROM page WHERE status = 100 AND page_id = :id";
+			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility FROM page WHERE status = 100 AND page_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -45,7 +45,7 @@
 		public function GetByName($name) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT page_id, status, name, title, content, owner_id, visibility FROM page WHERE status = 100 AND name = :name";
+			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility FROM page WHERE status = 100 AND name = :name";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["name" => $name]);
 			

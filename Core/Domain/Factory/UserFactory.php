@@ -15,11 +15,13 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public function FromDataRow(Domain $user, DatabaseRow $row) {
-			$user->ID = $row->user_id->Integer;
-			$user->Status = $row->status->Integer;
-			$user->Loginname = $row->loginname->String;
-			$user->Password = $row->password->String;
+		public function FromDataRow(Domain $object, DatabaseRow $row) {
+			$object->ID = $row->user_id->Integer;
+			$object->Status = $row->status->Integer;
+			$object->Loginname = $row->loginname->String;
+			$object->Password = $row->password->String;
+			
+			$object->IsLoadedFromDatabase = true;
 		}
 		
 		  //

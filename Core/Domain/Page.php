@@ -23,11 +23,30 @@
 		 // ATTRIBUTES
 		//
 		
-		private $name;
-		private $title;
-		private $content;
-		private $owner;
-		private $visiblity;
+		/**
+		 * @field name
+		 */
+		protected $name;
+		
+		/**
+		 * @field title
+		 */
+		protected $title;
+		
+		/**
+		 * @field content
+		 */
+		protected $content;
+		
+		/**
+		 * @field user_owner_id
+		 */
+		protected $owner;
+		
+		/**
+		 * @field visibility
+		 */
+		protected $visiblity;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -165,6 +184,7 @@
 		 // CONSTANTS
 		//
 		
+		const DB_TABLE = "page";
 		const VIS_PUBLIC = "PUBLIC";
 		const VIS_PROTECTED = "PROTECTED";
 		const VIS_PRIVATE = "PRIVATE";

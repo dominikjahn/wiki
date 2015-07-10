@@ -45,6 +45,12 @@
 					$type = \PDO::PARAM_BOOL;
 				} else if(is_null($value)) {
 					$type = \PDO::PARAM_NULL;
+				} else if($value instanceof Domain) {
+					$value = $value->ID;
+					$type = \PDO::PARAM_INT;
+				} else if($value instanceof \DateTime) {
+					$value = $value->format("Y-m-d H:i:s");
+					$type = \PDO::PARAM_STR;
 				}
 				
 				$this->statement->bindValue(":".$name, $value, $type);

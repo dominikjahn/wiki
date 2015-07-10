@@ -9,6 +9,11 @@
 	http_response_code(200);
 	
 	require_once "Core/Configuration.php";
+	
+	require_once "Core/Tools/StringTools.php";
+	require_once "Core/Tools/PHPDocParser.php";
+	require_once "Core/Tools/PHPDocComment.php";
+	
 	require_once "Core/Database/DatabaseConnection.php";
 	require_once "Core/Database/DatabaseStatement.php";
 	require_once "Core/Database/DatabaseResultset.php";
@@ -26,6 +31,12 @@
 	require_once "Core/Domain/Manager/PageManager.php";
 	require_once "Core/Domain/Factory/PageFactory.php";
 	require_once "Core/Domain/Page.php";
+	
+	require_once "Core/Domain/Manager/VersionManager.php";
+	require_once "Core/Domain/Factory/VersionFactory.php";
+	require_once "Core/Domain/Version.php";
+	
+	require_once "Core/Domain/Log.php";
 	
 	$userManager = UserManager::GetInstance();
 	

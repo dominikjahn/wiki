@@ -44,10 +44,20 @@
 		 * @since 0.1
 		 */
 		public function Prepare($query) {
-			
 			$statement = $this->connection->prepare($query);
 			return new DatabaseStatement($statement);
 			
+		}
+		
+		/**
+		 * Returns the ID of the last inserted row
+		 
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetLastInsertedID($table = null) {
+			return $this->connection->lastInsertId($table);
 		}
 		
 		/*
@@ -131,6 +141,22 @@
 			 * Setting instance to NULL makes sure that if the connection is still in use it can be opened up again
 			 */
 			self::$instance = null;
+		}
+		
+		  //
+		 // PROPERTIES
+		//
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		public function __get($field) {
+			switch($field) {
+				case "LastInsertedID": return $this->GetLastInsertedID(); break;
+				default: throw new \Exception("No such field '".$field."'");
+			}
 		}
 		
 		  //

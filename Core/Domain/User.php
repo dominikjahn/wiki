@@ -40,8 +40,15 @@
 		 // ATTRIBUTES
 		//
 		
-		private $loginname;
-		private $password;
+		/**
+		 * @field loginname
+		 */
+		protected $loginname;
+		
+		/**
+		 * @field password
+		 */
+		protected $password;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -114,5 +121,11 @@
 		//
 		
 		private static $currentUser;
+		
+		  //
+		 // CONSTANTS
+		//
+		
+		const DB_TABLE = "user";
 	}
 ?>
