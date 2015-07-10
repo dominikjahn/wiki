@@ -52,7 +52,7 @@ var ExtractPageName = function() {
 	pageName = pageName[0].split("").reverse().join("").split(".",1);
 	pageName = pageName[0];
 	
-	if(pageName == "index") {
+	if(pageName == "" || pageName == "index") {
 		document.location = "Homepage.html";
 	}
 	
@@ -495,6 +495,8 @@ var GetCookie = function(name) {
 				return cookie.value;
 			}
 		}
+		
+		return "";
 	} else {
 		cookies = [];
 		

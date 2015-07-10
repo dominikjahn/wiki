@@ -5,6 +5,9 @@
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 */
 	
+	ini_set("display_errors",true);
+	error_reporting(E_ALL);
+	
 	header("Content-Type: application/json; charset=UTF-8");
 	http_response_code(200);
 	

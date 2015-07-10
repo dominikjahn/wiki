@@ -19,11 +19,11 @@
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlUser = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND user_id = :id";
-			$stmUser = $db->Prepare($sqlUser);
-			$rowUser = $stmUser->ReadSingle(["id" => $id]);
+			$sqlObject = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND user_id = :id";
+			$stmObject = $db->Prepare($sqlObject);
+			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
-			if(!$rowUser) {
+			if(!$rowObject) {
 				return null;
 			}
 			
@@ -31,9 +31,9 @@
 			
 			$user = new User();
 			
-			$userFactory->FromDataRow($user, $rowUser);
+			$userFactory->FromDataRow($user, $rowObject);
 		
-			$stmUser->Close();
+			$stmObject->Close();
 			
 			return $user;
 		}
@@ -46,11 +46,11 @@
 		public function GetByLoginname($loginname) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlUser = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND loginname = :loginname";
-			$stmUser = $db->Prepare($sqlUser);
-			$rowUser = $stmUser->ReadSingle(["loginname" => $loginname]);
+			$sqlObject = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND loginname = :loginname";
+			$stmObject = $db->Prepare($sqlObject);
+			$rowObject = $stmObject->ReadSingle(["loginname" => $loginname]);
 			
-			if(!$rowUser) {
+			if(!$rowObject) {
 				return null;
 			}
 			
@@ -58,9 +58,9 @@
 			
 			$user = new User();
 			
-			$userFactory->FromDataRow($user, $rowUser);
+			$userFactory->FromDataRow($user, $rowObject);
 		
-			$stmUser->Close();
+			$stmObject->Close();
 			
 			return $user;
 		}

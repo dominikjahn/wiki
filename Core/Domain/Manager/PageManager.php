@@ -22,7 +22,7 @@
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
-			if(!$stmObject) {
+			if(!$rowObject) {
 				return null;
 			}
 			
@@ -49,7 +49,7 @@
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["name" => $name]);
 			
-			if(!$stmObject) {
+			if(!$rowObject) {
 				return null;
 			}
 			
