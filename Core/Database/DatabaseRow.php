@@ -24,7 +24,7 @@
 				throw new \Exception("No such field '".$field."' in row");
 			}
 			
-			return new DatabaseColumn($this->row[$field]);
+			return new DatabaseColumn($field, $this->row[$field]);
 		}
 	}
 ?>

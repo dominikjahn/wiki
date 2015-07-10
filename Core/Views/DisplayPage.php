@@ -1,5 +1,5 @@
 <?php
-	require_once "ThirdParty/ParseDown.php";
+	require_once "Core/ThirdParty/ParseDown.php";
 	
 	$pagename = $_GET["page"];
 	$raw = (isset($_GET["raw"]) ? true : false);
@@ -9,30 +9,20 @@
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
-		$sqlPage = "	SELECT `page_id`, `title`, `content`, `owner_id`, `visibility`, `log`.`timestamp` AS `lastedit`
-						FROM page
-						INNER JOIN log ON object_table = 'page' AND object_id = page_id AND type = 'MODIFY'
-						WHERE status = 100 AND name = :name";
-		$stmPage = $db->Prepare($sqlPage);
-		$rowPage = $stmPage->ReadSingle(["name" => $pagename]);
+		$page = PageManager::GetInstance()->GetByName($pagename);
+		$currentUser = User::GetCurrentUser();
 		
-		$pageID = $rowPage->page_id->Integer;
-		$title = $rowPage->title->String;
-		$content = $rowPage->content->String;
-		$owner_id = $rowPage->owner_id->Integer;
-		$visibility = $rowPage->visibility->String;
-		$lastedit = $rowPage->lastedit->String;
-		
-		if(!$pageID) {
+		if(!$page) {
 			$data->status = 404;
 			$data->message = "The page was not found";
 		} else {
-			if(($visibility == "PROTECTED" && !SIGNED_IN) || ($visibility == "PRIVATE" && $owner_id <> SIGNED_IN)) {
+			if(($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {
 				throw new \Exception("You are not authorized to see the content on this page");
 			}
 			
 			$noHeadline = $noNavbar = $noFooterbar = false;
 			
+			$content = $page->Content;
 			if(!$raw) {
 				$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar);
 				
@@ -42,7 +32,7 @@
 			
 			$data->status = 1;
 			$data->message = "Page found";
-			$data->page = (object) ["pageID" => $pageID, "name" => $pagename, "title" => $title, "content" => $content, "visibility" => $visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
+			$data->page = (object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
 		}
 	} catch(\Exception $e) {
 		$data->status = 0;

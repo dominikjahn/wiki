@@ -5,13 +5,15 @@
 		 // ATTRIBUTES
 		//
 		
+		private $name;
 		private $value;
 		
 		  //
 		 // CONSTRUCTOR
 		//
 		
-		public function __construct($value) {
+		public function __construct($name, $value) {
+			$this->name = $name;
 			$this->value = $value;
 		}
 		
@@ -79,6 +81,28 @@
 			return new \DateTime((string) $this->value);
 		}
 		
+		protected function GetObject($canbenull = false) {
+			if($canbenull && $this->GetIsNull()) {
+				return false;
+			}
+			
+			$type = explode("_",$this->name);
+			$type = $type[0];
+			
+			switch($type) {
+				case "user":
+					return UserManager::GetInstance()->GetByID($this->value);
+					break;
+					
+				case "page":
+					return PageManager::GetInstance()->GetByID($this->value);
+					break;
+				
+				default:
+					throw new \Exception("Unknown object type '".$type."'");
+			}
+		}
+		
 		  //
 		 // PROPERTIES
 		//
@@ -104,6 +128,9 @@
 				
 				case "DateTime": return $this->GetDateTime(); break;
 				case "DateTimeOrNull": return $this->GetDateTime(true); break;
+				
+				case "Object": return $this->GetObject(); break;
+				case "ObjectOrNull": return $this->GetObject(true); break;
 			}
 		}
 	}

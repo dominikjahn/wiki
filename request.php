@@ -9,6 +9,20 @@
 	require_once "Core/Database/DatabaseRow.php";
 	require_once "Core/Database/DatabaseColumn.php";
 	
+	require_once "Core/Domain/Manager/DomainManager.php";
+	require_once "Core/Domain/Factory/DomainFactory.php";
+	require_once "Core/Domain/Domain.php";
+	
+	require_once "Core/Domain/Manager/UserManager.php";
+	require_once "Core/Domain/Factory/UserFactory.php";
+	require_once "Core/Domain/User.php";
+	
+	require_once "Core/Domain/Manager/PageManager.php";
+	require_once "Core/Domain/Factory/PageFactory.php";
+	require_once "Core/Domain/Page.php";
+	
+	$userManager = UserManager::GetInstance();
+	
 	$command = (isset($_GET["command"]) ? $_GET["command"] : null);
 	
 	if(!$command)
@@ -18,59 +32,49 @@
 	}
 	
 	$db = DatabaseConnection::GetInstance();
-	//$db = new mysqli("localhost","root","","wiki");
-	//$db->autocommit(false);
 	
 	$loginname = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null);
 	$password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
 	
-	$signedIn = null;
-	
 	if($loginname && $password) {
-		$userID = 0;
+		$user = $userManager->GetByLoginname($loginname);
 		
-		$sqlUserFound = "SELECT user_id FROM user WHERE status = 100 AND loginname = :loginname AND password = :password";
-		$stmUserFound = $db->Prepare($sqlUserFound);
-		$rowUser = $stmUserFound->ReadSingle(["loginname" => $loginname, "password" => $password]);
-		
-		$signedIn = $rowUser->user_id->Integer;
-		
-		$stmUserFound->close();
+		if($user->Password == $password) {
+			User::SetCurrentUser($user);
+		}
 	}
-	
-	define("SIGNED_IN", $signedIn);
 	
 	switch($command)
 	{
 		/*
 		 * Display the content of a specific page
 		 */
-		case "DisplayPage": require_once "Views/DisplayPage.php"; break;
+		case "DisplayPage": require_once "Core/Views/DisplayPage.php"; break;
 		
 		/*
 		 * Save changes to a page
 		 */
-		case "SavePage": require_once "Views/SavePage.php"; break;
+		case "SavePage": require_once "Core/Views/SavePage.php"; break;
 		
 		/*
 		 * Get a list of revisions of a specific page
 		 */
-		//case "GetVersions": require_once "Views/GetVersions.php"; break;
+		//case "GetVersions": require_once "Core/Views/GetVersions.php"; break;
 		
 		/*
 		 * Get a specific version
 		 */
-		//case "DisplayVersion": require_once "Views/DisplayVersion.php"; break;
+		//case "DisplayVersion": require_once "Core/Views/DisplayVersion.php"; break;
 			
 		/*
 		 * Delete a page
 		 */
-		//case "DeletePage": require_once "Views/DeletePage.php"; break;
+		//case "DeletePage": require_once "Core/Views/DeletePage.php"; break;
 			
 		/*
 		 * Check login credentials
 		 */
-		case "CheckLoginCredentials": require_once "Views/CheckLoginCredentials.php"; break;
+		case "CheckLoginCredentials": require_once "Core/Views/CheckLoginCredentials.php"; break;
 		
 		/*
 		 * Do an online check
