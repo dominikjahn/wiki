@@ -20,6 +20,21 @@
 		}
 		
 		  //
+		 // METHODS
+		//
+		
+		public function jsonSerialize() {
+			return [
+				"version_id" => $this->id,
+				"page" => $this->page,
+				"title" => $this->title,
+				"content" => $this->content,
+				"summary" => $this->summary,
+				"minor_edit" => $this->minor_edit
+			];
+		}
+		
+		  //
 		 // ATTRIBUTES
 		//
 		

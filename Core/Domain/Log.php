@@ -20,6 +20,18 @@
 		}
 		
 		  //
+		 // METHODS
+		//
+		
+		public function jsonSerialize() {
+			return [
+				"user" => $this->user,
+				"type" => $this->type,
+				"timestamp" => $this->timestamp
+			];
+		}
+		
+		  //
 		 // ATTRIBUTES
 		//
 		

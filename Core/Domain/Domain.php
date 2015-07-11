@@ -4,7 +4,7 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	abstract class Domain
+	abstract class Domain implements JsonSerializable
 	{
 		  //
 		 // METHODS

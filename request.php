@@ -41,8 +41,6 @@
 	
 	require_once "Core/Domain/Log.php";
 	
-	$userManager = UserManager::GetInstance();
-	
 	$command = (isset($_GET["command"]) ? $_GET["command"] : null);
 	
 	if(!$command)
@@ -59,6 +57,9 @@
 	$password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
 	
 	if($loginname && $password) {
+	
+		$userManager = UserManager::GetInstance();
+		
 		$user = $userManager->GetByLoginname($loginname);
 		
 		if($user->MatchPassword($password)) {
@@ -101,6 +102,11 @@
 		 * Check login credentials
 		 */
 		case "CheckLoginCredentials": require_once "Core/Views/CheckLoginCredentials.php"; break;
+			
+		/*
+		 * Get a list of all users
+		 */
+		case "GetUsers": require_once "Core/Views/GetUsers.php"; break;
 		
 		/*
 		 * Do an online check

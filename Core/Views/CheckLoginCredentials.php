@@ -12,6 +12,8 @@
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
+		$userManager = UserManager::GetInstance();
+		
 		$user = $userManager->GetByLoginname($loginname);
 		
 		if(!$user || $user->Password != $password) {

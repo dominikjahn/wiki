@@ -10,6 +10,8 @@ var isFirstSignIn = true;
 var cookies = false;
 var statusbar = false;
 var cache = {};
+var NewPageEditor = null;
+var EditPageEditor = null;
 
 $(function()
 {
@@ -21,9 +23,23 @@ $(function()
 	}
 	
 	CheckConnectivity();
-	setInterval(CheckConnectivity, 5000);
+	setInterval(CheckConnectivity, 30000);
 	
 	$('[data-toggle="tooltip"]').tooltip();
+	
+	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
+	NewPageEditor.getSession().setMode("ace/mode/html");
+    NewPageEditor.getSession().setMode("ace/mode/javascript");
+    NewPageEditor.getSession().setMode("ace/mode/css");
+    NewPageEditor.getSession().setMode("ace/mode/php");
+    //NewPageEditor.getSession().setMode("ace/mode/markdown");
+	
+	EditPageEditor = ace.edit("EditPage-InputContent-Editor");
+	EditPageEditor.getSession().setMode("ace/mode/html");
+    EditPageEditor.getSession().setMode("ace/mode/javascript");
+    EditPageEditor.getSession().setMode("ace/mode/css");
+    EditPageEditor.getSession().setMode("ace/mode/php");
+    //EditPageEditor.getSession().setMode("ace/mode/markdown");
 	
 	var startWith = window.location.hash.substring(1);
 	
@@ -87,7 +103,7 @@ var CheckLoginCredentials = function() {
 				HideSignInForm();
 				isSignedIn = true;
 				
-				$('#SignInText').html("Signed in as <strong>"+loginname+"</strong> ");
+				$('#SignInText').html("Signed in as <strong>"+loginname+"</strong> &bull; ");
 				
 				var logoutLink = $('<a href="#SignOut">Sign out</a>');
 				logoutLink.click(SignOut);
@@ -356,7 +372,7 @@ var NewPage = function() {
 	
 	$("#NewPage").css("display","block");
 	$("#NewPage-InputTitle").val("");
-	$("#NewPage-InputContent").val("");
+	$("#NewPage-InputContent").val("").hide();
 			
 		$("#NavDropChanges").css("display","block");
 		$("#NavSaveChanges").css("display","block");
@@ -397,15 +413,17 @@ var EditPage = function() {
 			$("#EditPage").css("display","block");
 			$("#EditPage-Title").html(response.page.title);
 			$("#EditPage-InputTitle").val(response.page.title);
-			$("#EditPage-InputContent").val(response.page.content);
+			$("#EditPage-InputContent").val(response.page.content).hide();
 			$("#EditPage-InputPageID").val(response.page.pageID);
 			$("#EditPage-Visiblity-" + response.page.visibility).attr("checked",true);
 			
 			$("#NavDropChanges").css("display","block");
 			$("#NavSaveChanges").css("display","block");
 			
-			$("textarea.tab").keydown(indent);
-			$('textarea.tab').keypress(autoindent);
+			//$("textarea.tab").keydown(indent);
+			//$('textarea.tab').keypress(autoindent);
+			
+			EditPageEditor.getSession().setValue($("#EditPage-InputContent").val());
 			
 			BindKey(83,SaveChanges,true); // Ctrl+S
 			BindKey(27,DropChanges,false); // ESC
@@ -436,9 +454,15 @@ var SaveChanges = function() {
 		minor_edit = ($('#EditPage-MinorChange:checked').length > 0);
 	}
 	
+	var editor = NewPageEditor;
+	
+	if(mode == "EditPage") {
+		editor = EditPageEditor;
+	}
+	
 	var data = {
 		'title': $("#"+mode+"-InputTitle").val(),
-		'content': $("#"+mode+"-InputContent").val(),
+		'content': editor.getSession().getValue(), //$("#"+mode+"-InputContent").val(),
 		'summary': $("#"+mode+"-InputSummary").val(),
 		'minor_edit': minor_edit,
 		'visibility': $('input[name='+mode+'-Visiblity]:checked').val()

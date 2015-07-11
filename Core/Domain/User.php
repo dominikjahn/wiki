@@ -36,6 +36,13 @@
 			return false;
 		}
 		
+		public function jsonSerialize() {
+			return [
+				"user_id" => $this->id,
+				"loginname" => $this->loginname
+			];
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//

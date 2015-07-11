@@ -27,14 +27,19 @@ body
     overflow-x: hidden;
 }
 
-.scrollable-dropdown::-webkit-scrollbar { 
-    display: none; 
+.scrollable-dropdown::-webkit-scrollbar {
+    display: none;
 }
 
 #content
 {
 	margin-top: 60px;
+	margin-bottom: 60px;
 	padding: 0 20px 20px 20px;
+}
+
+.tab-content {
+	padding: 10px;
 }
 
 #SignInForm, #PageNotFound, #DisplayPage, #EditPage, #NewPage, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavSaveChanges, #NavGetVersions,
@@ -46,6 +51,11 @@ body
 .hide-on-desktop
 {
 	display: none !important;
+}
+
+#EditPage-InputContent-Editor {
+	width: 100%;
+	min-height: 400px;
 }
 
 @media (min-width: 768px)

@@ -65,6 +65,39 @@
 			return $user;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		public function GetAll() {
+			$db = DatabaseConnection::GetInstance();
+			
+			$sqlObjects = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 ORDER BY loginname";
+			$stmObjects = $db->Prepare($sqlObjects);
+			$resObjects = $stmObjects->Read();
+			
+			if(!$resObjects) {
+				return null;
+			}
+			
+			$objects = [];
+			$objectFactory = UserFactory::GetInstance();
+			
+			while(($rowObject = $resObjects->NextRow()) != null) {
+				$object = new User();
+				$objectFactory->FromDataRow($object, $rowObject);
+				
+				$this->AddToCache($object);
+				
+				$objects[] = $object;
+			}
+		
+			$stmObjects->Close();
+			
+			return $objects;
+		}
+		
 		  //
 		 // FUNCTIONS
 		//
