@@ -29,17 +29,19 @@ $(function()
 	
 	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
 	NewPageEditor.getSession().setMode("ace/mode/html");
-    NewPageEditor.getSession().setMode("ace/mode/javascript");
-    NewPageEditor.getSession().setMode("ace/mode/css");
-    NewPageEditor.getSession().setMode("ace/mode/php");
-    //NewPageEditor.getSession().setMode("ace/mode/markdown");
+  NewPageEditor.getSession().setMode("ace/mode/javascript");
+  NewPageEditor.getSession().setMode("ace/mode/css");
+  NewPageEditor.getSession().setMode("ace/mode/php");
+  //NewPageEditor.getSession().setMode("ace/mode/markdown");
+  NewPageEditor.setOptions({ maxLines: Infinity });
 	
 	EditPageEditor = ace.edit("EditPage-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
-    EditPageEditor.getSession().setMode("ace/mode/javascript");
-    EditPageEditor.getSession().setMode("ace/mode/css");
-    EditPageEditor.getSession().setMode("ace/mode/php");
-    //EditPageEditor.getSession().setMode("ace/mode/markdown");
+   EditPageEditor.getSession().setMode("ace/mode/javascript");
+  EditPageEditor.getSession().setMode("ace/mode/css");
+  EditPageEditor.getSession().setMode("ace/mode/php");
+  //EditPageEditor.getSession().setMode("ace/mode/markdown");
+  EditPageEditor.setOptions({ maxLines: Infinity });
 	
 	var startWith = window.location.hash.substring(1);
 	
@@ -328,7 +330,8 @@ var DisplayPage = function() {
 					$('#FooterBar').css("display","none");
 				}
 				
-				$('#DisplayPage-LastEdit').html(response.page.lastedit);
+				$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
+				$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
 				
 				/*
 				if(response.page.hasTableOfContents) {

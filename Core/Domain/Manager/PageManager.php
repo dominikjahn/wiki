@@ -16,6 +16,10 @@
 		 * @since 0.1
 		 */
 		public function GetByID($id) {
+			$fromCache = $this->GetFromCache($id);
+		  
+		  if($fromCache) return $fromCache;
+		  
 			$db = DatabaseConnection::GetInstance();
 			
 			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility FROM page WHERE status = 100 AND page_id = :id";
@@ -30,9 +34,13 @@
 			
 			$object = new Page();
 			
+			$this->AddToCache($object, $id);
+			
 			$objectFactory->FromDataRow($object, $rowObject);
 		
 			$stmObject->Close();
+			
+			$this->AddToCache($object, $object->Name, "name");
 			
 			return $object;
 		}
@@ -43,6 +51,10 @@
 		 * @since 0.1
 		 */
 		public function GetByName($name) {
+			$fromCache = $this->GetFromCache($name, "name");
+		  
+		  if($fromCache) return $fromCache;
+		  
 			$db = DatabaseConnection::GetInstance();
 			
 			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility FROM page WHERE status = 100 AND name = :name";
@@ -56,6 +68,9 @@
 			$objectFactory = PageFactory::GetInstance();
 			
 			$object = new Page();
+			
+			$this->AddToCache($object, $name, "name");
+			$this->AddToCache($object, $rowObject->page_id->Integer);
 			
 			$objectFactory->FromDataRow($object, $rowObject);
 		

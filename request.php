@@ -39,6 +39,8 @@
 	require_once "Core/Domain/Factory/VersionFactory.php";
 	require_once "Core/Domain/Version.php";
 	
+	require_once "Core/Domain/Manager/LogManager.php";
+	require_once "Core/Domain/Factory/LogFactory.php";
 	require_once "Core/Domain/Log.php";
 	
 	$command = (isset($_GET["command"]) ? $_GET["command"] : null);

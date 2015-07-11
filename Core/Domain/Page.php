@@ -29,7 +29,15 @@
 				"name" => $this->name,
 				"title" => $this->title,
 				"content" => $this->content,
-				"visibility" => $this->visibility
+				"visibility" => $this->visibility,
+				"last_edit" => [
+				  "timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
+				  "user" => $this->logModified->User->Loginname
+				  ],
+				"created" => [
+				  "timestamp" => $this->logCreated->Timestamp->format("Y-m-d H:i:s"),
+				  "user" => $this->logCreated->User->Loginname
+				  ]
 			];
 		}
 		

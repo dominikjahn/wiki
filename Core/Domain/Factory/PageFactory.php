@@ -17,6 +17,7 @@
 		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
 			$userManager = UserManager::GetInstance();
+			$logManager = LogManager::GetInstance();
 			
 			$object->ID = $row->page_id->Integer;
 			$object->Status = $row->status->Integer;
@@ -25,6 +26,9 @@
 			$object->Content = $row->content->String;
 			$object->Visibility = $row->visibility->String;
 			$object->Owner = $userManager->GetByID($row->user_owner_id->Integer);
+			
+			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
+			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
 			
 			$object->IsLoadedFromDatabase = true;
 		}

@@ -51,9 +51,9 @@
 		<div id="content">
 			<div id="Loading" class="jumbotron">
 				<div class="container">
-					<h1>Loading...</h1>
+					<h1><small><i class="glyphicon glyphicon-refresh glyphicon-animate-slow"></i></small> Loading...</h1>
 				
-					<p>If this takes a little longer you should refresh the page.</p>
+					<p>If this takes a little longer you may want to refresh the page.</p>
 				</div>
 			</div>
 			<div id="PageNotFound" class="jumbotron">
@@ -89,29 +89,56 @@
 			
 			<form id="NewPage">
 				<h1>Create a new page</h1>
-				<hr/>
-				<div class="form-group">
-					<label for="NewPage-InputTitle">Title</label>
-					<input type="text" class="form-control" id="NewPage-InputTitle" placeholder="The title of the page" />
-				</div>
-				<div class="form-group">
-					<label for="NewPage-InputContent">Content <button type="button" id="NewPage-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button></label>
-					<textarea class="form-control tab" id="NewPage-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
-					<div id="NewPage-InputContent-Editor"></div>
-				</div>
-				<div class="form-group">
-					<label for="NewPage-InputSummary">Summary of changes</label>
-					<textarea class="form-control" id="NewPage-InputSummary" placeholder="Leave a note explaining what you have changed on this page">Created page</textarea>
-				</div>
 				
-				<hr/>
-				
-				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="NewPage-Visiblity" id="NewPage-PublicPage" value="PUBLIC" checked="checked" /> Public page</label></div>
-				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="NewPage-Visiblity" id="NewPage-ProtectedPage" value="PROTECTED" /> Protected page</label></div>
-				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="NewPage-Visiblity" id="NewPage-PrivatePage" value="PRIVATE" /> Private page</label></div>
-				<div class="radio disabled"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="NewPage-Visiblity" id="NewPage-GroupPrivatePage" value="GROUPPRIVATE" /> Group private page</label></div>
-				
-				<hr/>
+				<div class="panel panel-default">
+  			  <div class="panel-body">
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active"><a href="#NewPage-ContentTab" role="tab" data-toggle="tab">Content</a></li>
+							<li role="presentation"><a href="#NewPage-AccessTab" role="tab" data-toggle="tab">Access</a></li>
+						</ul>
+							
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="NewPage-ContentTab">
+							  <div class="form-group">
+        					<label for="NewPage-InputTitle">Title</label>
+        					<input type="text" class="form-control" id="NewPage-InputTitle" placeholder="The title of the page" />
+        				</div>
+        				<div class="form-group">
+        					<label for="NewPage-InputContent">Content <button type="button" id="NewPage-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button></label>
+        					<textarea class="form-control tab" id="NewPage-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
+        					<div id="NewPage-InputContent-Editor"></div>
+        				</div>
+        				<div class="form-group">
+        					<label for="NewPage-InputSummary">Summary of changes</label>
+        					<textarea class="form-control" id="NewPage-InputSummary" placeholder="Leave a note explaining what you have changed on this page">Created page</textarea>
+        				</div>
+							</div>
+  								
+							<div role="tabpanel" class="tab-pane" id="NewPage-AccessTab">
+							  <div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="NewPage-Visiblity" id="NewPage-PublicPage" value="PUBLIC" checked="checked" /> Public page</label></div>
+        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="NewPage-Visiblity" id="NewPage-ProtectedPage" value="PROTECTED" /> Protected page</label></div>
+        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="NewPage-Visiblity" id="NewPage-PrivatePage" value="PRIVATE" /> Private page</label></div>
+        				<div class="radio disabled"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="NewPage-Visiblity" id="NewPage-GroupPrivatePage" value="GROUPPRIVATE" /> Group private page</label></div>
+							  
+						  	<hr/>
+								
+								<div class="form-group">
+									<label for="NewPage-Owner">Owner</label>
+									<select id="NewPage-Owner" class="form-control">
+										
+									</select>
+								</div>
+								
+								<div class="form-group">
+									<label for="NewPage-Group">Group</label>
+									<select id="NewPage-Group" class="form-control">
+										
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</form>
 			
 			<form id="EditPage">
@@ -201,7 +228,7 @@
 						
 						<p class="navbar-text navbar-left" id="SignInText">Not signed in</p>
 						
-						<p class="navbar-text navbar-right">This page was last edited <strong><span id="DisplayPage-LastEdit">...</span>.</strong> &#160; </p>
+						<p class="navbar-text navbar-right">This page was last edited <strong id="DisplayPage-LastEdit-Timestamp">...</strong> by <span id="DisplayPage-LastEdit-User">...</span>. &#160; </p>
 					</div>
 				</div>
 			</div>

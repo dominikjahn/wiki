@@ -136,6 +136,21 @@
 		protected $status;
 		
 		/**
+		 * The log item when the object was created
+		 */
+		protected $logCreated;
+		
+		/**
+		 * The log item when the object was modified
+		 */
+		protected $logModified;
+		
+		/**
+		 * The log item when the object was deleted
+		 */
+		protected $logDeleted;
+		
+		/**
 		 * A flag that the object has been loaded from the database
 		 */
 		private $loadedFromDatabase = false;
@@ -207,6 +222,66 @@
 		 */
 		protected function SetIsLoadedFromDatabase($value) {
 			$this->loadedFromDatabase = $value;
+		}
+		
+		# LogCreated
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetLogCreated() {
+			return $this->logCreated;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetLogCreated(Log $value) {
+			$this->logCreated = $value;
+		}
+		
+		# LogModified
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetLogModified() {
+			return $this->logModified;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetLogModified(Log $value = null) {
+			$this->logModified = $value;
+		}
+		
+		# LogDeleted
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetLogDeleted() {
+			return $this->logDeleted;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetLogDeleted(Log $value = null) {
+			$this->logDeleted = $value;
 		}
 	}
 ?>

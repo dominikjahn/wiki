@@ -16,10 +16,15 @@
 		 * @since 0.1
 		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
+			$logManager = LogManager::GetInstance();
+			
 			$object->ID = $row->user_id->Integer;
 			$object->Status = $row->status->Integer;
 			$object->Loginname = $row->loginname->String;
 			$object->Password = $row->password->String;
+			
+			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
+			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
 			
 			$object->IsLoadedFromDatabase = true;
 		}

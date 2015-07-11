@@ -17,6 +17,10 @@
 		 * @since 0.1
 		 */
 		public function GetByID($id) {
+		  $fromCache = $this->GetFromCache($id);
+		  
+		  if($fromCache) return $fromCache;
+		  
 			$db = DatabaseConnection::GetInstance();
 			
 			$sqlObject = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND user_id = :id";
@@ -31,9 +35,13 @@
 			
 			$user = new User();
 			
+			$this->AddToCache($user, $id);
+			
 			$userFactory->FromDataRow($user, $rowObject);
 		
 			$stmObject->Close();
+			
+			$this->AddToCache($user, "loginname", $user->Loginname);
 			
 			return $user;
 		}
@@ -44,7 +52,11 @@
 		 * @since 0.1
 		 */
 		public function GetByLoginname($loginname) {
-			$db = DatabaseConnection::GetInstance();
+			 $fromCache = $this->GetFromCache($loginname, "loginname");
+		  
+		  if($fromCache) return $fromCache;
+		  
+		  $db = DatabaseConnection::GetInstance();
 			
 			$sqlObject = "SELECT user_id, status, loginname, password FROM user WHERE status = 100 AND loginname = :loginname";
 			$stmObject = $db->Prepare($sqlObject);
@@ -58,7 +70,11 @@
 			
 			$user = new User();
 			
+			$this->AddToCache($user, $loginname, "loginname");
+			
 			$userFactory->FromDataRow($user, $rowObject);
+			
+			$this->AddToCache($user);
 		
 			$stmObject->Close();
 			
@@ -85,10 +101,15 @@
 			$objectFactory = UserFactory::GetInstance();
 			
 			while(($rowObject = $resObjects->NextRow()) != null) {
-				$object = new User();
-				$objectFactory->FromDataRow($object, $rowObject);
+				$object = $this->GetFromCache($rowObject->user_id->Integer);
 				
-				$this->AddToCache($object);
+				if(!$object) {
+  				$object = new User();
+  				
+  				$this->AddToCache($object, $rowObject->user_id->Integer);
+  				
+  				$objectFactory->FromDataRow($object, $rowObject);
+				}
 				
 				$objects[] = $object;
 			}

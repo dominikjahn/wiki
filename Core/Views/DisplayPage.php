@@ -36,9 +36,11 @@
 				$content = $parseDown->text($content);
 			}
 			
+			$page->Content = $content;
+			
 			$data->status = 1;
 			$data->message = "Page found";
-			$data->page = (object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
+			$data->page = $page; //(object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
 		}
 	} catch(\Exception $e) {
 		$data->status = 0;
