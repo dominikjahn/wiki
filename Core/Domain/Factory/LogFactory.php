@@ -4,7 +4,7 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	class UserFactory extends DomainFactory
+	class LogFactory extends DomainFactory
 	{
 		  //
 		 // METHODS
@@ -16,19 +16,14 @@
 		 * @since 0.1
 		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
-			$logManager = LogManager::GetInstance();
+			$userManager = UserManager::GetInstance();
 			
-			$object->ID = $row->user_id->Integer;
-			$object->Status = $row->status->Integer;
-			$object->Loginname = $row->loginname->String;
-			$object->Password = $row->password->String;
-			
-			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
-			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
-			
-			if($object->Status === 0) {
-			  $object->LogDeleted = $logManager->GetByObjectAndType($object, Log::TYPE_DELETE);
-			}
+			$object->ID = $row->log_id->Integer;
+			$object->ObjectTable = $row->object_table->String;
+			$object->{"Object"} = $row->object_id->Integer;
+			$object->User = $userManager->GetByID($row->user_id->Integer);
+			$object->Type = $row->type->String;
+			$object->Timestamp = $row->timestamp->DateTime;
 			
 			$object->IsLoadedFromDatabase = true;
 		}
@@ -44,7 +39,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new UserFactory();
+				self::$instance = new LogFactory();
 			}
 			
 			return self::$instance;
