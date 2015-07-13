@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.7.1
+-- version 4.2.12deb2
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 10, 2015 at 11:16 AM
--- Server version: 5.6.20
--- PHP Version: 5.5.15
+-- Host: localhost
+-- Generation Time: Jul 13, 2015 at 09:45 PM
+-- Server version: 5.5.42-1
+-- PHP Version: 5.6.7-1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -31,7 +31,7 @@ CREATE TABLE `group` (
 `group_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `name` varchar(20) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -43,9 +43,9 @@ DROP TABLE IF EXISTS `groupmember`;
 CREATE TABLE `groupmember` (
 `groupmember_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
-  `group` int(10) unsigned NOT NULL,
-  `user` int(10) unsigned NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=2 ;
+  `group_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -56,12 +56,13 @@ CREATE TABLE `groupmember` (
 DROP TABLE IF EXISTS `log`;
 CREATE TABLE `log` (
 `log_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL,
   `object_table` varchar(20) CHARACTER SET ascii NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `type` enum('CREATE','MODIFY','DELETE') COLLATE utf8mb4_bin NOT NULL,
   `timestamp` datetime NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=153 ;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -76,10 +77,11 @@ CREATE TABLE `page` (
   `name` varchar(140) CHARACTER SET ascii NOT NULL,
   `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
   `content` text COLLATE utf8mb4_bin NOT NULL,
-  `owner_id` int(10) unsigned NOT NULL,
-  `group_id` int(10) unsigned NOT NULL,
-  `visibility` enum('PUBLIC','PROTECTED','PRIVATE','GROUPPRIVATE') COLLATE utf8mb4_bin NOT NULL DEFAULT 'PUBLIC'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=14 ;
+  `user_owner_id` int(10) unsigned NOT NULL,
+  `group_owner_id` int(10) unsigned NOT NULL,
+  `visibility` enum('PUBLIC','PROTECTED','PRIVATE','GROUPPRIVATE') COLLATE utf8mb4_bin NOT NULL DEFAULT 'PUBLIC',
+  `manipulation` enum('EVERYONE','REGISTERED','OWNER','GROUP') COLLATE utf8mb4_bin NOT NULL DEFAULT 'REGISTERED'
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -93,7 +95,7 @@ CREATE TABLE `user` (
   `status` tinyint(3) unsigned NOT NULL,
   `loginname` char(20) CHARACTER SET ascii NOT NULL,
   `password` char(32) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -110,7 +112,7 @@ CREATE TABLE `version` (
   `content` text COLLATE utf8mb4_bin NOT NULL,
   `summary` varchar(500) COLLATE utf8mb4_bin NOT NULL,
   `minor_edit` bit(1) NOT NULL DEFAULT b'0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=81 ;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Indexes for dumped tables
@@ -138,7 +140,7 @@ ALTER TABLE `log`
 -- Indexes for table `page`
 --
 ALTER TABLE `page`
- ADD PRIMARY KEY (`page_id`);
+ ADD PRIMARY KEY (`page_id`), ADD KEY `name` (`name`);
 
 --
 -- Indexes for table `user`
@@ -170,12 +172,12 @@ MODIFY `groupmember_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `log`
-MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=153;
+MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=177;
 --
 -- AUTO_INCREMENT for table `page`
 --
 ALTER TABLE `page`
-MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `user`
 --
@@ -185,7 +187,7 @@ MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT for table `version`
 --
 ALTER TABLE `version`
-MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=81;
+MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=91;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
