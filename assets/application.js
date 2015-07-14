@@ -215,6 +215,11 @@ var ShowStatusBar = function() {
  * Actions
  */
 var DisplayAction = function() {
+	if(view == "" || view == "undefined") {
+		view = "DisplayPage";
+		page = "Homepage";
+	}
+	
 	switch(view) {
 		case "DisplayPage":
 			DisplayPage();
