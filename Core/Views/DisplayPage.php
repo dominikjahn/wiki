@@ -21,11 +21,11 @@
 		if(!$page) {
 			$data->status = 404;
 			$data->message = "The page was not found";
+		} else if(($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {
+			$data->status = 401;
+			$data->message = "You are not authorized to see the content on this page";
+			//throw new \Exception("You are not authorized to see the content on this page");
 		} else {
-			if(($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {
-				throw new \Exception("You are not authorized to see the content on this page");
-			}
-			
 			$noHeadline = $noNavbar = $noFooterbar = false;
 			
 			$content = $page->Content;
@@ -110,17 +110,17 @@
 			$class = null;
 			
 			if(!$page) {
-				$link = "#NewPage";
-				$onclick = "";
+				$link = $name.".html#NewPage";
+				$click = 'return GoToPage(\''.$name.'\')';
 				$class = "link-newpage";
 			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
-				$link = "#";
-				$click = "";
+				$link = $page->Name.".html";
+				$click = 'return GoToPage(\''.$page->Name.'\')';
 				$text = $page->Title;
 				$class = "link-notauthorized";
 			} else {
 				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page.'\')';
+				$click = 'return GoToPage(\''.$page->Name.'\')';
 				$text = $page->Title;
 				$class = "link-gotopage";
 			}
@@ -135,27 +135,26 @@
 		foreach($links as $link)
 		{
 			$wrapper = $link[0];
-			$nage = $link["page"];
+			$name = $link["page"];
 			$text = $link["text"];
 			
 			$page = $pageManager->GetByName($name);
 			
 			$link = null;
 			$click = null;
-			$text = null;
 			$class = null;
 			
 			if(!$page) {
-				$link = "#NewPage";
-				$onclick = "";
+				$link = $name."#NewPage";
+				$click = 'return GoToPage(\''.$name.'\')';
 				$class = "link-newpage";
 			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
 				$link = "#";
-				$click = "";
+				$click = 'return GoToPage(\''.$page->Name.'\')';
 				$class = "link-notauthorized";
 			} else {
 				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page.'\')';
+				$click = 'return GoToPage(\''.$page->Name.'\')';
 				$class = "link-gotopage";
 			}
 			

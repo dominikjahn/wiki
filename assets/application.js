@@ -260,6 +260,7 @@ var HideAllActions = function() {
 		$("#NavSaveChanges").css("display","none");
 	
 	$("#PageNotFound").css("display","none");
+	$("#NotAuthorized").css("display","none");
 	
 	DisplayLoading();
 }
@@ -287,11 +288,16 @@ var DisplayPage = function() {
 			'url': url,
 			'dataType': 'json',
 			'success': function(response) {
+				
 				if(response.status == 0) {
 					alert(response.message);
 					return;
 				} else if(response.status == 404) {
 					DisplayPageNotFound();
+					return;
+				} else if(response.status == 401) {
+					DisplayNotAuthorized();
+					return;
 				}
 				
 				HideLoading();
@@ -366,8 +372,16 @@ var DisplayPage = function() {
 
 var DisplayPageNotFound = function() {
 	HideAllActions();
+	HideLoading();
 	
 	$("#PageNotFound").css("display","block");
+}
+
+var DisplayNotAuthorized = function() {
+	HideAllActions();
+	HideLoading();
+	
+	$("#NotAuthorized").css("display","block");
 }
 
 /*
@@ -418,6 +432,10 @@ var EditPage = function() {
 				return;
 			} else if(response.status == 404) {
 				DisplayPageNotFound();
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
 			}
 			
 			HideLoading();
