@@ -29,19 +29,19 @@ $(function()
 	
 	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
 	NewPageEditor.getSession().setMode("ace/mode/html");
-  NewPageEditor.getSession().setMode("ace/mode/javascript");
-  NewPageEditor.getSession().setMode("ace/mode/css");
-  NewPageEditor.getSession().setMode("ace/mode/php");
-  //NewPageEditor.getSession().setMode("ace/mode/markdown");
-  NewPageEditor.setOptions({ maxLines: Infinity });
+	NewPageEditor.getSession().setMode("ace/mode/javascript");
+	NewPageEditor.getSession().setMode("ace/mode/css");
+	NewPageEditor.getSession().setMode("ace/mode/php");
+	//NewPageEditor.getSession().setMode("ace/mode/markdown");
+	NewPageEditor.setOptions({ maxLines: Infinity });
 	
 	EditPageEditor = ace.edit("EditPage-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
-   EditPageEditor.getSession().setMode("ace/mode/javascript");
-  EditPageEditor.getSession().setMode("ace/mode/css");
-  EditPageEditor.getSession().setMode("ace/mode/php");
-  //EditPageEditor.getSession().setMode("ace/mode/markdown");
-  EditPageEditor.setOptions({ maxLines: Infinity });
+	EditPageEditor.getSession().setMode("ace/mode/javascript");
+	EditPageEditor.getSession().setMode("ace/mode/css");
+	EditPageEditor.getSession().setMode("ace/mode/php");
+	//EditPageEditor.getSession().setMode("ace/mode/markdown");
+	EditPageEditor.setOptions({ maxLines: Infinity });
 	
 	var startWith = window.location.hash.substring(1);
 	
@@ -152,9 +152,9 @@ var SignOut = function() {
 	isSignedIn = false;
 	
 	var loginLink = $('<a href="#SignIn">Sign in</a>');
-				loginLink.click(DisplaySignInForm);
-				
-				$('#SignInText').empty().append(loginLink);
+	loginLink.click(DisplaySignInForm);
+	
+	$('#SignInText').empty().append(loginLink);
 	
 	// Back to the previous action
 	DisplayAction();
@@ -304,8 +304,10 @@ var DisplayPage = function() {
 				$("#DisplayPage-Title").html(response.page.title);
 				$("#DisplayPage-Content").html(response.page.content);
 				
-				$("#NavEditPage").css("display","block");
-				$("#NavGetVersions").css("display","block");
+				if(response.page.manipulation == "EVERYONE" || (response.page.manipulation == "REGISTERED" && isSignedIn) || (response.page.manipulation == "OWNER" && response.page.owner.loginname == loginname)) {
+					$("#NavEditPage").css("display","block");
+					$("#NavGetVersions").css("display","block");
+				}
 				
 				document.title = response.page.title;
 				
@@ -411,7 +413,7 @@ var EditPage = function() {
 			
 			HideLoading();
 			
-			pageID = response.page.pageID;
+			pageID = response.page.page_id;
 			
 			$("#EditPage").css("display","block");
 			$("#EditPage-Title").html(response.page.title);
@@ -419,6 +421,7 @@ var EditPage = function() {
 			$("#EditPage-InputContent").val(response.page.content).hide();
 			$("#EditPage-InputPageID").val(response.page.pageID);
 			$("#EditPage-Visiblity-" + response.page.visibility).attr("checked",true);
+			$("#EditPage-Manipulation-" + response.page.manipulation).attr("checked",true);
 			
 			$("#NavDropChanges").css("display","block");
 			$("#NavSaveChanges").css("display","block");
@@ -468,7 +471,8 @@ var SaveChanges = function() {
 		'content': editor.getSession().getValue(), //$("#"+mode+"-InputContent").val(),
 		'summary': $("#"+mode+"-InputSummary").val(),
 		'minor_edit': minor_edit,
-		'visibility': $('input[name='+mode+'-Visiblity]:checked').val()
+		'visibility': $('input[name='+mode+'-Visiblity]:checked').val(),
+		'manipulation': $('input[name='+mode+'-Manipulation]:checked').val()
 	};
 	
 	$.ajax({

@@ -25,6 +25,7 @@
 			$object->Title = $row->title->String;
 			$object->Content = $row->content->String;
 			$object->Visibility = $row->visibility->String;
+			$object->Manipulation = $row->manipulation->String;
 			$object->Owner = $userManager->GetByID($row->user_owner_id->Integer);
 			
 			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);

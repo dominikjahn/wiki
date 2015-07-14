@@ -79,6 +79,6 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public static abstract function GetInstance();
+		//public static abstract function GetInstance();
 	}
 ?>

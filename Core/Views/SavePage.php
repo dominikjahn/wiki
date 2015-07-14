@@ -9,9 +9,10 @@
 	
 	$title = $_POST["title"];
 	$content = $_POST["content"];
-	$summary = $_POST["summary"];
+	$summary = (isset($_POST["summary"]) ? $_POST["summary"] : null);
 	$minor_edit = (isset($_POST["minor_edit"]) ? (bool) $_POST["minor_edit"] : false);
-	$visibility = $_POST["visibility"];
+	$visibility = (isset($_POST["visibility"]) ? $_POST["visibility"] : Page::VIS_PROTECTED);
+	$manipulation = (isset($_POST["manipulation"]) ? $_POST["manipulation"] : Page::MAN_REGISTERED);
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
@@ -19,9 +20,9 @@
 		
 		$currentUser = User::GetCurrentUser();
 		
-		if(!$currentUser) {
-			throw new \Exception("You are not authorized to perform this action");
-		}
+		//if(!$currentUser) {
+		//	throw new \Exception("You are not authorized to perform this action");
+		//}
 		
 		$isNewPage = true;
 		$timestamp =  date("Y-m-d H:i:s");
@@ -38,17 +39,31 @@
 		} else {
 			$page = new Page();
 			
-			$name = NormalizeTitle($title);
-			$name = CheckForDuplicatePageName($name);
+			$name = Page::NormalizeTitle($title);
+			$name = Page::CheckForDuplicatePageName($name);
 			
 			$page->Status = 100;
 			$page->Name = $name;
 			$page->Owner = $currentUser;
 		}
 		
+		// Check for manipulation mode
+		if(!$isNewPage) {
+			if(
+				// User needs to be registered
+				($page->Manipulation != Page::MAN_EVERYONE && !$currentUser) ||
+				// User needs to be the owner
+				($page->Manipulation == Page::MAN_OWNER && $currentUser->ID != $page->Owner->ID)
+			) {
+				$db->Rollback();
+				throw new \Exception("You are not authorized to edit this page");
+			}
+		}
+		
 		$page->Title = $title;
 		$page->Content = $content;
 		$page->Visibility = $visibility;
+		$page->Manipulation = $manipulation;
 		
 		$success = $page->Save();
 		
@@ -86,58 +101,4 @@
 	}
 	
 	print json_encode($data);
-	
-	
-	function NormalizeTitle($title) {
-		$name = str_replace([" ","\t"]," ",$title);
-		$name = str_replace(["Ä", "ä", "Ö", "ö", "Ü", "ü", "ß", "Á","á","À","à","Ã","ã","É","é","È","è","Ó","ó","Ò","ò","Õ","õ","Í","í","Ì","ì","Ú","ú","Ù","ù","Ñ","ñ"],
-							["Ae","ae","Oe","oe","Ue","ue","ss","A","a","A","a","A","a","E","e","E","e","O","o","O","o","O","o","I","i","I","i","U","u","U","u","N","n"],
-							$name);
-							
-		$name = trim($name);
-		
-		$name = str_replace(" ","_",$name);
-		
-		// Remove all non-allowed characters
-		$nameClean = null;
-		
-		for($p = 0; $p < strlen($name); $p++) {
-			$char = ord(substr($name,$p,1));
-			
-			if(($char >= 48 && $char <=57) || ($char >= 65 && $char <= 90) || ($char >= 97 && $char <= 122) || $char == 95) {
-				$nameClean .= substr($name,$p,1);
-			}
-		}
-		
-		while(strpos($name,"__") !== false) {
-			$name = str_replace("__","_",$name);
-		}
-		
-		return $nameClean;
-	}
-	
-	function CheckForDuplicatePageName($name) {
-		global $db;
-		
-		$origName = $name;
-		
-		$attempt = 0;
-		
-		while(true) {
-			$sqlPage = "SELECT page_id FROM page WHERE status = 100 AND name = :name";
-			$stmPage = $db->Prepare($sqlPage);
-			$rowPage = $stmPage->ReadSingle(["name" => $name]);
-			$stmPage->Close();
-			
-			if(!$rowPage || !$rowPage->page_id->IntegerOrNull) {
-				break;
-			} else {
-				$attempt++;
-				
-				$name = $origName."-".$attempt;
-			}
-		}
-		
-		return $name;
-	}
 ?>
