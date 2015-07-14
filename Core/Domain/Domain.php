@@ -75,6 +75,33 @@
 			return $success;
 		}
 		
+		public function Delete() {
+			
+			$table = static::DB_TABLE;
+			
+			$sqlDelete = "UPDATE `".$table."` SET `status` = 0 WHERE `".$table."_id` = :id;";
+			$parameters = ["id" => $this->id];
+			
+			$db = DatabaseConnection::GetInstance();
+			
+			$success = $db->PrepareAndExecute($sqlDelete, $parameters);
+			
+			if($table != "log") {
+				$log = new Log();
+				
+				$log->Status = 100;
+				$log->ObjectTable = $table;
+				$log->{"Object"} = $this;
+				$log->User = User::GetCurrentUser();
+				$log->Type = Log::TYPE_DELETE;
+				$log->Timestamp = new \DateTime();
+				
+				$log->Save();
+			}
+			
+			return $success;
+		}
+		
 		public function __toString() {
 			return "<".get_class($this)."> ".($this->id ? "#".$this->id : ":memory");
 		}

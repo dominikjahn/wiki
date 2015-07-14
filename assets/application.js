@@ -61,6 +61,8 @@ $(function()
 	$('#NavDropChanges').click(DropChanges);
 	$('#NavNewPage').click(NewPage);
 	
+	$('#EditPage-DeletePage').click(DeletePage);
+	
 	CheckLoginCredentials();
 });
 
@@ -414,6 +416,8 @@ var EditPage = function() {
 			if(response.status == 0) {
 				alert(response.message);
 				return;
+			} else if(response.status == 404) {
+				DisplayPageNotFound();
 			}
 			
 			HideLoading();
@@ -498,6 +502,34 @@ var SaveChanges = function() {
 			}
 			
 			DisplayPage();
+			
+		},
+		beforeSend: function(xhr)
+		{
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+			//AddRequest();
+		}
+		/*,complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
+};
+
+var DeletePage = function() {
+	var url = 'request.php?command=DeletePage&pageID=' + pageID;
+	
+	$.ajax({
+		'type': 'DELETE',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			alert(response.message);
+			
+			view = "DisplayPage";
+			page = "Homepage";
+			
+			DisplayAction();
 			
 		},
 		beforeSend: function(xhr)

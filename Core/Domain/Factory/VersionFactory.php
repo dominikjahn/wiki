@@ -30,6 +30,10 @@
 			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
 			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
 			
+			if(is_null($object->LogModified)) {
+				$object->LogModified = $object->LogCreated;
+			}
+			
 			if($object->Status === 0) {
 			  $object->LogDeleted = $logManager->GetByObjectAndType($object, Log::TYPE_DELETE);
 			}

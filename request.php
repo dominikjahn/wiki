@@ -98,7 +98,7 @@
 		/*
 		 * Delete a page
 		 */
-		//case "DeletePage": require_once "Core/Views/DeletePage.php"; break;
+		case "DeletePage": require_once "Core/Views/DeletePage.php"; break;
 			
 		/*
 		 * Check login credentials
