@@ -90,16 +90,42 @@
 		 * Links
 		 */
 		 
+		$pageManager = PageManager::GetInstance();
+		$currentUser = User::GetCurrentUser();
+		 
 		# Basic link <Wiki:Link page="Name_of_page"/>
 		$links = [];
-		preg_match_all("/<Wiki:Link page=['\"](?<page>([a-zA-Z0-9_ ]+))['\"]\/>/muis",$parsed,$links, PREG_SET_ORDER);
-			
+		preg_match_all("/<Wiki:Link page=['\"](?<page>(.+?))['\"]\s*\/>/muis",$parsed,$links, PREG_SET_ORDER);
+
 		foreach($links as $link)
 		{
 			$wrapper = $link[0];
-			$page = str_replace(" ","_",$link["page"]);
+			$text = $link["page"];
+			$name = Page::NormalizeTitle($link["page"]);
 			
-			$parsed = str_replace($wrapper, '<a href="'.$page.'.html" onclick="return GoToPage(\''.$page.'\');">'.$page.'</a>', $parsed);
+			$page = $pageManager->GetByName($name);
+			
+			$link = null;
+			$click = null;
+			$class = null;
+			
+			if(!$page) {
+				$link = "#NewPage";
+				$onclick = "";
+				$class = "link-newpage";
+			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
+				$link = "#";
+				$click = "";
+				$text = $page->Title;
+				$class = "link-notauthorized";
+			} else {
+				$link = $page->Name.".html";
+				$click = 'return GoToPage(\''.$page.'\')';
+				$text = $page->Title;
+				$class = "link-gotopage";
+			}
+			
+			$parsed = str_replace($wrapper, '<a href="'.$link.'" onclick="'.$click.'" class="'.$class.'">'.$text.'</a>', $parsed);
 		}
 		 
 		# Link with alternative text <Wiki:Link page="Name_of_page">Text</Wiki:Link>
@@ -109,10 +135,31 @@
 		foreach($links as $link)
 		{
 			$wrapper = $link[0];
-			$page = $link["page"];
+			$nage = $link["page"];
 			$text = $link["text"];
 			
-			$parsed = str_replace($wrapper, '<a href="'.$page.'.html" onclick="return GoToPage(\''.$page.'\');">'.$text.'</a>', $parsed);
+			$page = $pageManager->GetByName($name);
+			
+			$link = null;
+			$click = null;
+			$text = null;
+			$class = null;
+			
+			if(!$page) {
+				$link = "#NewPage";
+				$onclick = "";
+				$class = "link-newpage";
+			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
+				$link = "#";
+				$click = "";
+				$class = "link-notauthorized";
+			} else {
+				$link = $page->Name.".html";
+				$click = 'return GoToPage(\''.$page.'\')';
+				$class = "link-gotopage";
+			}
+			
+			$parsed = str_replace($wrapper, '<a href="'.$link.'" onclick="'.$click.'" class="'.$class.'">'.$text.'</a>', $parsed);
 		}
 		
 		/*

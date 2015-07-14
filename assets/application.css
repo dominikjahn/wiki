@@ -60,6 +60,9 @@ body
 	font-size: 11pt;
 }
 
+a.link-newpage { color: #080; }
+a.link-notauthorized { color: #d00; }
+
 @media (min-width: 768px)
 {
 	.collapsed-navbar
