@@ -40,7 +40,12 @@
 			
 			$data->status = 1;
 			$data->message = "Page found";
-			$data->page = $page; //(object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
+			$data->page = $page;
+			$data->no_headline = $noHeadline;
+			$data->no_navbar = $noNavbar;
+			$data->no_footerbar = $noFooterbar;
+
+			//(object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
 		}
 	} catch(\Exception $e) {
 		$data->status = 0;

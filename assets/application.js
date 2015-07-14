@@ -47,6 +47,8 @@ $(function()
 	
 	switch(startWith) {
 		case "Edit": view = "EditPage"; break;
+		case "Versions": view = "GetVersions"; break;
+		case "NewPage": view = "NewPage"; break;
 	}
 	
 	ExtractPageName();
@@ -59,6 +61,7 @@ $(function()
 	
 	$('#NavSaveChanges').click(SaveChanges);
 	$('#NavDropChanges').click(DropChanges);
+	$('#NavGetVersions').click(GetVersions);
 	$('#NavNewPage').click(NewPage);
 	
 	$('#EditPage-DeletePage').click(DeletePage);
@@ -230,6 +233,10 @@ var DisplayAction = function() {
 		case "EditPage":
 			EditPage();
 			break;
+			
+		case "GetVersions":
+			GetVersions();
+			break;
 	}
 }
 
@@ -258,7 +265,11 @@ var HideAllActions = function() {
 	$("#NewPage").css("display","none");
 		$("#NavDropChanges").css("display","none");
 		$("#NavSaveChanges").css("display","none");
+		
+	// Versions
+	$('#Versions').css("display","none");
 	
+	// Error pages
 	$("#PageNotFound").css("display","none");
 	$("#NotAuthorized").css("display","none");
 	
@@ -308,7 +319,7 @@ var DisplayPage = function() {
 				// Change URL in address bar to this page
 				window.history.replaceState({}, response.page.title, page+".html");
 				
-				pageID = response.page.pageID;
+				pageID = response.page.page_id;
 				
 				$('#DisplayPage-Title').css("display", "block");
 				$('#DisplayPage-TitleSeparator').css("display", "block");
@@ -331,17 +342,17 @@ var DisplayPage = function() {
 					case "GROUPPRIVATE": $('#NavPrivatePage').css("display","block"); break;
 				}
 				
-				if(response.page.no_headline) {
+				if(response.no_headline) {
 					$('#DisplayPage-Title').css("display", "none");
 					$('#DisplayPage-TitleSeparator').css("display", "none");
 				}
 				
-				if(response.page.no_navbar) {
+				if(response.no_navbar) {
 					$('#Navbar').css("display","none");
 					$('#content').css("margin-top","0px");
 				}
 				
-				if(response.page.no_footerbar) {
+				if(response.no_footerbar) {
 					$('#FooterBar').css("display","none");
 				}
 				
@@ -565,6 +576,85 @@ var DeletePage = function() {
 var DropChanges = function() {
 	DisplayPage();
 };
+
+/*
+ * Display page
+ */
+var GetVersions = function() {
+	HideAllActions();
+	
+	view = "DisplayPage";
+	
+	var url = 'request.php?command=GetVersions&page=' + page;
+	
+	if(!online)
+	{
+		alert("You are not online.");
+	} else {
+		$.ajax({
+			'type': 'GET',
+			'url': url,
+			'dataType': 'json',
+			'success': function(response) {
+				
+				if(response.status == 0) {
+					alert(response.message);
+					return;
+				} else if(response.status == 404) {
+					DisplayPageNotFound();
+					return;
+				} else if(response.status == 401) {
+					DisplayNotAuthorized();
+					return;
+				}
+				
+				HideLoading();
+				
+				pageID = response.page.page_id;
+				
+				$('#Versions').css("display", "block");
+				
+				$('#Versions-PageTitle').html(response.page.title);
+				
+				document.title = "Revisions for '" + response.page.title + "'";
+				
+				$("#Versions-List").empty();
+				
+				for(var v = 0; v < response.versions.length; v++) {
+					var version = response.versions[v];
+					
+					var timestamp = new Date(version.timestamp);
+					
+					var minor_edit = "";
+					
+					if(version.minor_edit) {
+						minor_edit = '<span class="label label-warning"><i class="glyphicon glyphicon-ok-circle" aria-hidden="true"></i> Yes';
+					}
+					
+					$("#Versions-List").append('' +
+					'	<tr>' +
+					'		<td><input type="radio" name="left" /></td>' +
+					'		<td><input type="radio" name="right" /></td>' +
+					'		<td>' + timestamp.toLocaleDateString() + '</td>' +
+					'		<td>' + timestamp.toLocaleTimeString() + '</td>' +
+					'		<td>' + version.user + '</td>' +
+					'		<td>' + version.summary + '</td>' +
+					'		<td>' + minor_edit + '</td>' +
+					'	</tr>');
+				}
+			},
+			beforeSend: function(xhr)
+			{
+				//AddRequest();
+				xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+			}/*,
+			complete: function()
+			{
+				RemoveRequest();
+			}*/
+		});
+	}
+}
 
 var DisplayLoading = function() { $("#Loading").css("display","block"); }
 var HideLoading = function() { $("#Loading").css("display","none"); }

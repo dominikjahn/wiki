@@ -51,7 +51,7 @@
 		public function GetByPage(Page $page) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT version_id, status, page_id, title, content, summary, minor_edit FROM version WHERE status = 100 AND page_id = :page";
+			$sqlObjects = "SELECT version_id, status, page_id, title, content, summary, minor_edit FROM version WHERE status = 100 AND page_id = :page ORDER BY version_id DESC";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read(["page" => $page]);
 			

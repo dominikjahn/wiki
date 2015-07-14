@@ -26,11 +26,16 @@
 		public function jsonSerialize() {
 			return [
 				"version_id" => $this->id,
-				"page" => $this->page,
+				"page" => [
+					"page_id" => $this->page->ID,
+					"name" => $this->page->Name
+					],
 				"title" => $this->title,
 				"content" => $this->content,
 				"summary" => $this->summary,
-				"minor_edit" => $this->minor_edit
+				"minor_edit" => $this->minorEdit,
+				"timestamp" => $this->logCreated->Timestamp->format("Y-m-d H:i:s"),
+				"user" => $this->logCreated->User->Loginname
 			];
 		}
 		

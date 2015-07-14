@@ -88,7 +88,7 @@
 		/*
 		 * Get a list of revisions of a specific page
 		 */
-		//case "GetVersions": require_once "Core/Views/GetVersions.php"; break;
+		case "GetVersions": require_once "Core/Views/GetVersions.php"; break;
 		
 		/*
 		 * Get a specific version
@@ -114,6 +114,9 @@
 		 * Do an online check
 		 */
 		case "ConnectivityCheck": print 1; break;
+		
+		default:
+			print json_encode(["status" => 0, "message" => "This command is not supported"]);
 	}
 	
 	$db = DatabaseConnection::GetInstance();

@@ -42,7 +42,7 @@ body
 	padding: 10px;
 }
 
-#SignInForm, #PageNotFound, #NotAuthorized, #DisplayPage, #EditPage, #NewPage, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavSaveChanges, #NavGetVersions,
+#SignInForm, #PageNotFound, #NotAuthorized, #DisplayPage, #EditPage, #NewPage, #Versions, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavSaveChanges, #NavGetVersions,
 #NavPublicPage, #NavProtectedPage, #NavPrivatePage
 {
 	display: none;
