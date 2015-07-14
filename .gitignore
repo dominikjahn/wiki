@@ -1,4 +1,3 @@
 .settings/*
 .project
-etc/Database Data.sql
 Core/Configuration.php
