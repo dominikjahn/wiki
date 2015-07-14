@@ -86,6 +86,11 @@
 		case "SavePage": require_once "Core/Views/SavePage.php"; break;
 		
 		/*
+		 * Preview changes to a page
+		 */
+		case "PreviewPage": require_once "Core/Views/PreviewPage.php"; break;
+		
+		/*
 		 * Get a list of revisions of a specific page
 		 */
 		case "GetVersions": require_once "Core/Views/GetVersions.php"; break;
@@ -113,7 +118,9 @@
 		/*
 		 * Do an online check
 		 */
-		case "ConnectivityCheck": print 1; break;
+		case "ConnectivityCheck":
+			print json_encode(["status" => 0, "message" => "You are still connected", "timestamp" => date("Y-m-d H:i:s")]);
+			break;
 		
 		default:
 			print json_encode(["status" => 0, "message" => "This command is not supported"]);

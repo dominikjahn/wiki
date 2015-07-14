@@ -60,7 +60,9 @@ $(function()
 	$('#NavEditPage').click(EditPage);
 	
 	$('#NavSaveChanges').click(SaveChanges);
+	$('#NavPreviewChanges').click(PreviewChanges);
 	$('#NavDropChanges').click(DropChanges);
+	$('#NavBackToComposer').click(BackToComposer);
 	$('#NavGetVersions').click(GetVersions);
 	$('#NavNewPage').click(NewPage);
 	
@@ -234,6 +236,10 @@ var DisplayAction = function() {
 			EditPage();
 			break;
 			
+		case "NewPage":
+			NewPage();
+			break;
+			
 		case "GetVersions":
 			GetVersions();
 			break;
@@ -264,8 +270,13 @@ var HideAllActions = function() {
 	$("#EditPage").css("display","none");
 	$("#NewPage").css("display","none");
 		$("#NavDropChanges").css("display","none");
+		$("#NavPreviewChanges").css("display","none");
 		$("#NavSaveChanges").css("display","none");
-		
+	
+	// Preview
+	$('#PreviewPage').css("display","none");
+		$('#NavBackToComposer').css("display","none");
+	
 	// Versions
 	$('#Versions').css("display","none");
 	
@@ -412,6 +423,7 @@ var NewPage = function() {
 	$("#NewPage-InputContent").val("").hide();
 			
 		$("#NavDropChanges").css("display","block");
+		$("#NavPreviewChanges").css("display","block");
 		$("#NavSaveChanges").css("display","block");
 			
 	$("textarea.tab").keydown(indent);
@@ -462,6 +474,7 @@ var EditPage = function() {
 			$("#EditPage-Manipulation-" + response.page.manipulation).attr("checked",true);
 			
 			$("#NavDropChanges").css("display","block");
+			$("#NavPreviewChanges").css("display","block");
 			$("#NavSaveChanges").css("display","block");
 			
 			//$("textarea.tab").keydown(indent);
@@ -576,6 +589,83 @@ var DeletePage = function() {
 var DropChanges = function() {
 	DisplayPage();
 };
+
+var PreviewChanges = function() {
+	HideAllActions();
+	
+	var url = 'request.php?command=PreviewPage';
+	
+	var editor = NewPageEditor;
+	
+	if(mode == "EditPage") {
+		editor = EditPageEditor;
+	}
+	
+	var data = {
+		'title': $("#"+mode+"-InputTitle").val(),
+		'content': editor.getSession().getValue(), //$("#"+mode+"-InputContent").val()
+	};
+	
+	//var previewWindow = window.open("", "_blank");
+	//previewWindow.blur();
+	
+	$.ajax({
+		'type': 'POST',
+		'url': url,
+		'dataType': 'json',
+		'data': data,
+		'success': function(response) {
+			HideLoading();
+			
+			//previewWindow.location.href = 'http://www.google.com';
+			//previewWindow.focus();
+			
+			$('#PreviewPage-Title').css("display", "block");
+			$('#PreviewPage-TitleSeparator').css("display", "block");
+			
+			$("#PreviewPage").css("display","block");
+			$("#PreviewPage-Title").html(response.page.title);
+			$("#PreviewPage-Content").html(response.page.content);
+			
+			document.title = "Preview for '" + response.page.title + "'";
+			
+			if(response.no_headline) {
+				$('#PreviewPage-Title').css("display", "none");
+				$('#PreviewPage-TitleSeparator').css("display", "none");
+			}
+			
+			if(response.no_navbar) {
+				$('#Navbar').css("display","none");
+				$('#content').css("margin-top","0px");
+			}
+			
+			if(response.no_footerbar) {
+				$('#FooterBar').css("display","none");
+			}
+			
+			$('#NavBackToComposer').css("display","block");
+		},
+		beforeSend: function(xhr)
+		{
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+			//AddRequest();
+		}
+		/*,complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
+};
+
+var BackToComposer = function() {
+	HideAllActions();
+	HideLoading();
+	
+	$("#"+mode).css("display","block");
+	$("#NavDropChanges").css("display","block");
+	$("#NavPreviewChanges").css("display","block");
+	$("#NavSaveChanges").css("display","block");
+}
 
 /*
  * Display page
