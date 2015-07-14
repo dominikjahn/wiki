@@ -476,6 +476,10 @@ var EditPage = function() {
 			$("#NavDropChanges").css("display","block");
 			$("#NavPreviewChanges").css("display","block");
 			$("#NavSaveChanges").css("display","block");
+				
+			if(response.page.page_id == 1) {
+				$("#EditPage-DeletePage").attr("disabled",true);
+			}
 			
 			//$("textarea.tab").keydown(indent);
 			//$('textarea.tab').keypress(autoindent);

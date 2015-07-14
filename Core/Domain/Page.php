@@ -43,6 +43,14 @@
 			];
 		}
 		
+		public function Delete() {
+			if($this->id === 1) {
+				throw new \Exception("You cannot delete the 'Homepage' page");
+			}
+			
+			parent::Delete();
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//
