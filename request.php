@@ -13,6 +13,9 @@
 	
 	require_once "Core/Configuration.php";
 	
+	require_once "Core/Exception/BaseException.php";
+	require_once "Core/Exception/NotAuthorizedToCreateOrEditPagesWithScriptsException.php";
+	
 	require_once "Core/Tools/StringTools.php";
 	require_once "Core/Tools/PHPDocParser.php";
 	require_once "Core/Tools/PHPDocComment.php";

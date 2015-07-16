@@ -21,6 +21,15 @@
 		$noHeadline = $noNavbar = $noFooterbar = false;
 			
 		$content = $page->Content;
+		
+		/*
+		 * First check if the page contains any scripts
+		 */
+		$scripts = preg_match("/<?php(.+?)?>/msu",$content);
+		if($scripts > 0 && (!User::GetCurrentUser() || !User::GetCurrentUser()->HasPermission("SCRIPTING"))) {
+			throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
+		}
+			
 		$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar);
 		$parseDown = new ParseDown;
 		$content = $parseDown->text($content);
@@ -32,6 +41,9 @@
 		$data->no_headline = $noHeadline;
 		$data->no_navbar = $noNavbar;
 		$data->no_footerbar = $noFooterbar;
+	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
+		$data->status = 401;
+		$data->message = "You are not authorized to preview this page as it contains a PHP script";
 	} catch(\Exception $e) {
 		$data->status = 0;
 		$data->message = $e->getMessage();

@@ -44,12 +44,23 @@
 			];
 		}
 		
+		public function Save() {
+			
+			$scripts = preg_match("/<?php(.+?)?>/msu",$this->content);
+			
+			if($scripts > 0 && (!User::GetCurrentUser() || !User::GetCurrentUser()->HasPermission("SCRIPTING"))) {
+				throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
+			}
+			
+			return parent::Save();
+		}
+		
 		public function Delete() {
 			if($this->id === 1) {
 				throw new \Exception("You cannot delete the 'Homepage' page");
 			}
 			
-			parent::Delete();
+			return parent::Delete();
 		}
 		
 		  //

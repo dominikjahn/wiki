@@ -96,6 +96,9 @@
 			$data->page = $name;
 		}
 		
+	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
+		$data->status = 401;
+		$data->message = $e->getMessage();
 	} catch(\Exception $e) {
 		$data->message = $e->getMessage();
 	}

@@ -539,6 +539,9 @@ var SaveChanges = function() {
 			if(response.status == 0) {
 				alert(response.message);
 				return;
+			} else if(response.status == 401) {
+				alert(response.message);
+				return;
 			}
 			
 			alert(response.message);
@@ -619,6 +622,11 @@ var PreviewChanges = function() {
 		'dataType': 'json',
 		'data': data,
 		'success': function(response) {
+			if(response.status == 401) {
+				alert(response.message);
+				return;
+			}
+			
 			HideLoading();
 			
 			//previewWindow.location.href = 'http://www.google.com';
