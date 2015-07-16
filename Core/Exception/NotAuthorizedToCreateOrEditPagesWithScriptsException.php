@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Exception;
+	
 	class NotAuthorizedToCreateOrEditPagesWithScriptsException extends BaseException
 	{
 		public function __construct($message = null, $code = 0, Exception $previous = null) {

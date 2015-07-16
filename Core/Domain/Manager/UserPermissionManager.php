@@ -1,4 +1,11 @@
 <?php
+	namespace Wiki\Domain\Manager;
+	
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Domain\Factory\UserPermissionFactory;
+	use Wiki\Domain\UserPermission;
+	use Wiki\Domain\User;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1

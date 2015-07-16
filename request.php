@@ -11,44 +11,13 @@
 	header("Content-Type: application/json; charset=UTF-8");
 	http_response_code(200);
 	
-	require_once "Core/Configuration.php";
-	
 	require_once "Core/Exception/BaseException.php";
-	require_once "Core/Exception/NotAuthorizedToCreateOrEditPagesWithScriptsException.php";
+	require_once "Core/Exception/ClassNotFoundException.php";
+	require_once "Core/ClassLoader.php";
 	
-	require_once "Core/Tools/StringTools.php";
-	require_once "Core/Tools/PHPDocParser.php";
-	require_once "Core/Tools/PHPDocComment.php";
-	
-	require_once "Core/Database/DatabaseConnection.php";
-	require_once "Core/Database/DatabaseStatement.php";
-	require_once "Core/Database/DatabaseResultset.php";
-	require_once "Core/Database/DatabaseRow.php";
-	require_once "Core/Database/DatabaseColumn.php";
-	
-	require_once "Core/Domain/Manager/DomainManager.php";
-	require_once "Core/Domain/Factory/DomainFactory.php";
-	require_once "Core/Domain/Domain.php";
-	
-	require_once "Core/Domain/Manager/UserManager.php";
-	require_once "Core/Domain/Factory/UserFactory.php";
-	require_once "Core/Domain/User.php";
-	
-	require_once "Core/Domain/Manager/UserPermissionManager.php";
-	require_once "Core/Domain/Factory/UserPermissionFactory.php";
-	require_once "Core/Domain/UserPermission.php";
-	
-	require_once "Core/Domain/Manager/PageManager.php";
-	require_once "Core/Domain/Factory/PageFactory.php";
-	require_once "Core/Domain/Page.php";
-	
-	require_once "Core/Domain/Manager/VersionManager.php";
-	require_once "Core/Domain/Factory/VersionFactory.php";
-	require_once "Core/Domain/Version.php";
-	
-	require_once "Core/Domain/Manager/LogManager.php";
-	require_once "Core/Domain/Factory/LogFactory.php";
-	require_once "Core/Domain/Log.php";
+	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Domain\User;
 	
 	$command = (isset($_GET["command"]) ? $_GET["command"] : null);
 	

@@ -1,9 +1,10 @@
 <?php
 	namespace Wiki\Exception;
 	
-	abstract class BaseException extends \Exception
+	class ClassNotFoundException extends BaseException
 	{
 		public function __construct($message = null, $code = 0, Exception $previous = null) {
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

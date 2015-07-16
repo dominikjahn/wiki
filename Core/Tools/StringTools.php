@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Tools;
+	
 	class StringTools
 	{
 		public static function UpperCamelCaseToLowerUnderscore($text) {

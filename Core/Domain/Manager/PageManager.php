@@ -1,4 +1,10 @@
 <?php
+	namespace Wiki\Domain\Manager;
+	
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Domain\Factory\PageFactory;
+	use Wiki\Domain\Page;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1

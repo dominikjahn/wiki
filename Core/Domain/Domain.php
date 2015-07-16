@@ -1,10 +1,15 @@
 <?php
+	namespace Wiki\Domain;
+	
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Tools\PHPDocParser;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	abstract class Domain implements JsonSerializable
+	abstract class Domain implements \JsonSerializable
 	{
 		  //
 		 // METHODS

@@ -1,4 +1,7 @@
 <?php
+	namespace Wiki;
+	use Wiki\Database\DatabaseConnection;
+	
 	class Configuration
 	{
 		const DATABASE_DRIVER = DatabaseConnection::DRIVER_MYSQL;

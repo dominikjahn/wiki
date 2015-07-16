@@ -1,4 +1,12 @@
 <?php
+	namespace Wiki\Domain\Factory;
+	
+	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Manager\LogManager;
+	use Wiki\Domain\Domain;
+	use Wiki\Domain\Log;
+	use Wiki\Database\DatabaseRow;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1

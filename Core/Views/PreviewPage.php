@@ -1,4 +1,10 @@
 <?php
+	use Wiki\Domain\User;
+	use Wiki\Domain\Page;
+	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -11,6 +17,7 @@
 	$content = $_POST["content"];
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$noHeadline = $noNavbar = $noFooterbar = $customOutput = false;
 	
 	try {
 		$page = new Page();
@@ -18,8 +25,6 @@
 		$page->Title = $title;
 		$page->Content = $content;
 		
-		$noHeadline = $noNavbar = $noFooterbar = false;
-			
 		$content = $page->Content;
 		
 		/*
@@ -30,17 +35,21 @@
 			throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
 		}
 			
-		$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar);
-		$parseDown = new ParseDown;
+		$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
+		$parseDown = new \ParseDown;
 		$content = $parseDown->text($content);
 		$page->Content = $content;
 		
-		$data->status = 1;
-		$data->message = "Preview created";
-		$data->page = (object) ["title" => $title, "content" => $page->Content];
-		$data->no_headline = $noHeadline;
-		$data->no_navbar = $noNavbar;
-		$data->no_footerbar = $noFooterbar;
+		if(!$customOutput) {
+			$data->status = 1;
+			$data->message = "Preview created";
+			$data->page = (object) ["title" => $title, "content" => $page->Content];
+			$data->no_headline = $noHeadline;
+			$data->no_navbar = $noNavbar;
+			$data->no_footerbar = $noFooterbar;
+		} else {
+			$data = $page->Content;
+		}
 	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
 		$data->status = 401;
 		$data->message = "You are not authorized to preview this page as it contains a PHP script";
@@ -49,11 +58,14 @@
 		$data->message = $e->getMessage();
 	}
 	
-	print json_encode($data);
+	if(!$customOutput) {
+		print json_encode($data);
+	} else {
+		print $data;
+	}
 	
 	
-	
-	function ParseWiki($text, &$noHeadline, &$noNavbar, &$noFooterbar) {
+	function ParseWiki($text, &$noHeadline, &$noNavbar, &$noFooterbar, &$customOutput) {
 		$parsed = $text;
 		
 		/*
@@ -308,6 +320,16 @@
 		$match = [];
 		if(preg_match("/<Wiki:NoFooterbar\/>/msu",$parsed, $match)) {
 			$noFooterbar = true;
+			$parsed = str_replace($match[0],null,$parsed);
+		}
+		
+		/*
+		 * Deactivate JSON-output of page, instead let script take full control over output
+		 */
+		
+		$match = [];
+		if(preg_match("/<Wiki:CustomOutput\/>/msu",$parsed, $match)) {
+			$customOutput = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
 		

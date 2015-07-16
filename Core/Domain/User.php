@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Domain;
+	
 	/**
 	 * @table user
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>

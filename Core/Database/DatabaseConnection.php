@@ -1,4 +1,8 @@
 <?php
+	namespace Wiki\Database;
+	
+	use Wiki\Configuration;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -23,7 +27,7 @@
 		 */
 		private function __construct() {
 			switch(Configuration::DATABASE_DRIVER) {
-				case DatabaseConnection::DRIVER_MYSQL:
+				case self::DRIVER_MYSQL:
 					$this->connection = new \PDO("mysql:host=".Configuration::DATABASE_HOST.";dbname=".Configuration::DATABASE_NAME.";charset=".Configuration::DATABASE_CHARSET, Configuration::DATABASE_USER, Configuration::DATABASE_PASSWORD);
 					break;
 					

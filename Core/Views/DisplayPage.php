@@ -1,4 +1,8 @@
 <?php
+	use Wiki\Domain\User;
+	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Page;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -14,6 +18,8 @@
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
+	$noHeadline = $noNavbar = $noFooterbar = $customOutput = false;
+	
 	try {
 		$page = PageManager::GetInstance()->GetByName($pagename);
 		$currentUser = User::GetCurrentUser();
@@ -26,37 +32,43 @@
 			$data->message = "You are not authorized to see the content on this page";
 			//throw new \Exception("You are not authorized to see the content on this page");
 		} else {
-			$noHeadline = $noNavbar = $noFooterbar = false;
+			
 			
 			$content = $page->Content;
 			if(!$raw) {
-				$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar);
+				$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
 				
-				$parseDown = new ParseDown;
+				$parseDown = new \ParseDown;
 				$content = $parseDown->text($content);
 			}
 			
 			$page->Content = $content;
 			
-			$data->status = 1;
-			$data->message = "Page found";
-			$data->page = $page;
-			$data->no_headline = $noHeadline;
-			$data->no_navbar = $noNavbar;
-			$data->no_footerbar = $noFooterbar;
+			if(!$customOutput) {
+				$data->status = 1;
+				$data->message = "Page found";
+				$data->page = $page;
+				$data->no_headline = $noHeadline;
+				$data->no_navbar = $noNavbar;
+				$data->no_footerbar = $noFooterbar;
 
-			//(object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
+				//(object) ["pageID" => $page->ID, "name" => $page->Name, "title" => $page->Title, "content" => $content, "visibility" => $page->Visibility, "no_headline" => $noHeadline, "no_navbar" => $noNavbar, "no_footerbar" => $noFooterbar, "lastedit" => $lastedit];
+			} else {
+				$data = $page->Content;
+			}
 		}
 	} catch(\Exception $e) {
 		$data->status = 0;
 		$data->message = $e->getMessage();
 	}
 	
-	print json_encode($data);
+	if(!$customOutput) {
+		print json_encode($data);
+	} else {
+		print $data;
+	}
 	
-	
-	
-	function ParseWiki($text, &$noHeadline, &$noNavbar, &$noFooterbar) {
+	function ParseWiki($text, &$noHeadline, &$noNavbar, &$noFooterbar, &$customOutput) {
 		$parsed = $text;
 		
 		/*
@@ -311,6 +323,16 @@
 		$match = [];
 		if(preg_match("/<Wiki:NoFooterbar\/>/msu",$parsed, $match)) {
 			$noFooterbar = true;
+			$parsed = str_replace($match[0],null,$parsed);
+		}
+		
+		/*
+		 * Deactivate JSON-output of page, instead let script take full control over output
+		 */
+		
+		$match = [];
+		if(preg_match("/<Wiki:CustomOutput\/>/msu",$parsed, $match)) {
+			$customOutput = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
 		

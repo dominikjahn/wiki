@@ -1,4 +1,9 @@
 <?php
+	namespace Wiki\Domain;
+	
+	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	
 	/**
 	 * @table page
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>

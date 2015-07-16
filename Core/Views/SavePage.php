@@ -1,4 +1,11 @@
 <?php
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Domain\User;
+	use Wiki\Domain\Page;
+	use Wiki\Domain\Version;
+	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -10,7 +17,7 @@
 	$title = $_POST["title"];
 	$content = $_POST["content"];
 	$summary = (isset($_POST["summary"]) ? $_POST["summary"] : null);
-	$minor_edit = (isset($_POST["minor_edit"]) ? (bool) $_POST["minor_edit"] : false);
+	$minor_edit = ((isset($_POST["minor_edit"]) && $_POST["minor_edit"] == "true") ? true : false);
 	$visibility = (isset($_POST["visibility"]) ? $_POST["visibility"] : Page::VIS_PROTECTED);
 	$manipulation = (isset($_POST["manipulation"]) ? $_POST["manipulation"] : Page::MAN_REGISTERED);
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];

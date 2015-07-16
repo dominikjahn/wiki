@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki;
+	
 	abstract class Response
 	{
 		  //

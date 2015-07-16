@@ -476,6 +476,8 @@ var EditPage = function() {
 			$("#NavDropChanges").css("display","block");
 			$("#NavPreviewChanges").css("display","block");
 			$("#NavSaveChanges").css("display","block");
+			
+			$("#EditPage-MinorChange").attr("checked",false);
 				
 			if(response.page.page_id == 1) {
 				$("#EditPage-DeletePage").attr("disabled",true);

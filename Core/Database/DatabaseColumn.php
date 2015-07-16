@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Database;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -131,7 +133,7 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		protected function GetObject($canbenull = false) {
+		/*protected function GetObject($canbenull = false) {
 			if($canbenull && $this->GetIsNull()) {
 				return false;
 			}
@@ -151,7 +153,7 @@
 				default:
 					throw new \Exception("Unknown object type '".$type."'");
 			}
-		}
+		}*/
 		
 		  //
 		 // PROPERTIES
@@ -184,8 +186,8 @@
 				case "DateTime": return $this->GetDateTime(); break;
 				case "DateTimeOrNull": return $this->GetDateTime(true); break;
 				
-				case "Object": return $this->GetObject(); break;
-				case "ObjectOrNull": return $this->GetObject(true); break;
+				//case "Object": return $this->GetObject(); break;
+				//case "ObjectOrNull": return $this->GetObject(true); break;
 			}
 		}
 	}

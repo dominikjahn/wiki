@@ -1,4 +1,9 @@
 <?php
+	use Wiki\Database\DatabaseConnection;
+	use Wiki\Domain\Page;
+	use Wiki\Domain\User;
+	use Wiki\Domain\Manager\PageManager;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1

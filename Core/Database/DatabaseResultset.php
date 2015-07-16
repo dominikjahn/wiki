@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Database;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -21,7 +23,7 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public function __construct(PDOStatement $statement) {
+		public function __construct(\PDOStatement $statement) {
 			$this->statement = $statement;
 		}
 		

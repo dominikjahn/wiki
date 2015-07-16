@@ -1,4 +1,6 @@
 <?php
+	namespace Wiki\Tools;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
