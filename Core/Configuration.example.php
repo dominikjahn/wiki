@@ -7,5 +7,6 @@
 		const DATABASE_PASSWORD = "";
 		const DATABASE_NAME = "wiki";
 		const DATABASE_CHARSET = "utf8";
+		const DATABASE_PREFIX = "";
 	}
 ?>

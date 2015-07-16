@@ -46,9 +46,9 @@
 			}
 				
 			if($isNew) {
-				$sqlSave = "INSERT INTO `".$table."` (".join(", ",$insertFields).") VALUES (".join(", ", $insertPlaceholders).");";
+				$sqlSave = "INSERT INTO `%PREFIX%".$table."` (".join(", ",$insertFields).") VALUES (".join(", ", $insertPlaceholders).");";
 			} else {
-				$sqlSave = "UPDATE `".$table."` SET ".join(", ",$updateFields)." WHERE `".$table."_id` = :".$table."_id;";
+				$sqlSave = "UPDATE `%PREFIX%".$table."` SET ".join(", ",$updateFields)." WHERE `".$table."_id` = :".$table."_id;";
 			}
 			
 			$db = DatabaseConnection::GetInstance();
@@ -79,7 +79,7 @@
 			
 			$table = static::DB_TABLE;
 			
-			$sqlDelete = "UPDATE `".$table."` SET `status` = 0 WHERE `".$table."_id` = :id;";
+			$sqlDelete = "UPDATE `%PREFIX%".$table."` SET `status` = 0 WHERE `".$table."_id` = :id;";
 			$parameters = ["id" => $this->id];
 			
 			$db = DatabaseConnection::GetInstance();

@@ -44,6 +44,7 @@
 		 * @since 0.1
 		 */
 		public function Prepare($query) {
+			$query = str_replace("%PREFIX%", Configuration::DATABASE_PREFIX, $query);
 			$statement = $this->connection->prepare($query);
 			return new DatabaseStatement($statement);
 			

@@ -1,20 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.12deb2
+-- version 4.2.7.1
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jul 13, 2015 at 09:45 PM
--- Server version: 5.5.42-1
--- PHP Version: 5.6.7-1
+-- Host: 127.0.0.1
+-- Generation Time: Jul 16, 2015 at 08:03 AM
+-- Server version: 5.6.20
+-- PHP Version: 5.5.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `wiki`
@@ -26,12 +20,12 @@ SET time_zone = "+00:00";
 -- Table structure for table `group`
 --
 
-DROP TABLE IF EXISTS `group`;
-CREATE TABLE `group` (
+DROP TABLE IF EXISTS `%PREFIX%group`;
+CREATE TABLE `%PREFIX%group` (
 `group_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `name` varchar(20) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -39,13 +33,13 @@ CREATE TABLE `group` (
 -- Table structure for table `groupmember`
 --
 
-DROP TABLE IF EXISTS `groupmember`;
-CREATE TABLE `groupmember` (
+DROP TABLE IF EXISTS `%PREFIX%groupmember`;
+CREATE TABLE `%PREFIX%groupmember` (
 `groupmember_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -53,8 +47,8 @@ CREATE TABLE `groupmember` (
 -- Table structure for table `log`
 --
 
-DROP TABLE IF EXISTS `log`;
-CREATE TABLE `log` (
+DROP TABLE IF EXISTS `%PREFIX%log`;
+CREATE TABLE `%PREFIX%log` (
 `log_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `object_table` varchar(20) CHARACTER SET ascii NOT NULL,
@@ -62,7 +56,7 @@ CREATE TABLE `log` (
   `user_id` int(10) unsigned NOT NULL,
   `type` enum('CREATE','MODIFY','DELETE') COLLATE utf8mb4_bin NOT NULL,
   `timestamp` datetime NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -70,8 +64,8 @@ CREATE TABLE `log` (
 -- Table structure for table `page`
 --
 
-DROP TABLE IF EXISTS `page`;
-CREATE TABLE `page` (
+DROP TABLE IF EXISTS `%PREFIX%page`;
+CREATE TABLE `%PREFIX%page` (
 `page_id` int(10) unsigned NOT NULL,
   `status` tinyint(4) unsigned NOT NULL,
   `name` varchar(140) CHARACTER SET ascii NOT NULL,
@@ -81,7 +75,7 @@ CREATE TABLE `page` (
   `group_owner_id` int(10) unsigned NOT NULL,
   `visibility` enum('PUBLIC','PROTECTED','PRIVATE','GROUPPRIVATE') COLLATE utf8mb4_bin NOT NULL DEFAULT 'PUBLIC',
   `manipulation` enum('EVERYONE','REGISTERED','OWNER','GROUP') COLLATE utf8mb4_bin NOT NULL DEFAULT 'REGISTERED'
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -89,13 +83,27 @@ CREATE TABLE `page` (
 -- Table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+DROP TABLE IF EXISTS `%PREFIX%user`;
+CREATE TABLE `%PREFIX%user` (
 `user_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `loginname` char(20) CHARACTER SET ascii NOT NULL,
   `password` char(32) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `userpermission`
+--
+
+DROP TABLE IF EXISTS `%PREFIX%userpermission`;
+CREATE TABLE `%PREFIX%userpermission` (
+`userpermission_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `permission` varchar(50) CHARACTER SET ascii NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
 
@@ -103,8 +111,8 @@ CREATE TABLE `user` (
 -- Table structure for table `version`
 --
 
-DROP TABLE IF EXISTS `version`;
-CREATE TABLE `version` (
+DROP TABLE IF EXISTS `%PREFIX%version`;
+CREATE TABLE `%PREFIX%version` (
 `version_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
   `page_id` int(10) unsigned NOT NULL,
@@ -112,7 +120,7 @@ CREATE TABLE `version` (
   `content` text COLLATE utf8mb4_bin NOT NULL,
   `summary` varchar(500) COLLATE utf8mb4_bin NOT NULL,
   `minor_edit` bit(1) NOT NULL DEFAULT b'0'
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Indexes for dumped tables
@@ -121,37 +129,43 @@ CREATE TABLE `version` (
 --
 -- Indexes for table `group`
 --
-ALTER TABLE `group`
+ALTER TABLE `%PREFIX%group`
  ADD PRIMARY KEY (`group_id`);
 
 --
 -- Indexes for table `groupmember`
 --
-ALTER TABLE `groupmember`
+ALTER TABLE `%PREFIX%groupmember`
  ADD PRIMARY KEY (`groupmember_id`);
 
 --
 -- Indexes for table `log`
 --
-ALTER TABLE `log`
+ALTER TABLE `%PREFIX%log`
  ADD PRIMARY KEY (`log_id`);
 
 --
 -- Indexes for table `page`
 --
-ALTER TABLE `page`
+ALTER TABLE `%PREFIX%page`
  ADD PRIMARY KEY (`page_id`), ADD KEY `name` (`name`);
 
 --
 -- Indexes for table `user`
 --
-ALTER TABLE `user`
- ADD PRIMARY KEY (`user_id`);
+ALTER TABLE `%PREFIX%user`
+ ADD PRIMARY KEY (`user_id`), ADD KEY `loginname_lookup` (`status`,`loginname`);
+
+--
+-- Indexes for table `userpermission`
+--
+ALTER TABLE `%PREFIX%userpermission`
+ ADD PRIMARY KEY (`userpermission_id`);
 
 --
 -- Indexes for table `version`
 --
-ALTER TABLE `version`
+ALTER TABLE `%PREFIX%version`
  ADD PRIMARY KEY (`version_id`);
 
 --
@@ -161,33 +175,35 @@ ALTER TABLE `version`
 --
 -- AUTO_INCREMENT for table `group`
 --
-ALTER TABLE `group`
+ALTER TABLE `%PREFIX%group`
 MODIFY `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `groupmember`
 --
-ALTER TABLE `groupmember`
+ALTER TABLE `%PREFIX%groupmember`
 MODIFY `groupmember_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `log`
 --
-ALTER TABLE `log`
-MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=177;
+ALTER TABLE `%PREFIX%log`
+MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `page`
 --
-ALTER TABLE `page`
-MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
+ALTER TABLE `%PREFIX%page`
+MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `user`
 --
-ALTER TABLE `user`
-MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+ALTER TABLE `%PREFIX%user`
+MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `userpermission`
+--
+ALTER TABLE `%PREFIX%userpermission`
+MODIFY `userpermission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `version`
 --
-ALTER TABLE `version`
-MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=91;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+ALTER TABLE `%PREFIX%version`
+MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;

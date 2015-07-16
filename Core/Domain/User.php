@@ -1,5 +1,6 @@
 <?php
 	/**
+	 * @table user
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1
@@ -36,6 +37,30 @@
 			return false;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		public function HasPermission($permission) {
+			if(is_null($this->permissions) || !count($this->permissions)) {
+				return false;
+			}
+			
+			foreach($this->permissions as $userpermission) {
+				if($userpermission->Permission == $permission) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
 		public function jsonSerialize() {
 			return [
 				"user_id" => $this->id,
@@ -56,6 +81,11 @@
 		 * @field password
 		 */
 		protected $password;
+		
+		/**
+		 * A list of permissions that the user has
+		 */
+		protected $permissions;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -99,6 +129,26 @@
 		 */
 		protected function SetPassword($value) {
 			$this->password = $value;
+		}
+		
+		# Permissions
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetPermissions() {
+			return $this->permissions;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetPermissions($value) {
+			$this->permissions = $value;
 		}
 		
 		  //

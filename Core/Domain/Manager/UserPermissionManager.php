@@ -4,7 +4,7 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	class PageManager extends DomainManager
+	class UserPermissionManager extends DomainManager
 	{
 		  //
 		 // METHODS
@@ -18,11 +18,11 @@
 		public function GetByID($id) {
 			$fromCache = $this->GetFromCache($id);
 		  
-		  if($fromCache) return $fromCache;
+			if($fromCache) return $fromCache;
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility, manipulation FROM %PREFIX%page WHERE status = 100 AND page_id = :id";
+			$sqlObject = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status = 100 AND userpermission_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -30,17 +30,15 @@
 				return null;
 			}
 			
-			$objectFactory = PageFactory::GetInstance();
+			$objectFactory = UserPermissionFactory::GetInstance();
 			
-			$object = new Page();
+			$object = new UserPermission();
 			
 			$this->AddToCache($object, $id);
 			
 			$objectFactory->FromDataRow($object, $rowObject);
 		
 			$stmObject->Close();
-			
-			$this->AddToCache($object, $object->Name, "name");
 			
 			return $object;
 		}
@@ -50,33 +48,31 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public function GetByName($name) {
-			$fromCache = $this->GetFromCache($name, "name");
-		  
-		  if($fromCache) return $fromCache;
-		  
+		public function GetByUser(User $user) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT page_id, status, name, title, content, user_owner_id, visibility, manipulation FROM %PREFIX%page WHERE status = 100 AND name = :name";
-			$stmObject = $db->Prepare($sqlObject);
-			$rowObject = $stmObject->ReadSingle(["name" => $name]);
+			$sqlObjects = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status = 100 AND user_id = :user";
+			$stmObjects = $db->Prepare($sqlObjects);
+			$resObjects = $stmObjects->Read(["user" => $user]);
 			
-			if(!$rowObject) {
+			if(!$resObjects) {
 				return null;
 			}
 			
-			$objectFactory = PageFactory::GetInstance();
+			$objects = [];
+			$objectFactory = UserPermissionFactory::GetInstance();
 			
-			$object = new Page();
-			
-			$this->AddToCache($object, $name, "name");
-			$this->AddToCache($object, $rowObject->page_id->Integer);
-			
-			$objectFactory->FromDataRow($object, $rowObject);
+			while(($rowObject = $resObjects->NextRow()) != null) {
+				$object = new UserPermission();
+				$this->AddToCache($object);
+				$objectFactory->FromDataRow($object, $rowObject);
+				
+				$objects[] = $object;
+			}
 		
-			$stmObject->Close();
+			$stmObjects->Close();
 			
-			return $object;
+			return $objects;
 		}
 		
 		  //
@@ -90,7 +86,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new PageManager();
+				self::$instance = new UserPermissionManager();
 			}
 			
 			return self::$instance;

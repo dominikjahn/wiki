@@ -31,6 +31,10 @@
 	require_once "Core/Domain/Factory/UserFactory.php";
 	require_once "Core/Domain/User.php";
 	
+	require_once "Core/Domain/Manager/UserPermissionManager.php";
+	require_once "Core/Domain/Factory/UserPermissionFactory.php";
+	require_once "Core/Domain/UserPermission.php";
+	
 	require_once "Core/Domain/Manager/PageManager.php";
 	require_once "Core/Domain/Factory/PageFactory.php";
 	require_once "Core/Domain/Page.php";

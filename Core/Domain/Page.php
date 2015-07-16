@@ -1,5 +1,6 @@
 <?php
 	/**
+	 * @table page
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1

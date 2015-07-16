@@ -49,7 +49,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new VersionFactory();
+				self::$instance = new UserPermissionFactory();
 			}
 			
 			return self::$instance;
