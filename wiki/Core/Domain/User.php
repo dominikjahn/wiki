@@ -1,6 +1,9 @@
 <?php
 	namespace Wiki\Domain;
 	
+	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
+	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
+	
 	/**
 	 * @table user
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -40,7 +43,7 @@
 		}
 		
 		public function Save() {
-			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_USER_ACCOUNTS")) {
+			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_NEW_USERS")) {
 				throw new NotAuthorizedToCreateNewUsersException();
 			} else if($this->ID && self::$currentUser->ID != $this->ID && !self::$currentUser->HasPermission("EDIT_USER_ACCOUNTS")) {
 				throw new NotAuthorizedToEditOtherUsersException();
