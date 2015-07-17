@@ -15,7 +15,7 @@
 	$files = array_merge(
 					$files,
 					#glob("assets/css/*.*"),
-					glob("assets/fonts/*.*")
+					glob("../assets/fonts/*.*")
 					#,glob("assets/js/*.*")
 				);
 	
