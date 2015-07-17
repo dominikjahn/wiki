@@ -55,6 +55,32 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
+		public function GetByUserAndName(User $user, $name) {
+			$db = DatabaseConnection::GetInstance();
+			
+			$sqlObjects = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status = 100 AND user_id = :user AND permission = :name";
+			$stmObjects = $db->Prepare($sqlObjects);
+			$resObjects = $stmObjects->Read(["user" => $user, "name" => $name]);
+			
+			if(!$resObjects) {
+				return null;
+			}
+			
+			$objects = [];
+			$objectFactory = UserPermissionFactory::GetInstance();
+			
+			while(($rowObject = $resObjects->NextRow()) != null) {
+				$object = new UserPermission();
+				$this->AddToCache($object);
+				$objectFactory->FromDataRow($object, $rowObject);
+				
+				$objects[] = $object;
+			}
+		
+			$stmObjects->Close();
+			
+			return $objects;
+		}
 		public function GetByUser(User $user) {
 			$db = DatabaseConnection::GetInstance();
 			

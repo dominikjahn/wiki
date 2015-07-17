@@ -103,6 +103,11 @@
 				case "SaveUser": require_once "Core/Views/SaveUser.php"; break;
 					
 				/*
+				 * Create/edit a user account
+				 */
+				case "SaveUserPermission": require_once "Core/Views/SaveUserPermission.php"; break;
+					
+				/*
 				 * Get a list of all users
 				 */
 				case "GetUsers": require_once "Core/Views/GetUsers.php"; break;
