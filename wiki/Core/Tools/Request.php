@@ -9,20 +9,16 @@
 		//
 		
 		private function __construct() {
+			$headers = getallheaders();
+			
 			$this->method = $_SERVER["REQUEST_METHOD"];
 			$this->body = file_get_contents("php://stdin");
 			
-			/*
-			Content-Type"]=>
-  string(33) "application/x-www-form-urlencoded"
-  
-    ["Content-Type"]=>
-  string(24) "text/plain;charset=UTF-8"
-  
-  ["Content-Type"]=>
-  string(68) "multipart/form-data; boundary=----WebKitFormBoundaryV5gCXfCjsAHGGapA"
-  */
-  
+			if($headers["Content-Type"] == "application/x-www-form-urlencoded") {
+				$body = [];
+				parse_str($this->body, $body);
+				$this->body = $body;
+			}
   
 		}
 		
