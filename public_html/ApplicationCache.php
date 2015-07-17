@@ -37,23 +37,24 @@
 	$filesize = (int) $filesize;
 	#$lastchange = time();
 	
-	$out = "CACHE MANIFEST\n\nCACHE:\n";
+	$out = "CACHE MANIFEST".PHP_EOL.PHP_EOL."CACHE:".PHP_EOL;
 
 	foreach($files as $file)
 	{
-		$out .= $file."\n";
+		$out .= $file.PHP_EOL;
 	}
 
-	$out .= "\nNETWORK:\n*\n";
+	$out .= PHP_EOL."NETWORK:".PHP_EOL."*".PHP_EOL;
 
 	//if anything has changed, add this comment:
 	//echo "#".$dateOfLastChange;
-	$out .= "# Last modification date: ".date("Y-m-d H:i:s",$lastchange)."\n# Total file size: ".$filesize." kByte";
+	$out .= PHP_EOL."# Last modification date: ".date("Y-m-d H:i:s",$lastchange).PHP_EOL."# Total file size: ".$filesize." kByte";
 	
 	if(file_exists("recache"))
 	{
-		$out .= "\n# Cache flush enforced!";
+		$out .= PHP_EOL."# Cache flush enforced!";
 	}
 	
 	file_put_contents("wiki.appcache",$out);
+	echo "File created:\n\n".$out;
 ?>
