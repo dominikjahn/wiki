@@ -4,6 +4,7 @@
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\User;
+	use Wiki\Tools\Request;
 	
 	class Application {
 		
@@ -22,7 +23,7 @@
 		public function Run() {
 			header("Content-Type: application/json; charset=UTF-8");
 			http_response_code(200);
-			
+			Request::GetInstance();
 			$command = (isset($_GET["command"]) ? $_GET["command"] : null);
 			
 			if(!$command)
@@ -45,7 +46,7 @@
 				
 				$user = $userManager->GetByLoginname($loginname);
 				
-				if(!$user && !$user->MatchPassword($password)) {
+				if(!$user || !$user->MatchPassword($password)) {
 					$user = null;
 				}
 			}

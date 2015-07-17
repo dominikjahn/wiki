@@ -11,5 +11,6 @@
 		const DATABASE_NAME = "wiki";
 		const DATABASE_CHARSET = "utf8";
 		const DATABASE_PREFIX = "";
+		const WWW_ROOT = "/";
 	}
 ?>

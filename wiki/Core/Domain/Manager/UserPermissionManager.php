@@ -56,31 +56,33 @@
 		 * @since 0.1
 		 */
 		public function GetByUserAndName(User $user, $name) {
+			$fromCache = $this->GetFromCache($user->loginname."-".$name);
+		  
+			if($fromCache) return $fromCache;
+		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status = 100 AND user_id = :user AND permission = :name";
-			$stmObjects = $db->Prepare($sqlObjects);
-			$resObjects = $stmObjects->Read(["user" => $user, "name" => $name]);
+			$sqlObject = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status = 100 AND user_id = :user AND permission = :name";
+			$stmObject = $db->Prepare($sqlObject);
+			$rowObject = $stmObject->ReadSingle(["user" => $user, "name" => $name]);
 			
-			if(!$resObjects) {
+			if(!$rowObject) {
 				return null;
 			}
 			
-			$objects = [];
 			$objectFactory = UserPermissionFactory::GetInstance();
 			
-			while(($rowObject = $resObjects->NextRow()) != null) {
-				$object = new UserPermission();
-				$this->AddToCache($object);
-				$objectFactory->FromDataRow($object, $rowObject);
-				
-				$objects[] = $object;
-			}
-		
-			$stmObjects->Close();
+			$object = new UserPermission();
 			
-			return $objects;
+			
+			$objectFactory->FromDataRow($object, $rowObject);
+			$this->AddToCache($object);
+			
+			$stmObject->Close();
+			
+			return $object;
 		}
+		
 		public function GetByUser(User $user) {
 			$db = DatabaseConnection::GetInstance();
 			

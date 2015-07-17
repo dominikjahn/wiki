@@ -12,6 +12,14 @@
 	abstract class Domain implements \JsonSerializable
 	{
 		  //
+		 // CONSTRUCTOR
+		//
+		
+		public function __construct() {
+			$this->status = 0;
+		}
+		
+		  //
 		 // METHODS
 		//
 		
