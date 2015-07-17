@@ -1,3 +1,4 @@
 .settings/*
 .project
 Core/Configuration.php
+php.ini

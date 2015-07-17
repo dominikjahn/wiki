@@ -32,11 +32,21 @@
 		 * @since 0.1
 		 */
 		public function MatchPassword($password) {
-			if($this->password == $password) {
+			if(strtolower($this->password) == strtolower($password)) {
 				return true;
 			}
 			
 			return false;
+		}
+		
+		public function Save() {
+			if(!$this->ID && self::$currentUser->HasPermission("CREATE_USER_ACCOUNTS")) {
+				throw new NotAuthorizedToCreateNewUsersException();
+			} else if($this->ID && self::$currentUser->ID != $this->ID && !self::$currentUser->HasPermission("EDIT_USER_ACCOUNTS")) {
+				throw new NotAuthorizedToEditOtherUsersException();
+			}
+			
+			return parent::Save();
 		}
 		
 		/**

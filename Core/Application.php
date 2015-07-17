@@ -39,12 +39,11 @@
 			$password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
 			
 			if($loginname && $password) {
-			
 				$userManager = UserManager::GetInstance();
 				
 				$user = $userManager->GetByLoginname($loginname);
 				
-				if($user->MatchPassword($password)) {
+				if($user && $user->MatchPassword($password)) {
 					User::SetCurrentUser($user);
 				}
 			}
@@ -89,6 +88,11 @@
 				 * Check login credentials
 				 */
 				case "CheckLoginCredentials": require_once "Core/Views/CheckLoginCredentials.php"; break;
+					
+				/*
+				 * Create/edit a user account
+				 */
+				case "SaveUser": require_once "Core/Views/SaveUser.php"; break;
 					
 				/*
 				 * Get a list of all users
