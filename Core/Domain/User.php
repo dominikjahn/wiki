@@ -40,7 +40,7 @@
 		}
 		
 		public function Save() {
-			if(!$this->ID && self::$currentUser->HasPermission("CREATE_USER_ACCOUNTS")) {
+			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_USER_ACCOUNTS")) {
 				throw new NotAuthorizedToCreateNewUsersException();
 			} else if($this->ID && self::$currentUser->ID != $this->ID && !self::$currentUser->HasPermission("EDIT_USER_ACCOUNTS")) {
 				throw new NotAuthorizedToEditOtherUsersException();
