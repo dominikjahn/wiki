@@ -3,23 +3,19 @@
 	
 	header("Content-Type: text/cache-manifest");
 	
-	if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
-		echo "CACHE MANIFEST\n\nNETWORK:\n*\n\n# ".date("Y-m-d H:i")."\n# This is a local environment, ApplicationCache is deactivated";
-		die();
-	}
+	//if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
+	//	echo "CACHE MANIFEST\n\nNETWORK:\n*\n\n# ".date("Y-m-d H:i")."\n# This is a local environment, ApplicationCache is deactivated";
+	//	die();
+	//}
 	
 	$files = array(
-		"index.html",
-		"assets/application.css",
-		"assets/application.js",
-		"assets/css/bootstrap.min.css",
-		"assets/js/jquery-1.11.2.min.js",
-		"assets/js/bootstrap.min.js");
+		"index.html");
 	$files = array_merge(
 					$files,
-					#glob("assets/css/*.*"),
-					glob("../assets/fonts/*.*")
-					#,glob("assets/js/*.*")
+					glob("assets/css/*.*"),
+					glob("assets/fonts/*.*"),
+					glob("assets/js/*.*"),
+					glob("assets/js/ace/*.*")
 				);
 	
 	$lastchange = 0;
