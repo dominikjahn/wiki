@@ -2,8 +2,11 @@
 	date_default_timezone_set("Europe/Berlin");
 	
 	header("Content-Type: text/cache-manifest");
-	echo "CACHE MANIFEST\nNETWORK:\n*\n#".date("Y-m-d H:i");
-	die();
+	
+	if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
+		echo "CACHE MANIFEST\n\nNETWORK:\n*\n\n# ".date("Y-m-d H:i")."\n# This is a local environment, ApplicationCache is deactivated";
+		die();
+	}
 	
 	$files = array(
 		"index.html",

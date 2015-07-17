@@ -202,7 +202,7 @@ var CheckConnectivity = function() {
 			online = true;
 		},
 		'error': function() {
-			ShowStatusBar("You are not online.");
+			ShowStatusBar("You are not online.","F80");
 			online = false;
 		}
 	});
