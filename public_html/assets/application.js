@@ -189,7 +189,7 @@ var GoToPage = function(pagename) {
 var CheckConnectivity = function() {
 	if(!navigator.onLine) {
 		online = false;
-		ShowStatusBar("You are not online.");
+		ShowStatusBar("You are not online.", "F80");
 		return;
 	}
 	
@@ -213,8 +213,8 @@ var HideStatusBar = function() {
 	statusbar = false;
 }
 
-var ShowStatusBar = function() {
-	$("#statusbar").css("display","block");
+var ShowStatusBar = function(message, color) {
+	$("#statusbar").css("display","block").html("<p>"+message+"</p>").css("background-color","#"+color);
 	statusbar = true;
 }
 
