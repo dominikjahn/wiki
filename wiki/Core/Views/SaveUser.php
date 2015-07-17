@@ -23,10 +23,6 @@
 		
 		$currentUser = User::GetCurrentUser();
 		
-		if(!$currentUser) {
-			throw new \Exception("You are not authorized to perform this action");
-		}
-		
 		$isNewUser = true;
 		
 		$db->BeginTransaction();

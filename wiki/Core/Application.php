@@ -38,15 +38,23 @@
 			$loginname = (isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null);
 			$password = (isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null);
 			
+			$userManager = UserManager::GetInstance();
+			$user = null;
+			
 			if($loginname && $password) {
-				$userManager = UserManager::GetInstance();
 				
 				$user = $userManager->GetByLoginname($loginname);
 				
-				if($user && $user->MatchPassword($password)) {
-					User::SetCurrentUser($user);
+				if(!$user && !$user->MatchPassword($password)) {
+					$user = null;
 				}
 			}
+			
+			if(!$user) {
+				$user = $userManager->GetByID(1);
+			}
+			
+			User::SetCurrentUser($user);
 			
 			/*
 			 * Redirect to command handler

@@ -27,7 +27,7 @@
 		if(!$page) {
 			$data->status = 404;
 			$data->message = "The page was not found";
-		} else if(($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {
+		} else if(($page->Visibility == Page::VIS_PROTECTED && $currentUser->ID === 1) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {
 			$data->status = 401;
 			$data->message = "You are not authorized to see the content on this page";
 			//throw new \Exception("You are not authorized to see the content on this page");

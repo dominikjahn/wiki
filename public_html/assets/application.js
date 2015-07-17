@@ -57,6 +57,7 @@ $(function()
 	password = GetCookie('wiki_password');
 	
 	$('#SignInForm').submit(SignIn);
+	$('#SignUpForm').submit(SignUp);
 	$('#NavEditPage').click(EditPage);
 	
 	$('#NavSaveChanges').click(SaveChanges);
@@ -107,7 +108,12 @@ var CheckLoginCredentials = function() {
 				var loginLink = $('<a href="#SignIn">Sign in</a>');
 				loginLink.click(DisplaySignInForm);
 				
-				$('#SignInText').empty().append(loginLink);
+				var sep = $('<span> &bull; </span>');
+				
+				var signupLink = $('<a href="#SignUp">Sign up</a>');
+				signupLink.click(DisplaySignUpForm);
+				
+				$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
 			} else {
 				HideSignInForm();
 				isSignedIn = true;
@@ -164,14 +170,54 @@ var SignOut = function() {
 	password = "";
 	
 	isSignedIn = false;
-	
+				
 	var loginLink = $('<a href="#SignIn">Sign in</a>');
 	loginLink.click(DisplaySignInForm);
 	
-	$('#SignInText').empty().append(loginLink);
+	var sep = $('<span> &bull; </span>');
+	
+	var signupLink = $('<a href="#SignUp">Sign up</a>');
+	signupLink.click(DisplaySignUpForm);
+	
+	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
 	
 	// Back to the previous action
 	DisplayAction();
+}
+
+var SignUp = function() {
+	var $this = $(this);
+	
+	loginname = $('#SignUpForm-InputLoginName').val();
+	password = $('#SignUpForm-InputPassword').val();
+	passwordconfirmation = $('#SignUpForm-InputPassword').val();
+	
+	if(password != passwordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+	
+	password = md5(password);
+	
+	var data = {"loginname":loginname, "password":password};
+	
+	$.ajax({
+		'type': 'POST',
+		'url': 'request.php?command=SaveUser',
+		'dataType': 'json',
+		'data': data,
+		'success': function(response) {
+			alert(response.message);
+			
+			if(response.status == 1) {
+				$("#SignUpForm").css("display","none");
+				
+				DisplaySignInForm();
+			}
+		}
+	});
+	
+	return false;
 }
 
 var DisplaySignInForm = function() {
@@ -183,6 +229,12 @@ var DisplaySignInForm = function() {
 var HideSignInForm = function() {
 	$("#SignInForm").css("display","none");
 	DisplayLoading();
+}
+
+var DisplaySignUpForm = function() {
+	HideAllActions();
+	HideLoading();
+	$("#SignUpForm").css("display","block");
 }
 
 var GoToPage = function(pagename) {
@@ -264,6 +316,9 @@ var HideAllActions = function() {
 	$('#content').css("margin-top","60px");
 	$('#FooterBar').css("display","block");
 	
+	// Sign up form
+	$("#SignUpForm").css("display","none");
+	
 	// Display page
 	$("#DisplayPage").css("display","none");
 		$("#NavEditPage").css("display","none");
@@ -307,7 +362,12 @@ var DisplayPage = function() {
 	if(!online)
 	{
 		if(page in cache) {
-			alert("Page in cache");
+			alert("offline");
+			HideLoading();
+			
+			var pagedata = cache[page];
+			
+			DisplayPageContent(pagedata);
 		} else {
 			alert("Page not in cache");
 		}
@@ -331,52 +391,15 @@ var DisplayPage = function() {
 				
 				HideLoading();
 				
-				cache[page] = response.page;
+				cache[page] = response;
 				localStorage.setItem("cache", JSON.stringify(cache));
-				
-				// Change URL in address bar to this page
-				window.history.replaceState({}, response.page.title, page+".html");
-				
-				pageID = response.page.page_id;
-				
-				$('#DisplayPage-Title').css("display", "block");
-				$('#DisplayPage-TitleSeparator').css("display", "block");
-				
-				$("#DisplayPage").css("display","block");
-				$("#DisplayPage-Title").html(response.page.title);
-				$("#DisplayPage-Content").html(response.page.content);
 				
 				if(response.page.manipulation == "EVERYONE" || (response.page.manipulation == "REGISTERED" && isSignedIn) || (response.page.manipulation == "OWNER" && response.page.owner.loginname == loginname)) {
 					$("#NavEditPage").css("display","block");
 					$("#NavGetVersions").css("display","block");
 				}
 				
-				document.title = response.page.title;
-				
-				switch(response.page.visibility) {
-					case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
-					case "PROTECTED": $('#NavProtectedPage').css("display","block"); break;
-					case "PRIVATE": $('#NavPrivatePage').css("display","block"); break;
-					case "GROUPPRIVATE": $('#NavPrivatePage').css("display","block"); break;
-				}
-				
-				if(response.no_headline) {
-					$('#DisplayPage-Title').css("display", "none");
-					$('#DisplayPage-TitleSeparator').css("display", "none");
-				}
-				
-				if(response.no_navbar) {
-					$('#Navbar').css("display","none");
-					$('#content').css("margin-top","0px");
-				}
-				
-				if(response.no_footerbar) {
-					$('#FooterBar').css("display","none");
-				}
-				
-				$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
-				$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
-				
+				DisplayPageContent(response);
 				/*
 				if(response.page.hasTableOfContents) {
 					$("#NavTableOfContents").css("display","block");
@@ -397,6 +420,46 @@ var DisplayPage = function() {
 			}*/
 		});
 	}
+}
+
+var DisplayPageContent = function(pagedata) {
+	window.history.replaceState({}, pagedata.page.title, page+".html");
+				
+	pageID = pagedata.page.page_id;
+	
+	$('#DisplayPage-Title').css("display", "block");
+	$('#DisplayPage-TitleSeparator').css("display", "block");
+	
+	$("#DisplayPage").css("display","block");
+	$("#DisplayPage-Title").html(pagedata.page.title);
+	$("#DisplayPage-Content").html(pagedata.page.content);
+	
+	document.title = pagedata.page.title + " (From cache)";
+	
+	switch(pagedata.visibility) {
+		case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
+		case "PROTECTED": $('#NavProtectedPage').css("display","block"); break;
+		case "PRIVATE": $('#NavPrivatePage').css("display","block"); break;
+		case "GROUPPRIVATE": $('#NavPrivatePage').css("display","block"); break;
+	}
+	
+	if(pagedata.no_headline) {
+		$('#DisplayPage-Title').css("display", "none");
+		$('#DisplayPage-TitleSeparator').css("display", "none");
+	}
+	
+	if(pagedata.no_navbar) {
+		$('#Navbar').css("display","none");
+		$('#content').css("margin-top","0px");
+	}
+	
+	if(pagedata.no_footerbar) {
+		$('#FooterBar').css("display","none");
+	}
+	
+	$('#DisplayPage-LastEdit-Timestamp').html(pagedata.page.last_edit.timestamp);
+	$('#DisplayPage-LastEdit-User').html(pagedata.page.last_edit.user);
+	
 }
 
 var DisplayPageNotFound = function() {

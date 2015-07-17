@@ -27,10 +27,6 @@
 		
 		$currentUser = User::GetCurrentUser();
 		
-		//if(!$currentUser) {
-		//	throw new \Exception("You are not authorized to perform this action");
-		//}
-		
 		$isNewPage = true;
 		$timestamp =  date("Y-m-d H:i:s");
 		
@@ -58,13 +54,16 @@
 		if(!$isNewPage) {
 			if(
 				// User needs to be registered
-				($page->Manipulation != Page::MAN_EVERYONE && !$currentUser) ||
+				($page->Manipulation != Page::MAN_EVERYONE && $currentUser->ID === 1) ||
 				// User needs to be the owner
 				($page->Manipulation == Page::MAN_OWNER && $currentUser->ID != $page->Owner->ID)
 			) {
 				$db->Rollback();
 				throw new \Exception("You are not authorized to edit this page");
 			}
+		} else if(!$currentUser->HasPermission("CREATE_NEW_PAGES")) {
+			$db->Rollback();
+			throw new \Exception("You are not authorized to create new pages");
 		}
 		
 		$page->Title = $title;

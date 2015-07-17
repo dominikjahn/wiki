@@ -176,34 +176,34 @@ ALTER TABLE `%PREFIX%version`
 -- AUTO_INCREMENT for table `group`
 --
 ALTER TABLE `%PREFIX%group`
-MODIFY `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `groupmember`
 --
 ALTER TABLE `%PREFIX%groupmember`
-MODIFY `groupmember_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `groupmember_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `log`
 --
 ALTER TABLE `%PREFIX%log`
-MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `page`
 --
 ALTER TABLE `%PREFIX%page`
-MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `%PREFIX%user`
-MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `userpermission`
 --
 ALTER TABLE `%PREFIX%userpermission`
-MODIFY `userpermission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `userpermission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `version`
 --
 ALTER TABLE `%PREFIX%version`
-MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `version_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
