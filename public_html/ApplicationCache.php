@@ -36,27 +36,24 @@
 	$filesize /= 1024;
 	$filesize = (int) $filesize;
 	#$lastchange = time();
-?>
-CACHE MANIFEST
+	
+	$out = "CACHE MANIFEST\n\nCACHE:\n";
 
-CACHE:
-<?php
-foreach($files as $file)
-{
-	echo $file."\n";
-}
-?>
+	foreach($files as $file)
+	{
+		$out .= $file."\n";
+	}
 
-NETWORK:
-*
+	$out .= "\nNETWORK:\n*\n";
 
-<?php
 	//if anything has changed, add this comment:
 	//echo "#".$dateOfLastChange;
-	echo "# Last modification date: ".date("Y-m-d H:i:s",$lastchange)."\n# Total file size: ".$filesize." kByte";
+	$out .= "# Last modification date: ".date("Y-m-d H:i:s",$lastchange)."\n# Total file size: ".$filesize." kByte";
 	
 	if(file_exists("recache"))
 	{
-		echo "\n# Cache flush enforced!";
+		$out .= "\n# Cache flush enforced!";
 	}
+	
+	file_put_contents("wiki.appcache",$out);
 ?>
