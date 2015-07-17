@@ -123,6 +123,13 @@ var CheckLoginCredentials = function() {
 			isFirstSignIn = false;
 			DisplayAction();
 		},
+		error: function(xhr, err1, err2) {
+			if(!online) {
+				DisplayAction();
+			} else {
+				alert(err1+"\n\n"+err2);
+			}
+		}
 		/*beforeSend: function()
 		{
 			AddRequest();
