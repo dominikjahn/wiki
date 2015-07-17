@@ -12,6 +12,7 @@
 		"index.html");
 	$files = array_merge(
 					$files,
+					glob("assets/*.*"),
 					glob("assets/css/*.*"),
 					glob("assets/fonts/*.*"),
 					glob("assets/js/*.*"),

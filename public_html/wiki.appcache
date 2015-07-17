@@ -2,6 +2,8 @@ CACHE MANIFEST
 
 CACHE:
 index.html
+assets/application.css
+assets/application.js
 assets/css/bootstrap-theme.css
 assets/css/bootstrap-theme.css.map
 assets/css/bootstrap-theme.min.css
@@ -34,5 +36,5 @@ assets/js/ace/worker-php.js
 NETWORK:
 *
 
-# Last modification date: 2015-07-17 10:45:35
-# Total file size: 3335 kByte
+# Last modification date: 2015-07-17 11:16:20
+# Total file size: 3357 kByte
