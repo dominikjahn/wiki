@@ -1,4 +1,4 @@
 .settings/*
 .project
-Core/Configuration.php
-php.ini
+wiki/Core/Configuration.php
+wiki/php.ini
