@@ -48,7 +48,7 @@
 
 	//if anything has changed, add this comment:
 	//echo "#".$dateOfLastChange;
-	$out .= PHP_EOL."# Last modification date: ".date("Y-m-d H:i:s",$lastchange).PHP_EOL."# Total file size: ".$filesize." kByte";
+	$out .= PHP_EOL."# Last modification date: ".date("Y-m-d H:i:s"/*,$lastchange*/).PHP_EOL."# Total file size: ".$filesize." kByte";
 	
 	if(file_exists("recache"))
 	{
