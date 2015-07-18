@@ -22,9 +22,6 @@ $(function()
 		cache = $.parseJSON(fromCache);
 	}
 	
-	CheckConnectivity();
-	setInterval(CheckConnectivity, 30000);
-	
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
@@ -242,31 +239,6 @@ var GoToPage = function(pagename) {
 	DisplayPage();
 }
 
-/*
- * Online check
- */
-var CheckConnectivity = function() {
-	if(!navigator.onLine) {
-		online = false;
-		ShowStatusBar("You are not online.", "F80");
-		return;
-	}
-	
-	$.ajax({
-		'type': 'GET',
-		'url': 'request.php?command=ConnectivityCheck',
-		'dataType': 'json',
-		'success': function() {
-			HideStatusBar();
-			online = true;
-		},
-		'error': function() {
-			ShowStatusBar("You are not online.","F80");
-			online = false;
-		}
-	});
-}
-
 var HideStatusBar = function() {
 	$("#statusbar").css("display","none");
 	statusbar = false;
@@ -311,6 +283,7 @@ var HideAllActions = function() {
 	UnbindKeys();
 	
 	HideSignInForm();
+	HideOfflineMessage();
 	
 	$('#Navbar').css("display","block");
 	$('#content').css("margin-top","60px");
@@ -359,70 +332,70 @@ var DisplayPage = function() {
 	
 	var url = 'request.php?command=DisplayPage&page=' + page;
 	
-	if(!online)
-	{
-		if(page in cache) {
-			alert("offline");
+	
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			
+			if(response.status == 0) {
+				alert(response.message);
+				return;
+			} else if(response.status == 404) {
+				DisplayPageNotFound();
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
+			}
+			
 			HideLoading();
 			
-			var pagedata = cache[page];
+			cache[page] = response;
+			localStorage.setItem("cache", JSON.stringify(cache));
 			
-			DisplayPageContent(pagedata);
-		} else {
-			alert("Page not in cache");
-		}
-	} else {
-		$.ajax({
-			'type': 'GET',
-			'url': url,
-			'dataType': 'json',
-			'success': function(response) {
-				
-				if(response.status == 0) {
-					alert(response.message);
-					return;
-				} else if(response.status == 404) {
-					DisplayPageNotFound();
-					return;
-				} else if(response.status == 401) {
-					DisplayNotAuthorized();
-					return;
-				}
-				
+			if(response.page.manipulation == "EVERYONE" || (response.page.manipulation == "REGISTERED" && isSignedIn) || (response.page.manipulation == "OWNER" && response.page.owner.loginname == loginname)) {
+				$("#NavEditPage").css("display","block");
+				$("#NavGetVersions").css("display","block");
+			}
+			
+			DisplayPageContent(response);
+			/*
+			if(response.page.hasTableOfContents) {
+				$("#NavTableOfContents").css("display","block");
+			}
+			*/
+			
+			BindKey(69,EditPage,true); // Ctrl+E
+			//BindKey(86,GetVersions,true); // Ctrl+V
+		},
+		error: function(xhr, err1, err2) {
+			if(page in cache) {
 				HideLoading();
 				
-				cache[page] = response;
-				localStorage.setItem("cache", JSON.stringify(cache));
+				var pagedata = cache[page];
 				
-				if(response.page.manipulation == "EVERYONE" || (response.page.manipulation == "REGISTERED" && isSignedIn) || (response.page.manipulation == "OWNER" && response.page.owner.loginname == loginname)) {
-					$("#NavEditPage").css("display","block");
-					$("#NavGetVersions").css("display","block");
-				}
-				
-				DisplayPageContent(response);
-				/*
-				if(response.page.hasTableOfContents) {
-					$("#NavTableOfContents").css("display","block");
-				}
-				*/
-				
-				BindKey(69,EditPage,true); // Ctrl+E
-				//BindKey(86,GetVersions,true); // Ctrl+V
-			},
-			beforeSend: function(xhr)
-			{
-				//AddRequest();
-				xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
-			}/*,
-			complete: function()
-			{
-				RemoveRequest();
-			}*/
-		});
-	}
+				DisplayPageContent(pagedata, true);
+			} else {
+				DisplayOfflineMessage();
+			}
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}/*,
+		complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
 }
 
-var DisplayPageContent = function(pagedata) {
+var DisplayPageContent = function(pagedata, fromCache) {
+	var fromCache = fromCache || false;
+	
 	window.history.replaceState({}, pagedata.page.title, page+".html");
 				
 	pageID = pagedata.page.page_id;
@@ -434,7 +407,7 @@ var DisplayPageContent = function(pagedata) {
 	$("#DisplayPage-Title").html(pagedata.page.title);
 	$("#DisplayPage-Content").html(pagedata.page.content);
 	
-	document.title = pagedata.page.title + " (From cache)";
+	document.title = pagedata.page.title + (fromCache ? " (From cache)" : "");
 	
 	switch(pagedata.visibility) {
 		case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
@@ -832,6 +805,9 @@ var GetVersions = function() {
 
 var DisplayLoading = function() { $("#Loading").css("display","block"); }
 var HideLoading = function() { $("#Loading").css("display","none"); }
+
+var DisplayOfflineMessage = function() { $("#Offline").css("display","block"); }
+var HideOfflineMessage = function() { $("#Offline").css("display","none"); }
 
 /*
  * Cookies

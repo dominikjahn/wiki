@@ -50,7 +50,7 @@ INSERT INTO `%PREFIX%log` (`log_id`, `status`, `object_table`, `object_id`, `use
 --
 
 INSERT INTO `%PREFIX%page` (`page_id`, `status`, `name`, `title`, `content`, `user_owner_id`, `group_owner_id`, `visibility`, `manipulation`) VALUES
-(1, 100, 'Homepage', 'Homepage', 'Welcome to your new Wiki!To start click on "Edit" in the top right corner and add your own content.', 1, 1, 'PUBLIC', 'EVERYONE');
+(1, 100, 'Homepage', 'Homepage', 'Welcome to your new Wiki!\n\nTo start click on "Edit" in the top right corner and add your own content.', 1, 1, 'PUBLIC', 'EVERYONE');
 
 --
 -- Dumping data for table `user`
@@ -65,7 +65,7 @@ INSERT INTO `%PREFIX%user` (`user_id`, `status`, `loginname`, `password`) VALUES
 --
 
 INSERT INTO `%PREFIX%userpermission` (`userpermission_id`, `status`, `user_id`, `permission`) VALUES
-(1, 100, 2, 'SCRIPTING');
+(1, 100, 2, 'CREATE_USERS');
 
 --
 -- Dumping data for table `version`

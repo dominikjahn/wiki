@@ -43,13 +43,25 @@
 		}
 		
 		public function Save() {
-			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_NEW_USERS")) {
+			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_USERS")) {
 				throw new NotAuthorizedToCreateNewUsersException();
 			} else if($this->ID && self::$currentUser->ID != $this->ID && !self::$currentUser->HasPermission("EDIT_USER_ACCOUNTS")) {
 				throw new NotAuthorizedToEditOtherUsersException();
 			}
 			
+			if(($this->ID === 1 || $this->ID === 2) && $this->Status !== 100) {
+				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
+			}
+			
 			return parent::Save();
+		}
+		
+		public function Delete() {
+			if($this->ID === 1 || $this->ID === 2) {
+				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
+			}
+			
+			return parent::Delete();
 		}
 		
 		/**
@@ -58,17 +70,43 @@
 		 * @since 0.1
 		 */
 		public function HasPermission($permission) {
+			// The user with the ID=2 is the admin (maybe this should be a setting)
+			if($this->ID === 2) {
+				return true;
+			}
+			
 			if(is_null($this->permissions) || !count($this->permissions)) {
 				return false;
 			}
 			
 			foreach($this->permissions as $userpermission) {
-				if($userpermission->Permission == $permission) {
+				if($userpermission->Permission == $permission || $userpermission->Permission == "SUBADMIN") {
 					return true;
 				}
 			}
 			
 			return false;
+		}
+		
+		public function RevokePermission($permission) {
+			
+			foreach($this->permissions as $userpermission) {
+				if($userpermission->Permission == $permission) {
+					return $userpermission->Delete();
+				}
+			}
+			
+			return false;
+		}
+		
+		public function GrantPermission($permission) {
+			
+			$userpermission = new UserPermission();
+			$userpermission->Status = 100;
+			$userpermission->User = $this;
+			$userpermission->Permission = strtoupper($permission);
+			
+			return $userpermission->Save();
 		}
 		
 		/**

@@ -1,9 +1,6 @@
 <?php
 	use Wiki\Database\DatabaseConnection;
-	use Wiki\Domain\User;
-	use Wiki\Domain\UserPermission;
 	use Wiki\Domain\Manager\UserManager;
-	use Wiki\Domain\Manager\UserPermissionManager;
 	use Wiki\Exception\NotAuthorizedToManageUserPermissionsException;
 	use Wiki\Tools\Request;
 	
@@ -21,33 +18,14 @@
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
-		$currentUser = User::GetCurrentUser();
-		
-		if(!$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
-			//throw new NotAuthorizedToManageUserPermissionsException();
-		}
-		
 		$user = UserManager::GetInstance()->GetByID($userID);
 		
 		$success = false;
 		
 		if($request->Method == "PUT") {
-			$permission = new UserPermission();
-			$permission->Status = 100;
-			$permission->User = $user;
-			$permission->Permission = $permissionName;
-			
-			$success = $permission->Save();
+			$success = $user->GrantPermission($permissionName);
 		} else if($request->Method == "DELETE") {
-			$permissionManager = UserPermissionManager::GetInstance();
-			
-			$permission = $permissionManager->GetByUserAndName($user, $permissionName);
-			
-			if(!$permission) {
-				throw new \Exception("The user has no permission as '".$permissionName."'");
-			}
-			
-			$success = $permission->Delete();
+			$success = $user->RevokePermission($permissionName);
 		}
 		
 		$data->status = (int) $success;

@@ -61,7 +61,7 @@
 				$db->Rollback();
 				throw new \Exception("You are not authorized to edit this page");
 			}
-		} else if(!$currentUser->HasPermission("CREATE_NEW_PAGES")) {
+		} else if(!$currentUser->HasPermission("CREATE_PAGES")) {
 			$db->Rollback();
 			throw new \Exception("You are not authorized to create new pages");
 		}
