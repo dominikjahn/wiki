@@ -15,7 +15,7 @@ var EditPageEditor = null;
 
 $(function()
 {
-	var fromCache = localStorage.getItem("cache");
+	var fromCache = localStorage.getItem("wiki_cache");
 	
 	if(fromCache != 'undefined' && fromCache != null)
 	{
@@ -353,7 +353,7 @@ var DisplayPage = function() {
 			HideLoading();
 			
 			cache[page] = response;
-			localStorage.setItem("cache", JSON.stringify(cache));
+			localStorage.setItem("wiki_cache", JSON.stringify(cache));
 			
 			if(response.page.manipulation == "EVERYONE" || (response.page.manipulation == "REGISTERED" && isSignedIn) || (response.page.manipulation == "OWNER" && response.page.owner.loginname == loginname)) {
 				$("#NavEditPage").css("display","block");
@@ -806,7 +806,7 @@ var GetVersions = function() {
 var DisplayLoading = function() { $("#Loading").css("display","block"); }
 var HideLoading = function() { $("#Loading").css("display","none"); }
 
-var DisplayOfflineMessage = function() { $("#Offline").css("display","block"); }
+var DisplayOfflineMessage = function() { HideLoading(); $("#Offline").css("display","block"); }
 var HideOfflineMessage = function() { $("#Offline").css("display","none"); }
 
 /*
