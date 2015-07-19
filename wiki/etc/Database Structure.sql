@@ -119,7 +119,7 @@ CREATE TABLE `%PREFIX%version` (
   `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
   `content` text COLLATE utf8mb4_bin NOT NULL,
   `summary` varchar(500) COLLATE utf8mb4_bin NOT NULL,
-  `minor_edit` bit(1) NOT NULL DEFAULT b'0'
+  `minor_edit` tinyint(1) NOT NULL DEFAULT b'0'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --

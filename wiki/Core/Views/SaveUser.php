@@ -4,6 +4,7 @@
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
 	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
+	use Wiki\Exception\CurrentPasswordDoesNotMatchException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -11,10 +12,11 @@
 	 * @since 0.1
 	 */
 	
-	$userID = (isset($_GET["userID"]) ? (int) $_GET["userID"] : null);
+	$username = (isset($_GET["user"]) ? (int) $_GET["user"] : null);
 	
-	$loginname = $_POST["loginname"];
-	$password = $_POST["password"];
+	$loginname = (isset($_POST["loginname"]) ? $_POST["loginname"] : null);
+	$password = (isset($_POST["password"]) ? $_POST["password"] : null);
+	$currentpassword = (isset($_POST["currentpassword"]) ? $_POST["currentpassword"] : null);
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
@@ -29,10 +31,19 @@
 		
 		$user = null;
 		
-		if(!is_null($userID)) {
-			$user = UserManager::GetInstance()->GetByID($userID);
+		if(!is_null($username)) {
+			$user = UserManager::GetInstance()->GetByLoginname($username);
 			
 			$isNewUser = false;
+			
+			if(!is_null($password)) {
+				// First we need to check if $currentpassword matches the password
+				if(!$user->MatchPassword($currentpassword)) {
+					throw new CurrentPasswordDoesNotMatchException();
+				}
+				
+				$user->Password = $password;
+			}
 		} else {
 			$user = new User();
 			

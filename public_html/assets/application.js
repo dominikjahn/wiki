@@ -55,6 +55,7 @@ $(function()
 	
 	$('#SignInForm').submit(SignIn);
 	$('#SignUpForm').submit(SignUp);
+	$('#ChangePasswordForm').submit(ChangePassword);
 	$('#NavEditPage').click(EditPage);
 	
 	$('#NavSaveChanges').click(SaveChanges);
@@ -115,12 +116,15 @@ var CheckLoginCredentials = function() {
 				HideSignInForm();
 				isSignedIn = true;
 				
-				$('#SignInText').html("Signed in as <strong>"+loginname+"</strong> &bull; ");
-				
+				var preText = $('<span>Signed in as </span>');
+				var changePasswordLink = $('<a href="#ChangePassword"><strong>'+loginname+'</strong></a>');
+				var postText = $('<span> &bull; </span>');
 				var logoutLink = $('<a href="#SignOut">Sign out</a>');
+				
+				changePasswordLink.click(DisplayChangePasswordForm);
 				logoutLink.click(SignOut);
 				
-				$('#SignInText').append(logoutLink);
+				$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
 			}
 			
 			isFirstSignIn = false;
@@ -130,7 +134,7 @@ var CheckLoginCredentials = function() {
 			if(!online) {
 				DisplayAction();
 			} else {
-				alert(err1+"\n\n"+err2);
+				alert(err1+"\nh\n"+err2);
 			}
 		}
 		/*beforeSend: function()
@@ -217,6 +221,43 @@ var SignUp = function() {
 	return false;
 }
 
+var ChangePassword = function() {
+	var $this = $(this);
+
+	currentpassword = $('#ChangePasswordForm-CurrentPassword').val();
+	newpassword = $('#ChangePasswordForm-InputNewPassword').val();
+	newpasswordconfirmation = $('#ChangePasswordForm-InputConfirmNewPassword').val();
+	
+	if(newpassword != newpasswordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+
+	currentpassword = md5(currentpassword);
+	newpassword = md5(newpassword);
+	
+	var data = {"currentpassword":currentpassword, "password":newpassword};
+	
+	$.ajax({
+		'type': 'POST',
+		'url': 'request.php?command=SaveUser&user='+loginname,
+		'dataType': 'json',
+		'data': data,
+		'success': function(response) {
+			alert(response.message);
+			
+			SignOut();
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+	
+	return false;
+}
+
 var DisplaySignInForm = function() {
 	HideAllActions();
 	HideLoading();
@@ -232,6 +273,12 @@ var DisplaySignUpForm = function() {
 	HideAllActions();
 	HideLoading();
 	$("#SignUpForm").css("display","block");
+}
+
+var DisplayChangePasswordForm = function() {
+	HideAllActions();
+	HideLoading();
+	$("#ChangePasswordForm").css("display","block");
 }
 
 var GoToPage = function(pagename) {
@@ -291,6 +338,9 @@ var HideAllActions = function() {
 	
 	// Sign up form
 	$("#SignUpForm").css("display","none");
+	
+	// Change password form
+	$("#ChangePasswordForm").css("display","none");
 	
 	// Display page
 	$("#DisplayPage").css("display","none");

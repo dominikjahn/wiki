@@ -1,11 +1,11 @@
 <?php
 	namespace Wiki\Exception;
 	
-	class NotAuthorizedToEditOtherUsersException extends BaseException
+	class CurrentPasswordDoesNotMatchException extends BaseException
 	{
 		public function __construct($message = null, $code = 0, Exception $previous = null) {
 			if(!$message) {
-				$message = "You are not authorized to edit other users";
+				$message = "The current password does not match with your input";
 			}
 			
 			parent::__construct($message, $code, $previous);
