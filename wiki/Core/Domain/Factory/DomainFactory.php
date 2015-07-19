@@ -3,6 +3,7 @@
 	
 	use Wiki\Domain\Domain;
 	use Wiki\Database\DatabaseRow;
+	use Wiki\Exception\ChecksumMismatchException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -34,5 +35,6 @@
 		 * @since 0.1
 		 */
 		public abstract function FromDataRow(Domain $object, DatabaseRow $row);
+		
 	}
 ?>

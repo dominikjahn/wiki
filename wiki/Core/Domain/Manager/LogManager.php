@@ -25,7 +25,7 @@
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT log_id, status, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE status = 100 AND log_id = :id";
+			$sqlObject = "SELECT log_id, status, checksum, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE status = 100 AND log_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -55,7 +55,7 @@
 			$table = constant(get_class($object)."::DB_TABLE");
 			$object = $object->ID;
 			
-			$sqlObject = "SELECT log_id, status, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE status = 100 AND object_table = :table AND object_id = :object AND type = :type ORDER BY timestamp DESC";
+			$sqlObject = "SELECT log_id, status, checksum, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE status = 100 AND object_table = :table AND object_id = :object AND type = :type ORDER BY timestamp DESC";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["table" => $table, "object" => $object, "type" => $type]);
 			

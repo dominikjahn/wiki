@@ -64,6 +64,10 @@
 			return parent::Delete();
 		}
 		
+		protected function CalculateChecksum() {
+			return md5($this->Status.$this->loginname.$this->password);
+		}
+		
 		/**
 		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 		 * @version 0.1

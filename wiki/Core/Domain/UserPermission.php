@@ -76,6 +76,10 @@
 			];
 		}
 		
+		protected function CalculateChecksum() {
+			return md5($this->Status.$this->user->ID.$this->permission);
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//

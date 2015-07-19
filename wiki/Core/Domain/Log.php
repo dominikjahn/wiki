@@ -34,6 +34,11 @@
 			];
 		}
 		
+		protected function CalculateChecksum() {
+			var_dump($this->Status.$this->objectTable.$this->object.$this->user->ID.$this->type.$this->timestamp->format("Y-m-d H:i:s"));
+			return md5($this->Status.$this->objectTable.$this->object.$this->user->ID.$this->type.$this->timestamp->format("Y-m-d H:i:s"));
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//

@@ -37,6 +37,10 @@
 		 * @since 0.1
 		 */
 		public function __get($field) {
+			if($field == "Columns") {
+				return array_keys($this->row);	
+			}
+			
 			if(!array_key_exists($field, $this->row)) {
 				throw new \Exception("No such field '".$field."' in row");
 			}

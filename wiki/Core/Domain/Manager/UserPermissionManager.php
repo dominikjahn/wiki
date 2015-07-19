@@ -29,7 +29,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE userpermission_id = :id";
+			$sqlObject = "SELECT userpermission_id, status, checksum, user_id, permission FROM %PREFIX%userpermission WHERE userpermission_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -62,7 +62,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status >= 99 AND user_id = :user AND permission = :name";
+			$sqlObject = "SELECT userpermission_id, status, checksum, user_id, permission FROM %PREFIX%userpermission WHERE status >= 99 AND user_id = :user AND permission = :name";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["user" => $user, "name" => $name]);
 			
@@ -86,7 +86,7 @@
 		public function GetByUser(User $user) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT userpermission_id, status, user_id, permission FROM %PREFIX%userpermission WHERE status >= 99 AND user_id = :user";
+			$sqlObjects = "SELECT userpermission_id, status, checksum, user_id, permission FROM %PREFIX%userpermission WHERE status >= 99 AND user_id = :user";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read(["user" => $user]);
 			

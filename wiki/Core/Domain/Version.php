@@ -42,6 +42,10 @@
 			];
 		}
 		
+		protected function CalculateChecksum() {
+			return md5($this->page->ID.$this->title.$this->content,$this->summary,$this->minorEdit);
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//

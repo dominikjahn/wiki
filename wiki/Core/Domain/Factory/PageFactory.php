@@ -48,6 +48,8 @@
 			}
 			
 			$object->IsLoadedFromDatabase = true;
+			
+			$object->ValidateChecksum($row->checksum->String);
 		}
 		
 		  //

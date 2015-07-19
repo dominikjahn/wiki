@@ -47,6 +47,8 @@
 			$object->Permissions = $permissions;
 			
 			$object->IsLoadedFromDatabase = true;
+			
+			$object->ValidateChecksum($row->checksum->String);
 		}
 		
 		  //

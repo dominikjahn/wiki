@@ -25,6 +25,7 @@
 			$userManager = UserManager::GetInstance();
 			
 			$object->ID = $row->log_id->Integer;
+			$object->Status = $row->status->Integer;
 			$object->ObjectTable = $row->object_table->String;
 			$object->{"Object"} = $row->object_id->Integer;
 			$object->User = $userManager->GetByID($row->user_id->Integer);
@@ -32,6 +33,8 @@
 			$object->Timestamp = $row->timestamp->DateTime;
 			
 			$object->IsLoadedFromDatabase = true;
+			
+			$object->ValidateChecksum($row->checksum->String);
 		}
 		
 		  //

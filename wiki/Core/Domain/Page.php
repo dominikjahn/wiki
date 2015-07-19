@@ -68,6 +68,11 @@
 			return parent::Delete();
 		}
 		
+		protected function CalculateChecksum() {
+			var_dump($this->Status.$this->name.$this->title.$this->content.$this->owner->ID.$this->visibility.$this->manipulation);
+			return md5($this->Status.$this->name.$this->title.$this->content.$this->owner->ID.$this->visibility.$this->manipulation);
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//

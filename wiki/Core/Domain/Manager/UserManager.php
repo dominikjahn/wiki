@@ -29,7 +29,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT user_id, status, loginname, password FROM %PREFIX%user WHERE status = 100 AND user_id = :id";
+			$sqlObject = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE status = 100 AND user_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -64,7 +64,7 @@
 		  
 		  $db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT user_id, status, loginname, password FROM %PREFIX%user WHERE status = 100 AND loginname = :loginname";
+			$sqlObject = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE status = 100 AND loginname = :loginname";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["loginname" => $loginname]);
 			
@@ -95,7 +95,7 @@
 		public function GetAll() {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT user_id, status, loginname, password FROM %PREFIX%user WHERE status = 100 ORDER BY loginname";
+			$sqlObjects = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE status = 100 ORDER BY loginname";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read();
 			

@@ -3,6 +3,7 @@
 	
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Tools\PHPDocParser;
+	use Wiki\Exception\ChecksumMismatchException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -57,11 +58,13 @@
 					$parameters[$dbField] = $this->$field;
 				}
 			}
+			
+			$parameters["checksum"] = $this->Checksum;
 				
 			if($isNew) {
-				$sqlSave = "INSERT INTO `%PREFIX%".$table."` (".join(", ",$insertFields).") VALUES (".join(", ", $insertPlaceholders).");";
+				$sqlSave = "INSERT INTO `%PREFIX%".$table."` (".join(", ",$insertFields).", `checksum`) VALUES (".join(", ", $insertPlaceholders).", :checksum);";
 			} else {
-				$sqlSave = "UPDATE `%PREFIX%".$table."` SET ".join(", ",$updateFields)." WHERE `".$table."_id` = :".$table."_id;";
+				$sqlSave = "UPDATE `%PREFIX%".$table."` SET ".join(", ",$updateFields).", `checksum` = :checksum WHERE `".$table."_id` = :".$table."_id;";
 			}
 			
 			$db = DatabaseConnection::GetInstance();
@@ -77,7 +80,7 @@
 				
 				$log->Status = 100;
 				$log->ObjectTable = $table;
-				$log->{"Object"} = $this;
+				$log->{"Object"} = $this->ID;
 				$log->User = User::GetCurrentUser();
 				$log->Type = ($isNew ? Log::TYPE_CREATE : Log::TYPE_MODIFY);
 				$log->Timestamp = new \DateTime();
@@ -92,8 +95,11 @@
 			
 			$table = static::DB_TABLE;
 			
-			$sqlDelete = "UPDATE `%PREFIX%".$table."` SET `status` = 0 WHERE `".$table."_id` = :id;";
-			$parameters = ["id" => $this->id];
+			$this->status = 0;
+			$checksum = $this->Checksum;
+			
+			$sqlDelete = "UPDATE `%PREFIX%".$table."` SET `status` = 0, `checksum` = :checksum WHERE `".$table."_id` = :id;";
+			$parameters = ["checksum" => $checksum, "id" => $this->id];
 			
 			$db = DatabaseConnection::GetInstance();
 			
@@ -117,6 +123,17 @@
 		
 		public function __toString() {
 			return "<".get_class($this)."> ".($this->id ? "#".$this->id : ":memory");
+		}
+		
+		protected abstract function CalculateChecksum();
+		
+		public function ValidateChecksum($checksum) {
+			return true;
+			
+			if($checksum != $this->CalculateChecksum()) {
+				echo "Expected: ".$this->CalculateChecksum()."\nGiven: ".$checksum."\n\n";
+				throw new ChecksumMismatchException();
+			}
 		}
 		
 		  //
@@ -322,6 +339,38 @@
 		 */
 		protected function SetLogDeleted(Log $value = null) {
 			$this->logDeleted = $value;
+		}
+		
+		# Checksum
+		
+		protected function GetChecksum() {
+			$checksum = null;
+			$phpDocParser = PHPDocParser::GetInstance();
+			
+			foreach($this as $field => $value) {
+			
+				if($field == "id") {
+					continue;
+				}
+				
+				$docComment = $phpDocParser->AnalyzeAttribute(get_class($this), $field);
+			
+				$dbField = $docComment->Field;
+			
+				if(!$dbField) {
+					continue;
+				}
+				
+				if($value instanceof Domain) {
+					$value = $value->ID;
+				} else if($value instanceof \DateTime) {
+					$value = $value->format("Y-m-d H:i:s");
+				}
+				
+				$checksum .= $value;
+			}
+			
+			return md5($checksum);
 		}
 	}
 ?>

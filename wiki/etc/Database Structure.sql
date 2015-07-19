@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `%PREFIX%group`;
 CREATE TABLE `%PREFIX%group` (
 `group_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `name` varchar(20) CHARACTER SET ascii NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -37,6 +38,7 @@ DROP TABLE IF EXISTS `%PREFIX%groupmember`;
 CREATE TABLE `%PREFIX%groupmember` (
 `groupmember_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -51,6 +53,7 @@ DROP TABLE IF EXISTS `%PREFIX%log`;
 CREATE TABLE `%PREFIX%log` (
 `log_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `object_table` varchar(20) CHARACTER SET ascii NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
@@ -68,6 +71,7 @@ DROP TABLE IF EXISTS `%PREFIX%page`;
 CREATE TABLE `%PREFIX%page` (
 `page_id` int(10) unsigned NOT NULL,
   `status` tinyint(4) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `name` varchar(140) CHARACTER SET ascii NOT NULL,
   `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
   `content` text COLLATE utf8mb4_bin NOT NULL,
@@ -87,6 +91,7 @@ DROP TABLE IF EXISTS `%PREFIX%user`;
 CREATE TABLE `%PREFIX%user` (
 `user_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `loginname` char(20) CHARACTER SET ascii NOT NULL,
   `password` char(32) CHARACTER SET ascii NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -101,6 +106,7 @@ DROP TABLE IF EXISTS `%PREFIX%userpermission`;
 CREATE TABLE `%PREFIX%userpermission` (
 `userpermission_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `permission` varchar(50) CHARACTER SET ascii NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -115,6 +121,7 @@ DROP TABLE IF EXISTS `%PREFIX%version`;
 CREATE TABLE `%PREFIX%version` (
 `version_id` int(10) unsigned NOT NULL,
   `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `page_id` int(10) unsigned NOT NULL,
   `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
   `content` text COLLATE utf8mb4_bin NOT NULL,
