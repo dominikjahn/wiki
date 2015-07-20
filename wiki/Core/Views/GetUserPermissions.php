@@ -18,7 +18,13 @@
 		$currentUser = User::GetCurrentUser();
 		$user = $userManager->GetByID($user);
 		
-		if(!$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
+		if(!$user || $user->Status === 0) {
+			$data->status = 404;
+			throw new \Exception("The user doesn't exist");
+		}
+		
+		if($user->ID != $currentUser->ID && !$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
+			$data->status = 401;
 			throw new \Exception("You are not allowed to manage user permissions");
 		}
 		

@@ -34,6 +34,11 @@
 		if(!is_null($username)) {
 			$user = UserManager::GetInstance()->GetByLoginname($username);
 			
+			if(!$user || $user->Status === 0) {
+				$data->status = 404;
+				throw new \Exception("The user doesn't exist");
+			}
+			
 			$isNewUser = false;
 			
 			if(!is_null($password)) {

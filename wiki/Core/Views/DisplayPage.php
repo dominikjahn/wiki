@@ -24,7 +24,7 @@
 		$page = PageManager::GetInstance()->GetByName($pagename);
 		$currentUser = User::GetCurrentUser();
 		
-		if(!$page) {
+		if(!$page || $page->status === 0) {
 			$data->status = 404;
 			$data->message = "The page was not found";
 		} else if(($page->Visibility == Page::VIS_PROTECTED && $currentUser->ID === 1) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID <> $currentUser->ID)) {

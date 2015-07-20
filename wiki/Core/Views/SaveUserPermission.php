@@ -20,6 +20,11 @@
 	try {
 		$user = UserManager::GetInstance()->GetByID($userID);
 		
+		if(!$user || $user->Status === 0) {
+			$data->status = 404;
+			throw new \Exception("The user doesn't exist");
+		}
+		
 		$success = false;
 		
 		if($request->Method == "PUT") {

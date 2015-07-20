@@ -23,6 +23,11 @@
 		
 		$page = PageManager::GetInstance()->GetByID($pageID);
 		
+		if(!$page || $page->Status === 0) {
+			$this->status = 404;
+			throw new \Exception("The page doesn't exist");
+		}
+		
 		if(
 			// User needs to be registered
 			($page->Manipulation != Page::MAN_EVERYONE && $currentUser->ID === 1) ||

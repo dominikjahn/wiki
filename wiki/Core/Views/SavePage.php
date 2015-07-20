@@ -38,6 +38,11 @@
 		if(!is_null($pageID)) {
 			$page = PageManager::GetInstance()->GetByID($pageID);
 			
+			if(!$page || $page->Status === 0) {
+				$data->status = 0;
+				throw new \Exception("The page doesn't exist");
+			}
+			
 			$isNewPage = false;
 		} else {
 			$page = new Page();

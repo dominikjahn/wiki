@@ -84,7 +84,7 @@
 			}
 			
 			foreach($this->permissions as $userpermission) {
-				if($userpermission->Permission == $permission || $userpermission->Permission == "SUBADMIN") {
+				if($userpermission->Status === 100 && ($userpermission->Permission == $permission || $userpermission->Permission == "SUBADMIN")) {
 					return true;
 				}
 			}

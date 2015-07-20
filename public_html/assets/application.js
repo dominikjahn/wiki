@@ -3,6 +3,7 @@ var pageID = 1;
 var page = 'Homepage';
 var view = 'DisplayPage';
 var mode = '';
+var userID = 1;
 var loginname = '';
 var password = '';
 var isSignedIn = false;
@@ -120,8 +121,11 @@ var CheckLoginCredentials = function() {
 				
 				$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
 			} else {
+				
 				HideSignInForm();
 				isSignedIn = true;
+				
+				userID = response.user.user_id;
 				
 				var preText = $('<span>Signed in as </span>');
 				var changePasswordLink = $('<a href="#ChangePassword"><strong>'+loginname+'</strong></a>');
@@ -132,6 +136,8 @@ var CheckLoginCredentials = function() {
 				logoutLink.click(SignOut);
 				
 				$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
+	
+				HasPermission("MANAGE_USERS", function() { $("#NavUsers").css("display","block"); }, function() { $("#NavUsers").css("display","none"); });
 			}
 			
 			isFirstSignIn = false;
@@ -141,7 +147,7 @@ var CheckLoginCredentials = function() {
 			if(!online) {
 				DisplayAction();
 			} else {
-				alert(err1+"\nh\n"+err2);
+				alert(err1+"\nLogin credential check error\n"+err2);
 			}
 		}
 		/*beforeSend: function()
@@ -188,6 +194,7 @@ var SignOut = function() {
 	signupLink.click(DisplaySignUpForm);
 	
 	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
+	$('#NavUsers').css("display","none");
 	
 	// Back to the previous action
 	DisplayAction();
@@ -379,7 +386,7 @@ var HideAllActions = function() {
 	
 	// Users
 	$('#Users').css("display","none");
-	$('#UserPermissions').css("display","none");
+	$('#EditPermissions').css("display","none");
 	$('#NewUserForm').css("display","none");
 	
 	// Error pages
@@ -969,10 +976,10 @@ var CreateNewUser = function() {
 var EditPermissions = function() {
 	var $this = $(this);
 	
-	var userID = $this.data("user");
+	var userUserID = $this.data("user");
 	var userLoginname = $this.data("loginname");
 	
-	var url = "request.php?command=GetUserPermissions&userID="+userID;
+	var url = "request.php?command=GetUserPermissions&userID="+userUserID;
 	
 	HideAllActions();
 	
@@ -1005,12 +1012,12 @@ var EditPermissions = function() {
 				$("#UserPermissions-List").append('' +
 				'	<tr>' +
 				'		<td>' + permission.permission + '</td>' +
-				'		<td><input type="checkbox" '+(permission.status == 100 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-user="'+userID+'" data-permission="'+permission.permission+'" /></td>' +
+				'		<td><input type="checkbox" '+(permission.status == 100 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-user="'+userUserID+'" data-permission="'+permission.permission+'" /></td>' +
 				'	</tr>');
 			}
 			
 			$(".EditPermissions-Checkbox").change(GrantOrRevokePermission);
-			$('#EditPermissions-NewPermission').data("user", userID);
+			$('#EditPermissions-NewPermission').data("user", userUserID);
 		},
 		beforeSend: function(xhr)
 		{
@@ -1027,7 +1034,7 @@ var EditPermissions = function() {
 var GrantOrRevokePermission = function() {
 	var $this = $(this);
 	
-	var userID = $this.data("user");
+	var userUserID = $this.data("user");
 	var permission = $this.data("permission");
 	var type = "PUT";
 	
@@ -1036,7 +1043,7 @@ var GrantOrRevokePermission = function() {
 	}
 	
 	var url = "request.php?command=SaveUserPermission";
-	var data = {"userID": userID, "permission": permission};
+	var data = {"userID": userUserID, "permission": permission};
 	
 	$.ajax({
 		'type': type,
@@ -1058,11 +1065,11 @@ var GrantOrRevokePermission = function() {
 }
 
 var CreateAndGrantPermission = function() {
-	var userID = $('#EditPermissions-NewPermission').data("user");
+	var userUserID = $('#EditPermissions-NewPermission').data("user");
 	var permission = $('#EditPermissions-NewPermission').val();
 	
 	var url = "request.php?command=SaveUserPermission";
-	var data = {"userID": userID, "permission": permission};
+	var data = {"userID": userUserID, "permission": permission};
 	
 	$.ajax({
 		'type': 'PUT',
@@ -1086,9 +1093,36 @@ var CreateAndGrantPermission = function() {
 var DeleteUser = function() {
 	var $this = $(this);
 	
-	var userID = $this.data("user");
+	var userUserID = $this.data("user");
 	
-	alert(userID);
+	alert(userUserID);
+}
+
+var HasPermission = function(permission, positive_callback, negative_callback) {
+	var url = "request.php?command=UserHasPermission&userID="+userID+"&permission="+permission;
+	
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			if(response.status == 404 || response.status == 401) {
+				alert(response.message);
+			} else if(response.status == 1) {
+				positive_callback();
+			} else {
+				negative_callback();
+			}
+		},
+		'error': function(xhr, type, message) {
+			alert(type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
 }
 
 var DisplayLoading = function() { $("#Loading").css("display","block"); }

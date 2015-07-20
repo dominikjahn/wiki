@@ -18,12 +18,13 @@
 		
 		$user = $userManager->GetByLoginname($loginname);
 		
-		if(!$user || $user->Password != $password) {
+		if(!$user || !$user->Status === 0 || $user->Password != $password) {
 			$data->status = 0;
 			$data->message = "The login credentials are incorrect";
 		} else {
 			$data->status = 1;
 			$data->message = "The login credentials are correct";
+			$data->user = $user;
 		}
 	} catch(\Exception $e) {
 		$data->message = $e->getMessage();

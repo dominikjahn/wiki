@@ -46,13 +46,17 @@
 				
 				$user = $userManager->GetByLoginname($loginname);
 				
-				if(!$user || !$user->MatchPassword($password)) {
+				if(!$user || $user->Status === 0 || !$user->MatchPassword($password)) {
 					$user = null;
 				}
 			}
 			
 			if(!$user) {
 				$user = $userManager->GetByID(1);
+				
+				if(!$user || $user->Status === 0) {
+					throw new \Exception("The guest user cannot be deleted. Please reactivate the user.");
+				}
 			}
 			
 			User::SetCurrentUser($user);
@@ -102,6 +106,11 @@
 				 * Create/edit a user account
 				 */
 				case "SaveUser": require_once "Core/Views/SaveUser.php"; break;
+					
+				/*
+				 * Create/edit a user account
+				 */
+				case "UserHasPermission": require_once "Core/Views/UserHasPermission.php"; break;
 					
 				/*
 				 * Create/edit a user account
