@@ -55,6 +55,7 @@ $(function()
 	
 	$('#SignInForm').submit(SignIn);
 	$('#SignUpForm').submit(SignUp);
+	$('#NewUserForm').submit(CreateNewUser);
 	$('#ChangePasswordForm').submit(ChangePassword);
 	$('#NavEditPage').click(EditPage);
 	
@@ -67,6 +68,7 @@ $(function()
 	
 	$('#EditPage-DeletePage').click(DeletePage);
 	$('#EditPermissions-NewPermissionSet').click(CreateAndGrantPermission);
+	$('#Users-NewUser').click(DisplayNewUserForm);
 	
 	CheckLoginCredentials();
 });
@@ -196,7 +198,7 @@ var SignUp = function() {
 	
 	loginname = $('#SignUpForm-InputLoginName').val();
 	password = $('#SignUpForm-InputPassword').val();
-	passwordconfirmation = $('#SignUpForm-InputPassword').val();
+	passwordconfirmation = $('#SignUpForm-InputConfirmPassword').val();
 	
 	if(password != passwordconfirmation) {
 		alert("The passwords aren't alike");
@@ -378,6 +380,7 @@ var HideAllActions = function() {
 	// Users
 	$('#Users').css("display","none");
 	$('#UserPermissions').css("display","none");
+	$('#NewUserForm').css("display","none");
 	
 	// Error pages
 	$("#PageNotFound").css("display","none");
@@ -914,6 +917,45 @@ var GetUserList = function() {
 			RemoveRequest();
 		}*/
 	});
+}
+
+var DisplayNewUserForm = function() {
+	HideAllActions();
+	HideLoading();
+	$('#NewUserForm').css("display","block");
+}
+
+var CreateNewUser = function() {
+	var $this = $(this);
+	
+	loginname = $('#NewUserForm-InputLoginName').val();
+	password = $('#NewUserForm-InputPassword').val();
+	passwordconfirmation = $('#NewUserForm-InputConfirmPassword').val();
+	
+	if(password != passwordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+	
+	password = md5(password);
+	
+	var data = {"loginname":loginname, "password":password};
+	
+	$.ajax({
+		'type': 'POST',
+		'url': 'request.php?command=SaveUser',
+		'dataType': 'json',
+		'data': data,
+		'success': function(response) {
+			alert(response.message);
+			
+			$('#NewUserForm-InputLoginName').val('');
+			$('#NewUserForm-InputPassword').val('');
+			$('#NewUserForm-InputConfirmPassword').val('');
+		}
+	});
+	
+	return false;
 }
 
 var EditPermissions = function() {
