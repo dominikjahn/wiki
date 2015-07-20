@@ -16,7 +16,7 @@
 			$this->method = $_SERVER["REQUEST_METHOD"];
 			$this->body = file_get_contents("php://input");
 			
-			if(array_key_exists("Content-Type", $headers) && $headers["Content-Type"] == "application/x-www-form-urlencoded") {
+			if(array_key_exists("Content-Type", $headers) && strpos($headers["Content-Type"],"application/x-www-form-urlencoded") !== false) {
 				$body = [];
 				parse_str($this->body, $body);
 				$this->body = $body;

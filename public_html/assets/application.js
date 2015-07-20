@@ -66,6 +66,7 @@ $(function()
 	$('#NavNewPage').click(NewPage);
 	
 	$('#EditPage-DeletePage').click(DeletePage);
+	$('#EditPermissions-NewPermissionSet').click(CreateAndGrantPermission);
 	
 	CheckLoginCredentials();
 });
@@ -81,6 +82,10 @@ var ExtractPageName = function() {
 	}
 	
 	page = pageName;
+	
+	if(page == "Users") {
+		view = "GetUsers";
+	}
 }
 
 /*
@@ -283,6 +288,7 @@ var DisplayChangePasswordForm = function() {
 
 var GoToPage = function(pagename) {
 	page = pagename;
+	
 	DisplayPage();
 }
 
@@ -320,6 +326,10 @@ var DisplayAction = function() {
 			
 		case "GetVersions":
 			GetVersions();
+			break;
+			
+		case "GetUsers":
+			GetUserList();
 			break;
 	}
 }
@@ -364,6 +374,10 @@ var HideAllActions = function() {
 	
 	// Versions
 	$('#Versions').css("display","none");
+	
+	// Users
+	$('#Users').css("display","none");
+	$('#UserPermissions').css("display","none");
 	
 	// Error pages
 	$("#PageNotFound").css("display","none");
@@ -851,6 +865,180 @@ var GetVersions = function() {
 			}*/
 		});
 	}
+}
+
+var GetUserList = function() {
+	$.ajax({
+		'type': 'GET',
+		'url': 'request.php?command=GetUsers',
+		'dataType': 'json',
+		'success': function(response) {
+			
+			if(response.status == 0) {
+				alert(response.message);
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
+			}
+			
+			HideLoading();
+			
+			$('#Users').css("display", "block");
+			
+			document.title = "User management";
+			
+			$("#User-List").empty();
+			
+			for(var u = 0; u < response.users.length; u++) {
+				var user = response.users[u];
+				
+				$("#User-List").append('' +
+				'	<tr>' +
+				'		<td>' + user.loginname + '</td>' +
+				'		<td><button type="button" class="btn btn-xs btn-warning EditPermissions" data-user="'+user.user_id+'" data-loginname="'+user.loginname+'" '+(user.user_id == 2 ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-cog" aria-hidden="true"></i> Permissions</button></td>' +
+				'		<td><button type="button" class="btn btn-xs btn-danger DeleteUser" data-user="'+user.user_id+'" '+((user.user_id == 1 || user.user_id == 2) ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+				'	</tr>');
+			}
+			
+			$(".EditPermissions").click(EditPermissions);
+			$(".DeleteUser").click(DeleteUser);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}/*,
+		complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
+}
+
+var EditPermissions = function() {
+	var $this = $(this);
+	
+	var userID = $this.data("user");
+	var userLoginname = $this.data("loginname");
+	
+	var url = "request.php?command=GetUserPermissions&userID="+userID;
+	
+	HideAllActions();
+	
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			
+			if(response.status == 0) {
+				alert(response.message);
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
+			}
+			
+			HideLoading();
+			
+			$('#EditPermissions').css("display", "block");
+			$('#EditPermissions-Loginname').html(userLoginname);
+			
+			document.title = "Editing permissions for '"+userLoginname+"'";
+			
+			$("#UserPermissions-List").empty();
+			
+			for(var p = 0; p < response.permissions.length; p++) {
+				var permission = response.permissions[p];
+				
+				$("#UserPermissions-List").append('' +
+				'	<tr>' +
+				'		<td>' + permission.permission + '</td>' +
+				'		<td><input type="checkbox" '+(permission.status == 100 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-user="'+userID+'" data-permission="'+permission.permission+'" /></td>' +
+				'	</tr>');
+			}
+			
+			$(".EditPermissions-Checkbox").change(GrantOrRevokePermission);
+			$('#EditPermissions-NewPermission').data("user", userID);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}/*,
+		complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
+}
+
+var GrantOrRevokePermission = function() {
+	var $this = $(this);
+	
+	var userID = $this.data("user");
+	var permission = $this.data("permission");
+	var type = "PUT";
+	
+	if(!this.checked) {
+		type = "DELETE";
+	}
+	
+	var url = "request.php?command=SaveUserPermission";
+	var data = {"userID": userID, "permission": permission};
+	
+	$.ajax({
+		'type': type,
+		'url': url,
+		'data': data,
+		'dataType': 'json',
+		'success': function(response) {
+			alert(response.message);
+		},
+		'error': function(xhr, type, message) {
+			alert(type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+}
+
+var CreateAndGrantPermission = function() {
+	var userID = $('#EditPermissions-NewPermission').data("user");
+	var permission = $('#EditPermissions-NewPermission').val();
+	
+	var url = "request.php?command=SaveUserPermission";
+	var data = {"userID": userID, "permission": permission};
+	
+	$.ajax({
+		'type': 'PUT',
+		'url': url,
+		'data': data,
+		'dataType': 'json',
+		'success': function(response) {
+			alert(response.message);
+		},
+		'error': function(xhr, type, message) {
+			alert(type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+}
+
+var DeleteUser = function() {
+	var $this = $(this);
+	
+	var userID = $this.data("user");
+	
+	alert(userID);
 }
 
 var DisplayLoading = function() { $("#Loading").css("display","block"); }

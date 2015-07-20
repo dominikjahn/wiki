@@ -95,7 +95,7 @@
 		public function GetAll() {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE status = 100 ORDER BY loginname";
+			$sqlObjects = "SELECT user_id, status, checksum, loginname, password, CONCAT(CASE WHEN user_id = 1 OR user_id = 2 THEN 'core-' ELSE 'user-' END, loginname) AS sortable_user FROM %PREFIX%user WHERE status = 100 ORDER BY sortable_user";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read();
 			

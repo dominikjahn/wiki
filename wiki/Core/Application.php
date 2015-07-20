@@ -106,6 +106,11 @@
 				/*
 				 * Create/edit a user account
 				 */
+				case "GetUserPermissions": require_once "Core/Views/GetUserPermissions.php"; break;
+					
+				/*
+				 * Create/edit a user account
+				 */
 				case "SaveUserPermission": require_once "Core/Views/SaveUserPermission.php"; break;
 					
 				/*
