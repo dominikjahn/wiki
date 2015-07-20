@@ -30,7 +30,7 @@
 			
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT version_id, status, checksum, page_id, title, content, summary, minor_edit FROM %PREFIX%version WHERE status = 100 AND version_id = :id";
+			$sqlObject = "SELECT version_id, status, checksum, page_id, title, content, summary, minor_edit FROM %PREFIX%version WHERE version_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			

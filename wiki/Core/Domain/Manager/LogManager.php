@@ -25,7 +25,7 @@
 		public function GetByID($id) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT log_id, status, checksum, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE status = 100 AND log_id = :id";
+			$sqlObject = "SELECT log_id, status, checksum, object_table, object_id, user_id, type, timestamp FROM %PREFIX%log WHERE log_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			

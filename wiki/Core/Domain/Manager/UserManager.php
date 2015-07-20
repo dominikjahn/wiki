@@ -29,7 +29,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE status = 100 AND user_id = :id";
+			$sqlObject = "SELECT user_id, status, checksum, loginname, password FROM %PREFIX%user WHERE user_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			

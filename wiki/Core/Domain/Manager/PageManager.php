@@ -28,7 +28,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT page_id, status, checksum, name, title, content, user_owner_id, visibility, manipulation FROM %PREFIX%page WHERE status = 100 AND page_id = :id";
+			$sqlObject = "SELECT page_id, status, checksum, name, title, content, user_owner_id, visibility, manipulation FROM %PREFIX%page WHERE page_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			

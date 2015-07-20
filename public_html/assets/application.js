@@ -871,6 +871,8 @@ var GetVersions = function() {
 }
 
 var GetUserList = function() {
+	HideAllActions();
+	
 	$.ajax({
 		'type': 'GET',
 		'url': 'request.php?command=GetUsers',
@@ -917,6 +919,8 @@ var GetUserList = function() {
 			RemoveRequest();
 		}*/
 	});
+	
+	return false;
 }
 
 var DisplayNewUserForm = function() {
@@ -941,12 +945,16 @@ var CreateNewUser = function() {
 	
 	var data = {"loginname":loginname, "password":password};
 	
+	HideAllActions();
+	
 	$.ajax({
 		'type': 'POST',
 		'url': 'request.php?command=SaveUser',
 		'dataType': 'json',
 		'data': data,
 		'success': function(response) {
+			HideLoading();
+			
 			alert(response.message);
 			
 			$('#NewUserForm-InputLoginName').val('');
@@ -974,6 +982,8 @@ var EditPermissions = function() {
 		'dataType': 'json',
 		'success': function(response) {
 			
+			HideLoading();
+			
 			if(response.status == 0) {
 				alert(response.message);
 				return;
@@ -981,8 +991,6 @@ var EditPermissions = function() {
 				DisplayNotAuthorized();
 				return;
 			}
-			
-			HideLoading();
 			
 			$('#EditPermissions').css("display", "block");
 			$('#EditPermissions-Loginname').html(userLoginname);
