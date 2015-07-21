@@ -81,7 +81,8 @@ var ExtractPageName = function() {
 	pageName = pageName[0];
 	
 	if(pageName == "" || pageName == "index") {
-		document.location = "Homepage.html";
+		//document.location = "Homepage.html";
+		pageName = "Homepage";
 	}
 	
 	page = pageName;
@@ -445,6 +446,7 @@ var DisplayPage = function() {
 			//BindKey(86,GetVersions,true); // Ctrl+V
 		},
 		error: function(xhr, err1, err2) {
+			alert("Display page\n"+err1+": "+err2);
 			if(page in cache) {
 				HideLoading();
 				
@@ -1116,6 +1118,7 @@ var HasPermission = function(permission, positive_callback, negative_callback) {
 		},
 		'error': function(xhr, type, message) {
 			alert("HasPermission\n"+type + ": "+message);
+			negative_callback();
 		},
 		beforeSend: function(xhr)
 		{
