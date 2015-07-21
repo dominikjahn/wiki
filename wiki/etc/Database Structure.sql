@@ -17,6 +17,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `category`
+--
+
+CREATE TABLE IF NOT EXISTS `%PREFIX%category` (
+`category_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
+  `name` char(140) CHARACTER SET ascii NOT NULL,
+  `title` varchar(560) COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categorypage`
+--
+
+CREATE TABLE IF NOT EXISTS `%PREFIX%categorypage` (
+`categorypage_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
+  `category_id` int(10) unsigned NOT NULL,
+  `page_id` int(10) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
 -- Table structure for table `group`
 --
 
@@ -134,6 +160,18 @@ CREATE TABLE `%PREFIX%version` (
 --
 
 --
+-- Indexes for table `category`
+--
+ALTER TABLE `%PREFIX%category`
+ ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `categorypage`
+--
+ALTER TABLE `%PREFIX%categorypage`
+ ADD PRIMARY KEY (`categorypage_id`);
+
+--
 -- Indexes for table `group`
 --
 ALTER TABLE `%PREFIX%group`
@@ -178,6 +216,17 @@ ALTER TABLE `%PREFIX%version`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `category`
+--
+ALTER TABLE `%PREFIX%category`
+MODIFY `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT=1;
+--
+-- AUTO_INCREMENT for table `categorypage`
+--
+ALTER TABLE `%PREFIX%categorypage`
+MODIFY `categorypage_id` int(10) unsigned NOT NULL AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT for table `group`
