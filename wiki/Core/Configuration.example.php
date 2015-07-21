@@ -9,7 +9,7 @@
 		const DATABASE_USER = "root";
 		const DATABASE_PASSWORD = "";
 		const DATABASE_NAME = "wiki";
-		const DATABASE_CHARSET = "utf8";
+		const DATABASE_CHARSET = "utf8mb4";
 		const DATABASE_PREFIX = "";
 		const WWW_ROOT = "/";
 	}

@@ -14,4 +14,4 @@ Pages can be created and made visible only to you or a group of people (e.g. you
 * Create a virtual host file which points to `/var/www/wiki.domain.com/public_html`
 * Go to your website, e.g. `http://wiki.domain.com`
 * You can sign in using `admin` and `admin`
-
+* I highly recommend that you change that password immediately! To do that, simply click on your login name on the bottom left of the Wiki website.
