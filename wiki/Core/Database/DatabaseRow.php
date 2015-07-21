@@ -42,7 +42,7 @@
 			}
 			
 			if(!array_key_exists($field, $this->row)) {
-				throw new \Exception("No such field '".$field."' in row");
+				throw new \Exception("No such field '".$field."' in row (only ".print_r($this->row,1).")");
 			}
 			
 			return new DatabaseColumn($field, $this->row[$field]);

@@ -29,7 +29,7 @@
 			$pageManager = PageManager::GetInstance();
 			$logManager = LogManager::GetInstance();
 			
-			$object->ID = $row->category_id->Integer;
+			$object->ID = $row->categorypage_id->Integer;
 			$object->Status = $row->status->Integer;
 			$object->Category = $categoryManager->GetByID($row->category_id->Integer);
 			$object->Page = $pageManager->GetByID($row->page_id->Integer);

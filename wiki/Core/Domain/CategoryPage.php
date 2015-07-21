@@ -31,9 +31,7 @@
 		
 		public function jsonSerialize() {
 			return [
-				"categorypage_id" => $this->id,
-				"category" => $this->category->ID,
-				"page" => $this->page->ID,
+				"category" => $this->category,
 				"alias" => $this->alias
 			];
 		}

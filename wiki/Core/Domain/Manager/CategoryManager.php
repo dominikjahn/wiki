@@ -76,7 +76,7 @@
 			$object = new Category();
 			
 			$this->AddToCache($object, $name, "name");
-			$this->AddToCache($object, $rowObject->page_id->Integer);
+			$this->AddToCache($object, $rowObject->category_id->Integer);
 			
 			$objectFactory->FromDataRow($object, $rowObject);
 		

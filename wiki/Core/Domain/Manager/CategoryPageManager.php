@@ -48,8 +48,6 @@
 		
 			$stmObject->Close();
 			
-			$this->AddToCache($object, $object->Name, "name");
-			
 			return $object;
 		}
 		

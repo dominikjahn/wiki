@@ -296,7 +296,7 @@
 		/*
 		 * Remove categories
 		 */
-		$parsed = preg_replace("/<Wiki:Category\s*>(.?)<\/Wiki:Category>/muis", null, $parsed);
+		$parsed = preg_replace("/<Wiki:Category\s*>(.+?)<\/Wiki:Category>/muis", null, $parsed);
 		$parsed = preg_replace("/<Wiki:Category\s*as=['\"](.+?)['\"]\s*>(.+?)<\/Wiki:Category>/muis", null, $parsed);
 		
 		/*

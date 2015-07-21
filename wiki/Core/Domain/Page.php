@@ -40,7 +40,7 @@
 				"visibility" => $this->visibility,
 				"manipulation" => $this->manipulation,
 				"owner" => $this->owner,
-				"categories" => $this->categories,
+				"categories" => $this->Categories,
 				"last_edit" => [
 				  "timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
 				  "user" => $this->logModified->User->Loginname
@@ -72,45 +72,56 @@
 			preg_match_all("/<Wiki:Category\s*>(?<category>.+?)<\/Wiki:Category>/muis", $this->content, $matches, PREG_SET_ORDER);
 			
 			foreach($matches as $match) {
-				$categories[$match["category"]] = null;
+				$name = self::NormalizeTitle($match["category"]);
+				$title = $match["category"];
+				$categories[$name] = (object) ["title" => $title, "alias" => ""];
 			}
 			
 			$matches = [];
 			preg_match_all("/<Wiki:Category\s*as=['\"](?<alias>.+?)['\"]\s*>(?<category>.+?)<\/Wiki:Category>/muis", $this->content, $matches, PREG_SET_ORDER);
 			
 			foreach($matches as $match) {
-				$categories[$match["category"]] = $match["alias"];
+				$name = self::NormalizeTitle($match["category"]);
+				$title = $match["category"];
+				$categories[$name] = (object) ["title" => $title, "alias" => $match["alias"]];
 			}
 			
 			$catManager = CategoryManager::GetInstance();
 			
+			//var_dump($categories);
 			// Get a list of all current categories and deactivate
 			if($this->Categories) {
 				foreach($this->Categories as $catpage) {
-					var_dump($catpage->Category->Name, $catpage->Alias);
+					//echo $catpage->Category->Name." is already assigned to page with alias ".$catpage->Alias."\n";
+					//var_dump($catpage->Category->Name, $catpage->Alias, $categories);
 					
 					if(!array_key_exists($catpage->Category->Name, $categories)) {
-						if($catpage->Alias != $categories[$catpage->Category->Name]->alias) {
-							$catpage->Alias = $categories[$catpage->Category->Name]->alias;
-							$catpage->Save();
-						} else {
-							$catpage->Delete();
-						}
+						//echo "Not assigned anymore. Delete\n";
+						$catpage->Delete();
+					} else if($catpage->Alias != $categories[$catpage->Category->Name]->alias) {
+						//echo "Still assigned, but alias changed. Change\n";
+						$catpage->Alias = $categories[$catpage->Category->Name]->alias;
+						$catpage->Save();
+						unset($categories[$catpage->Category->Name]);
 					} else {
+						//echo "Unchanged\n";
 						unset($categories[$catpage->Category->Name]);
 					}
 				}
 			}
 			
 			// Add new categories
-			foreach($categories as $catname => $alias) {
-				$category = $catManager->GetByName($catname);
+			foreach($categories as $name => $cat) {
+				//echo $name." (".$cat->title.") is not assigned\n";
+				
+				$category = $catManager->GetByName($name);
 				
 				if(!$category || $category->Status === 0) {
+					//echo "Is a new category\n";
 					$category = new Category();
 					$category->Status = 100;
-					$category->Name = Category::CheckForDuplicateName(self::NormalizeTitle($catname));
-					$category->Title = $catname;
+					$category->Name = $name;
+					$category->Title = $cat->title;
 					$category->Save();
 				}
 				
@@ -118,9 +129,11 @@
 				$catpage->Status = 100;
 				$catpage->Category = $category;
 				$catpage->Page = $this;
-				$catpage->Alias = $alias;
+				$catpage->Alias = $cat->alias;
 				$catpage->Save();
+				//echo "Storing association\n\n";
 			}
+			
 			
 			return true;
 		}
