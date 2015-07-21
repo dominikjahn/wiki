@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS `%PREFIX%categorypage` (
   `status` tinyint(3) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
-  `page_id` int(10) unsigned NOT NULL
+  `page_id` int(10) unsigned NOT NULL,
+  `alias` varchar(560) COLLATE utf8mb4_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
@@ -221,12 +222,12 @@ ALTER TABLE `%PREFIX%version`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `%PREFIX%category`
-MODIFY `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT=1;
+MODIFY `category_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `categorypage`
 --
 ALTER TABLE `%PREFIX%categorypage`
-MODIFY `categorypage_id` int(10) unsigned NOT NULL AUTO_INCREMENT=1;
+MODIFY `categorypage_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT for table `group`

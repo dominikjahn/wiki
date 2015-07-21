@@ -61,6 +61,7 @@
 			
 			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE status = 100 AND page_id = :page";
 			$stmObjects = $db->Prepare($sqlObjects);
+			
 			$resObjects = $stmObjects->Read(["page" => $page]);
 			
 			if(!$resObjects) {

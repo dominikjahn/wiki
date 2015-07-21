@@ -32,6 +32,7 @@
 		//
 		
 		public function jsonSerialize() {
+			
 			return [
 				"page_id" => $this->id,
 				"name" => $this->name,

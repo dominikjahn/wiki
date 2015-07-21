@@ -18,6 +18,6 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
-		echo "<h1>Fatal error: ".$e->getMessage()."</h1>";
+		echo "Fatal error: ".$e->getMessage()."\n".str_repeat("=",50)."\n\n".$e->getTraceAsString();
 	}
 ?>
