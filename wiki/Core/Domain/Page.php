@@ -2,6 +2,8 @@
 	namespace Wiki\Domain;
 	
 	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Manager\CategoryManager;
+	use Wiki\Domain\Manager\CategoryPageManager;
 	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
 	
 	/**
@@ -38,6 +40,7 @@
 				"visibility" => $this->visibility,
 				"manipulation" => $this->manipulation,
 				"owner" => $this->owner,
+				"categories" => $this->categories,
 				"last_edit" => [
 				  "timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
 				  "user" => $this->logModified->User->Loginname
@@ -57,7 +60,69 @@
 				throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
 			}
 			
-			return parent::Save();
+			$success = parent::Save();
+			
+			if(!$success) {
+				return false;
+			}
+			
+			// Get a list of all categories
+			$categories = [];
+			$matches = [];
+			preg_match_all("/<Wiki:Category\s*>(?<category>.+?)<\/Wiki:Category>/muis", $this->content, $matches, PREG_SET_ORDER);
+			
+			foreach($matches as $match) {
+				$categories[$match["category"]] = null;
+			}
+			
+			$matches = [];
+			preg_match_all("/<Wiki:Category\s*as=['\"](?<alias>.+?)['\"]\s*>(?<category>.+?)<\/Wiki:Category>/muis", $this->content, $matches, PREG_SET_ORDER);
+			
+			foreach($matches as $match) {
+				$categories[$match["category"]] = $match["alias"];
+			}
+			
+			$catManager = CategoryManager::GetInstance();
+			
+			// Get a list of all current categories and deactivate
+			if($this->Categories) {
+				foreach($this->Categories as $catpage) {
+					var_dump($catpage->Category->Name, $catpage->Alias);
+					
+					if(!array_key_exists($catpage->Category->Name, $categories)) {
+						if($catpage->Alias != $categories[$catpage->Category->Name]->alias) {
+							$catpage->Alias = $categories[$catpage->Category->Name]->alias;
+							$catpage->Save();
+						} else {
+							$catpage->Delete();
+						}
+					} else {
+						unset($categories[$catpage->Category->Name]);
+					}
+				}
+			}
+			
+			// Add new categories
+			foreach($categories as $catname => $alias) {
+				$category = $catManager->GetByName($catname);
+				
+				if(!$category || $category->Status === 0) {
+					$category = new Category();
+					$category->Status = 100;
+					$category->Name = Category::CheckForDuplicateName(self::NormalizeTitle($catname));
+					$category->Title = $catname;
+					$category->Save();
+				}
+				
+				$catpage = new CategoryPage();
+				$catpage->Status = 100;
+				$catpage->Category = $category;
+				$catpage->Page = $this;
+				$catpage->Alias = $alias;
+				$catpage->Save();
+			}
+			
+			return true;
 		}
 		
 		public function Delete() {
@@ -105,6 +170,11 @@
 		 * @field manipulation
 		 */
 		protected $manipulation;
+		
+		/**
+		 *
+		 */
+		protected $categories;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -228,6 +298,30 @@
 		 */
 		protected function SetManipulation($value) {
 			$this->manipulation = $value;
+		}
+		
+		# Categories
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetCategories() {
+			if(!$this->categories && $this->ID) {
+				$this->categories = CategoryPageManager::GetInstance()->GetByPage($this);
+			}
+			
+			return $this->categories;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetCategories($value) {
+			$this->categories = $value;
 		}
 		
 		  //

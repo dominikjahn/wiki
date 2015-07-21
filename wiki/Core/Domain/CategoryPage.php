@@ -33,7 +33,8 @@
 			return [
 				"categorypage_id" => $this->id,
 				"category" => $this->category->ID,
-				"page" => $this->page->ID
+				"page" => $this->page->ID,
+				"alias" => $this->alias
 			];
 		}
 		
@@ -54,6 +55,11 @@
 		 * @field page_id
 		 */
 		protected $page;
+		
+		/**
+		 * @field alias
+		 */
+		protected $alias;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -97,6 +103,26 @@
 		 */
 		protected function SetPage(Page $value) {
 			$this->page = $value;
+		}
+		
+		# Alias
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetAlias() {
+			return $this->alias;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetAlias($value) {
+			$this->alias = $value;
 		}
 		
 		  //

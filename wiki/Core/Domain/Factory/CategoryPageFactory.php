@@ -33,6 +33,7 @@
 			$object->Status = $row->status->Integer;
 			$object->Category = $categoryManager->GetByID($row->category_id->Integer);
 			$object->Page = $pageManager->GetByID($row->page_id->Integer);
+			$object->Alias = $row->alias->String;
 			
 			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
 			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);

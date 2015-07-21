@@ -2,15 +2,17 @@
 	namespace Wiki\Domain\Manager;
 	
 	use Wiki\Database\DatabaseConnection;
-	use Wiki\Domain\Factory\CategoryFactory;
+	use Wiki\Domain\Factory\CategoryPageFactory;
 	use Wiki\Domain\Category;
+	use Wiki\Domain\Page;
+	use Wiki\Domain\CategoryPage;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	class CategoryManager extends DomainManager
+	class CategoryPageManager extends DomainManager
 	{
 		  //
 		 // METHODS
@@ -28,7 +30,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT categorypage_id, status, checksum, category_id, page_id FROM %PREFIX%categorypage WHERE category_id = :id";
+			$sqlObject = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE category_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -59,7 +61,7 @@
 		public function GetByPage(Page $page) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id FROM %PREFIX%categorypage WHERE status = 100 AND page_id = :page";
+			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE status = 100 AND page_id = :page";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read(["page" => $page]);
 			
@@ -91,7 +93,7 @@
 		public function GetByCategory(Category $category) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id FROM %PREFIX%categorypage WHERE status = 100 AND category_id = :category";
+			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE status = 100 AND category_id = :category";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read(["category" => $category]);
 			
@@ -126,7 +128,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new CategoryManager();
+				self::$instance = new CategoryPageManager();
 			}
 			
 			return self::$instance;

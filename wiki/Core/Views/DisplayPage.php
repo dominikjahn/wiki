@@ -112,7 +112,7 @@
 		 
 		# Basic link <Wiki:Link page="Name_of_page"/>
 		$links = [];
-		preg_match_all("/<Wiki:Link page=['\"](?<page>(.+?))['\"]\s*\/>/muis",$parsed,$links, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*\/>/muis",$parsed,$links, PREG_SET_ORDER);
 
 		foreach($links as $link)
 		{
@@ -147,7 +147,7 @@
 		 
 		# Link with alternative text <Wiki:Link page="Name_of_page">Text</Wiki:Link>
 		$links = array();
-		preg_match_all("/<Wiki:Link page=['\"](?<page>([a-zA-Z0-9_]+))['\"]>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>([a-zA-Z0-9_]+))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
 			
 		foreach($links as $link)
 		{
@@ -184,7 +184,7 @@
 		 
 		# <Wiki:Icon name="Icon"/>
 		$icons = array();
-		preg_match_all("/<Wiki:Icon name=['\"](?<name>[a-zA-Z0-9\-]+)['\"]\/>/muis",$parsed,$icons, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Icon\s*name=['\"](?<name>[a-zA-Z0-9\-]+)['\"]\s*\/>/muis",$parsed,$icons, PREG_SET_ORDER);
 			
 		foreach($icons as $icon)
 		{
@@ -200,7 +200,7 @@
 		 
 		# Basic panel <Wiki:Panel>Content</Wiki:Panel>
 		$panels = array();
-		preg_match_all("/<Wiki:Panel>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Panel\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
 			
 		foreach($panels as $panel)
 		{
@@ -214,7 +214,7 @@
 		 
 		# Basic panel with title: <Wiki:Panel title="Title">Content</Wiki:Panel>
 		$panels = array();
-		preg_match_all("/<Wiki:Panel title=['\"](?<title>.+?)['\"]>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Panel\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
 			
 		foreach($panels as $panel)
 		{
@@ -229,7 +229,7 @@
 		
 		# Basic panel with theme: <Wiki:Panel theme="theme">Content</Wiki:Panel>
 		$panels = array();
-		preg_match_all("/<Wiki:Panel theme=['\"](?<theme>([a-zA-Z]+))['\"]>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
 			
 		foreach($panels as $panel)
 		{
@@ -244,7 +244,7 @@
 		 
 		# Basic panel with title and theme: <Wiki:Panel theme="theme" title="Title">Content</Wiki:Panel>
 		$panels = array();
-		preg_match_all("/<Wiki:Panel theme=['\"](?<theme>([a-zA-Z]+))['\"] title=['\"](?<title>.+?)['\"]>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
 			
 		foreach($panels as $panel)
 		{
@@ -264,7 +264,7 @@
 		
 		# <Wiki:Alert theme="theme">Content</Wiki:Alert>
 		$alerts = array();
-		preg_match_all("/<Wiki:Alert theme=['\"](?<theme>([a-zA-Z]+))['\"]>(?<content>.+?)<\/Wiki:Alert>/muis",$parsed,$alerts, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Alert\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Alert>/muis",$parsed,$alerts, PREG_SET_ORDER);
 			
 		foreach($alerts as $alert)
 		{
@@ -283,7 +283,7 @@
 		
 		# <Wiki:Label theme="theme">Content</Wiki:Label>
 		$labels = array();
-		preg_match_all("/<Wiki:Label theme=['\"](?<theme>([a-zA-Z]+))['\"]>(?<content>.+?)<\/Wiki:Label>/muis",$parsed,$labels, PREG_SET_ORDER);
+		preg_match_all("/<Wiki:Label\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Label>/muis",$parsed,$labels, PREG_SET_ORDER);
 		
 		foreach($labels as $label)
 		{
@@ -297,11 +297,17 @@
 		}
 		
 		/*
+		 * Remove categories
+		 */
+		$parsed = preg_replace("/<Wiki:Category\s*>(.?)<\/Wiki:Category>/muis", null, $parsed);
+		$parsed = preg_replace("/<Wiki:Category\s*as=['\"](.+?)['\"]\s*>(.+?)<\/Wiki:Category>/muis", null, $parsed);
+		
+		/*
 		 * Don't show a headline
 		 */
 		
 		$match = [];
-		if(preg_match("/<Wiki:NoHeadline\/>/msu",$parsed, $match)) {
+		if(preg_match("/<Wiki:NoHeadline\s*\/>/msu",$parsed, $match)) {
 			$noHeadline = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
@@ -311,7 +317,7 @@
 		 */
 		
 		$match = [];
-		if(preg_match("/<Wiki:NoNavbar\/>/msu",$parsed, $match)) {
+		if(preg_match("/<Wiki:NoNavbar\s*\/>/msu",$parsed, $match)) {
 			$noNavbar = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
@@ -321,7 +327,7 @@
 		 */
 		
 		$match = [];
-		if(preg_match("/<Wiki:NoFooterbar\/>/msu",$parsed, $match)) {
+		if(preg_match("/<Wiki:NoFooterbar\s*\/>/msu",$parsed, $match)) {
 			$noFooterbar = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
@@ -331,7 +337,7 @@
 		 */
 		
 		$match = [];
-		if(preg_match("/<Wiki:CustomOutput\/>/msu",$parsed, $match)) {
+		if(preg_match("/<Wiki:CustomOutput\s*\/>/msu",$parsed, $match)) {
 			$customOutput = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
