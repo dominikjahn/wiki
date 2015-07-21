@@ -374,6 +374,22 @@
 				
 				<button type="submit" class="btn btn-lg btn-success"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user</button>
 			</form>
+			
+			<div class="modal fade" id="AboutWiki" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">About Wiki</h4>
+						</div>
+						<div class="modal-body">
+							<p>This website is based on <a href="https://github.com/dominikjahn/wiki">Wiki.</a> Click the link to help improving it.</p>
+							<hr/>
+							<p>This website uses <a href="http://glyphicons.com/">Glyphicons</a> as provided by the Twitter Bootstrap Framework.</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		
 		<footer id="FooterBar">
@@ -390,7 +406,13 @@
 						
 						<p class="navbar-text navbar-left" id="SignInText">Not signed in</p>
 						
+						<ul class="nav navbar-nav navbar-right">
+							<li><a href="#" data-toggle="modal" data-target="#AboutWiki"><i class="glyphicon glyphicon-info-sign"></i></a>
+						</ul>
+						
 						<p class="navbar-text navbar-right">This page was last edited <strong id="DisplayPage-LastEdit-Timestamp">...</strong> by <span id="DisplayPage-LastEdit-User">...</span>. &#160; </p>
+						
+						
 					</div>
 				</div>
 			</div>
