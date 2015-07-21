@@ -1054,7 +1054,7 @@ var GrantOrRevokePermission = function() {
 			alert(response.message);
 		},
 		'error': function(xhr, type, message) {
-			alert(type + ": "+message);
+			alert("GrantOrRevokePermission\n"+type + ": "+message);
 		},
 		beforeSend: function(xhr)
 		{
@@ -1080,7 +1080,7 @@ var CreateAndGrantPermission = function() {
 			alert(response.message);
 		},
 		'error': function(xhr, type, message) {
-			alert(type + ": "+message);
+			alert("CreateAndGrantPermission\n"+type + ": "+message);
 		},
 		beforeSend: function(xhr)
 		{
@@ -1115,7 +1115,7 @@ var HasPermission = function(permission, positive_callback, negative_callback) {
 			}
 		},
 		'error': function(xhr, type, message) {
-			alert(type + ": "+message);
+			alert("HasPermission\n"+type + ": "+message);
 		},
 		beforeSend: function(xhr)
 		{
