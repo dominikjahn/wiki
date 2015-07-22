@@ -3,6 +3,7 @@
 	
 	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
 	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
+	use Wiki\Domain\Manager\GroupManager;
 	
 	/**
 	 * @table user
@@ -40,6 +41,21 @@
 			}
 			
 			return false;
+		}
+		
+		public function IsInGroup($group) {
+			if(!($group instanceof Group)) {
+				$groupManager = GroupManager::GetInstance();
+				
+				$groupname = $group;
+				$group = $groupManager->GetByName($groupname);
+				
+				if(!$group || $group->Status === 0) {
+					throw new GroupNotFoundException($groupname);
+				}
+			}
+			
+			return $group->HasUser($this);
 		}
 		
 		public function Save() {

@@ -28,6 +28,10 @@
 		 // METHODS
 		//
 		
+		public function HasUser(User $user) {
+			return false;
+		}
+		
 		public function Save() {
 			$currentUser = User::GetCurrentUser();
 			

@@ -392,6 +392,7 @@ var HideAllActions = function() {
 	$('#EditPermissions').css("display","none");
 	$('#NewUserForm').css("display","none");
 	$('#NewGroupForm').css("display","none");
+	$('#GroupUsers').css("display","none");
 	
 	// Error pages
 	$("#PageNotFound").css("display","none");
@@ -961,10 +962,12 @@ var GetGroupList = function() {
 				$("#Group-List").append('' +
 				'	<tr>' +
 				'		<td>' + group.name + '</td>' +
+				'		<td><button type="button" class="btn btn-xs btn-primary GetGroupUsers" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Users</button></td>' +
 				'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
 				'	</tr>');
 			}
 			
+			$(".GetGroupUsers").click(GetGroupUsers);
 			$(".DeleteGroup").click(DeleteGroup);
 		},
 		beforeSend: function(xhr)
@@ -1189,6 +1192,14 @@ var DeleteUser = function() {
 	var userUserID = $this.data("user");
 	
 	alert(userUserID);
+}
+
+var DeleteGroup = function() {
+	var $this = $(this);
+	
+	var groupID = $this.data("group");
+	
+	alert(groupID);
 }
 
 var HasPermission = function(permission, positive_callback, negative_callback) {
