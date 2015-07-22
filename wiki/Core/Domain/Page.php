@@ -334,9 +334,9 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		protected function SetCategories($value) {
-			$this->categories = $value;
-		}
+		//protected function SetCategories($value) {
+		//	$this->categories = $value;
+		//}
 		
 		  //
 		 // FUNCTIONS

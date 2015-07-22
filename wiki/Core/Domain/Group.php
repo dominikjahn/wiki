@@ -2,6 +2,7 @@
 	namespace Wiki\Domain;
 	
 	use Wiki\Exception\NotAuthorizedToCreateOrEditGroupsException;
+	use Wiki\Domain\Manager\GroupMemberManager;
 	
 	/**
 	 * @table group
@@ -79,6 +80,11 @@
 		 */
 		protected $name;
 		
+		/**
+		 * A list of users in this group
+		 */
+		protected $users;
+		
 		  //
 		 // GETTERS / SETTERS
 		//
@@ -102,6 +108,30 @@
 		protected function SetName($value) {
 			$this->name = $value;
 		}
+		
+		# Users
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetUsers() {
+			if(!$this->users && $this->ID) {
+				$this->users = GroupMemberManager::GetInstance()->GetByGroup($this);
+			}
+			
+			return $this->users;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		//protected function SetUsers($value) {
+		//	$this->users = $value;
+		//}
 		
 		  //
 		 // CONSTANTS

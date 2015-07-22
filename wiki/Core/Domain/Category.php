@@ -2,6 +2,7 @@
 	namespace Wiki\Domain;
 	
 	use Wiki\Domain\Manager\CategoryManager;
+	use Wiki\Domain\Manager\CategoryPageManager;
 	
 	/**
 	 * @table category
@@ -54,6 +55,11 @@
 		 */
 		protected $title;
 		
+		/**
+		 * A list of pages in this category
+		 */
+		protected $pages;
+		
 		  //
 		 // GETTERS / SETTERS
 		//
@@ -96,6 +102,21 @@
 		 */
 		protected function SetTitle($value) {
 			$this->title = $value;
+		}
+		
+		# Pages
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetPages() {
+			if(!$this->pages && $this->ID) {
+				$this->pages = CategoryPageManager::GetInstance()->GetByCategory($this);
+			}
+			
+			return $this->pages;
 		}
 		
 		  //

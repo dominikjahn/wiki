@@ -94,6 +94,9 @@
 		 * @since 0.1
 		 */
 		public function HasPermission($permission) {
+			// Load permissions
+			$this->GetPermissions();
+			
 			// The user with the ID=2 is the admin (maybe this should be a setting)
 			if($this->ID === 2) {
 				return true;
@@ -113,6 +116,8 @@
 		}
 		
 		public function RevokePermission($permission) {
+			// Load permissions
+			$this->GetPermissions();
 			
 			foreach($this->permissions as $userpermission) {
 				if($userpermission->Permission == $permission) {
@@ -163,6 +168,11 @@
 		 * A list of permissions that the user has
 		 */
 		protected $permissions;
+		
+		/**
+		 * A list of groups the user is in
+		 */
+		protected $groups;
 		
 		  //
 		 // GETTERS / SETTERS
@@ -216,6 +226,10 @@
 		 * @since 0.1
 		 */
 		protected function GetPermissions() {
+			if(!$this->permissions && $this->ID) {
+				$this->permissions = UserPermissionManager::GetInstance()->GetByUser($this);
+			}
+			
 			return $this->permissions;
 		}
 		
@@ -224,9 +238,33 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		protected function SetPermissions($value) {
-			$this->permissions = $value;
+		//protected function SetPermissions($value) {
+		//	$this->permissions = $value;
+		//}
+		
+		# Groups
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetGroups() {
+			if(!$this->groups && $this->ID) {
+				$this->groups = GroupMemberManager::GetInstance()->GetByUser($this);
+			}
+			
+			return $this->groups;
 		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		//protected function SetGroups($value) {
+		//	$this->groups = $value;
+		//}
 		
 		  //
 		 // FUNCTIONS
