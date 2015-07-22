@@ -2,7 +2,6 @@
 	namespace Wiki\Domain\Factory;
 	
 	use Wiki\Domain\Manager\LogManager;
-	use Wiki\Domain\Manager\UserPermissionManager;
 	use Wiki\Domain\Domain;
 	use Wiki\Domain\Log;
 	use Wiki\Database\DatabaseRow;
@@ -25,7 +24,6 @@
 		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
 			$logManager = LogManager::GetInstance();
-			$userpermManager = UserPermissionManager::GetInstance();
 			
 			$object->ID = $row->user_id->Integer;
 			$object->Status = $row->status->Integer;
@@ -42,9 +40,6 @@
 			if($object->Status === 0) {
 			  $object->LogDeleted = $logManager->GetByObjectAndType($object, Log::TYPE_DELETE);
 			}
-			
-			$permissions = $userpermManager->GetByUser($object);
-			$object->Permissions = $permissions;
 			
 			$object->IsLoadedFromDatabase = true;
 			

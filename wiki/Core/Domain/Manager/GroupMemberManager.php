@@ -2,7 +2,7 @@
 	namespace Wiki\Domain\Manager;
 	
 	use Wiki\Database\DatabaseConnection;
-	use Wiki\Domain\Factory\CategoryPageFactory;
+	use Wiki\Domain\Factory\GroupMemberFactory;
 	use Wiki\Domain\Group;
 	use Wiki\Domain\User;
 	use Wiki\Domain\GroupMember;
