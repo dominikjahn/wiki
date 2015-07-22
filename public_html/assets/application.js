@@ -279,6 +279,7 @@ var DisplaySignInForm = function() {
 	HideAllActions();
 	HideLoading();
 	$("#SignInForm").css("display","block");
+	document.title = "Sign in";
 }
 
 var HideSignInForm = function() {
@@ -290,12 +291,14 @@ var DisplaySignUpForm = function() {
 	HideAllActions();
 	HideLoading();
 	$("#SignUpForm").css("display","block");
+	document.title = "Sign up";
 }
 
 var DisplayChangePasswordForm = function() {
 	HideAllActions();
 	HideLoading();
 	$("#ChangePasswordForm").css("display","block");
+	document.title = "Change your password";
 }
 
 var GoToPage = function(pagename) {
@@ -348,6 +351,7 @@ var DisplayAction = function() {
 
 var HideAllActions = function() {
 	view = "";
+	document.title = "Wiki";
 	
 	UnbindKeys();
 	
@@ -411,7 +415,6 @@ var DisplayPage = function() {
 	
 	var url = 'request.php?command=DisplayPage&page=' + page;
 	
-	
 	$.ajax({
 		'type': 'GET',
 		'url': url,
@@ -419,7 +422,16 @@ var DisplayPage = function() {
 		'success': function(response) {
 			
 			if(response.status == 0) {
-				alert(response.message);
+				if(page in cache) {
+					HideLoading();
+					
+					var pagedata = cache[page];
+					
+					DisplayPageContent(pagedata, true);
+				} else {
+					alert(response.message);
+				}
+				
 				return;
 			} else if(response.status == 404) {
 				DisplayPageNotFound();
@@ -520,6 +532,7 @@ var DisplayPageNotFound = function() {
 	HideLoading();
 	
 	$("#PageNotFound").css("display","block");
+	document.title = "Page not found";
 }
 
 var DisplayNotAuthorized = function() {
@@ -527,6 +540,7 @@ var DisplayNotAuthorized = function() {
 	HideLoading();
 	
 	$("#NotAuthorized").css("display","block");
+	document.title = "Not authorized";
 }
 
 /*
@@ -541,6 +555,7 @@ var NewPage = function() {
 	pageID = 0;
 	mode = 'NewPage';
 	
+	document.title = "New page";
 	$("#NewPage").css("display","block");
 	$("#NewPage-InputTitle").val("");
 	$("#NewPage-InputContent").val("").hide();
@@ -587,6 +602,7 @@ var EditPage = function() {
 			HideLoading();
 			
 			pageID = response.page.page_id;
+			document.title = "Edit page '"+response.page.title+"'";
 			
 			$("#EditPage").css("display","block");
 			$("#EditPage-Title").html(response.page.title);
@@ -802,10 +818,13 @@ var BackToComposer = function() {
 	$("#NavDropChanges").css("display","block");
 	$("#NavPreviewChanges").css("display","block");
 	$("#NavSaveChanges").css("display","block");
+	
+	// Maybe a distinction between "New page" / "Edit page 'mmmm'" would be good here
+	document.title = "Edit page";
 }
 
 /*
- * Display page
+ * Get a list of revisions
  */
 var GetVersions = function() {
 	HideAllActions();
@@ -814,73 +833,68 @@ var GetVersions = function() {
 	
 	var url = 'request.php?command=GetVersions&page=' + page;
 	
-	if(!online)
-	{
-		alert("You are not online.");
-	} else {
-		$.ajax({
-			'type': 'GET',
-			'url': url,
-			'dataType': 'json',
-			'success': function(response) {
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			
+			if(response.status == 0) {
+				alert(response.message);
+				return;
+			} else if(response.status == 404) {
+				DisplayPageNotFound();
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
+			}
+			
+			HideLoading();
+			
+			pageID = response.page.page_id;
+			
+			$('#Versions').css("display", "block");
+			
+			$('#Versions-PageTitle').html(response.page.title);
+			
+			document.title = "Revisions for '" + response.page.title + "'";
+			
+			$("#Versions-List").empty();
+			
+			for(var v = 0; v < response.versions.length; v++) {
+				var version = response.versions[v];
 				
-				if(response.status == 0) {
-					alert(response.message);
-					return;
-				} else if(response.status == 404) {
-					DisplayPageNotFound();
-					return;
-				} else if(response.status == 401) {
-					DisplayNotAuthorized();
-					return;
+				var timestamp = new Date(version.timestamp);
+				
+				var minor_edit = "";
+				
+				if(version.minor_edit) {
+					minor_edit = '<span class="label label-warning"><i class="glyphicon glyphicon-ok-circle" aria-hidden="true"></i> Yes';
 				}
 				
-				HideLoading();
-				
-				pageID = response.page.page_id;
-				
-				$('#Versions').css("display", "block");
-				
-				$('#Versions-PageTitle').html(response.page.title);
-				
-				document.title = "Revisions for '" + response.page.title + "'";
-				
-				$("#Versions-List").empty();
-				
-				for(var v = 0; v < response.versions.length; v++) {
-					var version = response.versions[v];
-					
-					var timestamp = new Date(version.timestamp);
-					
-					var minor_edit = "";
-					
-					if(version.minor_edit) {
-						minor_edit = '<span class="label label-warning"><i class="glyphicon glyphicon-ok-circle" aria-hidden="true"></i> Yes';
-					}
-					
-					$("#Versions-List").append('' +
-					'	<tr>' +
-					'		<td><input type="radio" name="left" /></td>' +
-					'		<td><input type="radio" name="right" /></td>' +
-					'		<td>' + timestamp.toLocaleDateString() + '</td>' +
-					'		<td>' + timestamp.toLocaleTimeString() + '</td>' +
-					'		<td>' + version.user + '</td>' +
-					'		<td>' + version.summary + '</td>' +
-					'		<td>' + minor_edit + '</td>' +
-					'	</tr>');
-				}
-			},
-			beforeSend: function(xhr)
-			{
-				//AddRequest();
-				xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
-			}/*,
-			complete: function()
-			{
-				RemoveRequest();
-			}*/
-		});
-	}
+				$("#Versions-List").append('' +
+				'	<tr>' +
+				'		<td><input type="radio" name="left" /></td>' +
+				'		<td><input type="radio" name="right" /></td>' +
+				'		<td>' + timestamp.toLocaleDateString() + '</td>' +
+				'		<td>' + timestamp.toLocaleTimeString() + '</td>' +
+				'		<td>' + version.user + '</td>' +
+				'		<td>' + version.summary + '</td>' +
+				'		<td>' + minor_edit + '</td>' +
+				'	</tr>');
+			}
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}/*,
+		complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
 }
 
 var DisplayUserManagement = function() {
@@ -890,6 +904,7 @@ var DisplayUserManagement = function() {
 	HideLoading();
 	
 	$("#UserManagement").css("display","block");
+	document.title = 'User & Group management';
 	
 	return false;
 }
@@ -988,12 +1003,14 @@ var DisplayNewUserForm = function() {
 	HideAllActions();
 	HideLoading();
 	$('#NewUserForm').css("display","block");
+	document.title = "Create a new user";
 }
 
 var DisplayNewGroupForm = function() {
 	HideAllActions();
 	HideLoading();
 	$('#NewGroupForm').css("display","block");
+	document.title = "Create a new group";
 }
 
 var CreateNewUser = function() {
@@ -1098,7 +1115,7 @@ var EditPermissions = function() {
 			$('#EditPermissions').css("display", "block");
 			$('#EditPermissions-Loginname').html(userLoginname);
 			
-			document.title = "Editing permissions for '"+userLoginname+"'";
+			document.title = "Edit permissions for '"+userLoginname+"'";
 			
 			$("#UserPermissions-List").empty();
 			
