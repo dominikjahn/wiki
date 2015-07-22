@@ -1,8 +1,7 @@
 <?php
 	namespace Wiki\Domain;
 	
-	//use Wiki\Exception\NotAuthorizedToCreateNewGroupsException;
-	//use Wiki\Exception\NotAuthorizedToEditGroupsException;
+	use Wiki\Exception\NotAuthorizedToCreateOrEditGroupsException;
 	
 	/**
 	 * @table group
@@ -30,18 +29,22 @@
 		//
 		
 		public function Save() {
-			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_GROUPS")) {
-				throw new NotAuthorizedToCreateNewGroupsException();
-			} else if($this->ID && !self::$currentUser->HasPermission("EDIT_GROUPS")) {
-				throw new NotAuthorizedToEditGroupsException();
+			$currentUser = User::GetCurrentUser();
+			
+			if(!$this->ID && !$currentUser->HasPermission("CREATE_GROUPS")) {
+				throw new NotAuthorizedToCreateOrEditGroupsException();
+			} else if($this->ID && $currentUser->HasPermission("EDIT_GROUPS")) {
+				throw new NotAuthorizedToCreateOrEditGroupsException();
 			}
 			
 			return parent::Save();
 		}
 		
 		public function Delete() {
-			if(!self::$currentUser->HasPermission("DELETE_GROUPS")) {
-				throw new NotAuthorizedToDeleteGroupsException();
+			$currentUser = User::GetCurrentUser();
+			
+			if(!$currentUser->HasPermission("DELETE_GROUPS")) {
+				throw new NotAuthorizedToCreateOrEditGroupsException();
 			}
 			
 			return parent::Delete();

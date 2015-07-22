@@ -29,7 +29,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT group_id, status, checksum, name FROM %PREFIX%group WHERE group_id = :id";
+			$sqlObject = "SELECT group_id, status, checksum, name FROM `%PREFIX%group` WHERE group_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -64,7 +64,7 @@
 
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT group_id, status, checksum, name FROM %PREFIX%group WHERE status = 100 AND name = :name";
+			$sqlObject = "SELECT group_id, status, checksum, name FROM `%PREFIX%group` WHERE status = 100 AND name = :name";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["name" => $name]);
 			
@@ -94,7 +94,7 @@
 		public function GetAll() {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT group_id, status, checksum, name FROM %PREFIX%group WHERE status = 100 ORDER BY name";
+			$sqlObjects = "SELECT group_id, status, checksum, name FROM `%PREFIX%group` WHERE status = 100 ORDER BY name";
 			$stmObjects = $db->Prepare($sqlObjects);
 			$resObjects = $stmObjects->Read();
 			
@@ -135,7 +135,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new UserManager();
+				self::$instance = new GroupManager();
 			}
 			
 			return self::$instance;

@@ -57,6 +57,7 @@ $(function()
 	$('#SignInForm').submit(SignIn);
 	$('#SignUpForm').submit(SignUp);
 	$('#NewUserForm').submit(CreateNewUser);
+	$('#NewGroupForm').submit(CreateNewGroup);
 	$('#ChangePasswordForm').submit(ChangePassword);
 	$('#NavEditPage').click(EditPage);
 	
@@ -89,7 +90,7 @@ var ExtractPageName = function() {
 	page = pageName;
 	
 	if(page == "Users") {
-		view = "GetUsers";
+		view = "UserManagement";
 	}
 }
 
@@ -339,8 +340,8 @@ var DisplayAction = function() {
 			GetVersions();
 			break;
 			
-		case "GetUsers":
-			GetUserList();
+		case "UserManagement":
+			DisplayUserManagement();
 			break;
 	}
 }
@@ -387,7 +388,7 @@ var HideAllActions = function() {
 	$('#Versions').css("display","none");
 	
 	// Users
-	$('#Users').css("display","none");
+	$('#UserManagement').css("display","none");
 	$('#EditPermissions').css("display","none");
 	$('#NewUserForm').css("display","none");
 	$('#NewGroupForm').css("display","none");
@@ -881,9 +882,18 @@ var GetVersions = function() {
 	}
 }
 
-var GetUserList = function() {
+var DisplayUserManagement = function() {
 	HideAllActions();
+	GetUserList();
+	GetGroupList();
+	HideLoading();
 	
+	$("#UserManagement").css("display","block");
+	
+	return false;
+}
+
+var GetUserList = function() {
 	$.ajax({
 		'type': 'GET',
 		'url': 'request.php?command=GetUsers',
@@ -897,12 +907,6 @@ var GetUserList = function() {
 				DisplayNotAuthorized();
 				return;
 			}
-			
-			HideLoading();
-			
-			$('#Users').css("display", "block");
-			
-			document.title = "User management";
 			
 			$("#User-List").empty();
 			
@@ -919,6 +923,49 @@ var GetUserList = function() {
 			
 			$(".EditPermissions").click(EditPermissions);
 			$(".DeleteUser").click(DeleteUser);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}/*,
+		complete: function()
+		{
+			RemoveRequest();
+		}*/
+	});
+	
+	return false;
+}
+
+var GetGroupList = function() {
+	$.ajax({
+		'type': 'GET',
+		'url': 'request.php?command=GetGroups',
+		'dataType': 'json',
+		'success': function(response) {
+			
+			if(response.status == 0) {
+				alert(response.message);
+				return;
+			} else if(response.status == 401) {
+				DisplayNotAuthorized();
+				return;
+			}
+			
+			$("#Group-List").empty();
+			
+			for(var g = 0; g < response.groups.length; g++) {
+				var group = response.groups[g];
+				
+				$("#Group-List").append('' +
+				'	<tr>' +
+				'		<td>' + group.name + '</td>' +
+				'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+				'	</tr>');
+			}
+			
+			$(".DeleteGroup").click(DeleteGroup);
 		},
 		beforeSend: function(xhr)
 		{
@@ -977,6 +1024,42 @@ var CreateNewUser = function() {
 			$('#NewUserForm-InputLoginName').val('');
 			$('#NewUserForm-InputPassword').val('');
 			$('#NewUserForm-InputConfirmPassword').val('');
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+	
+	return false;
+}
+
+var CreateNewGroup = function() {
+	var $this = $(this);
+	
+	name = $('#NewGroupForm-InputName').val();
+	
+	var data = {"name":name};
+	
+	HideAllActions();
+	
+	$.ajax({
+		'type': 'POST',
+		'url': 'request.php?command=SaveGroup',
+		'dataType': 'json',
+		'data': data,
+		'success': function(response) {
+			HideLoading();
+			
+			alert(response.message);
+			
+			$('#NewGroupForm-InputName').val('');
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
 		}
 	});
 	

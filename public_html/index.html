@@ -29,7 +29,7 @@
 					<ul class="nav navbar-nav navbar-left">
 						<li><a href="Search.html" onclick="return DisplaySearchForm();" role="button" aria-expanded="false" id="NavSearch"><i class="glyphicon glyphicon-search"></i> &#160; Search</a></li>
 						<li><a href="#NewPage" role="button" aria-expanded="false" id="NavNewPage"><i class="glyphicon glyphicon-plus"></i> &#160; New page</a></li>
-						<li><a href="Users.html" onclick="return GetUserList();" role="button" aria-expanded="false" id="NavUsers"><i class="glyphicon glyphicon-user"></i> &#160; User management</a></li>
+						<li><a href="Users.html" onclick="return DisplayUserManagement();" role="button" aria-expanded="false" id="NavUsers"><i class="glyphicon glyphicon-user"></i> &#160; User management</a></li>
 					</ul>
 					
 					<ul class="nav navbar-nav navbar-right">
@@ -322,7 +322,7 @@
 				</table>
 			</div>
 			
-			<div id="Users">
+			<div id="UserManagement">
 				<h1>User &amp; Group management</h1>
 				
 				<ul class="nav nav-tabs" role="tablist">
@@ -350,7 +350,7 @@
 						<table class="table table-striped table-hover">
 							<thead>
 								<th>Group</th>
-								<th colspan="2">Action</th>
+								<th>Action</th>
 							</thead>
 							<tbody id="Group-List">
 							</tbody>

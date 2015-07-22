@@ -128,6 +128,16 @@
 				case "GetUsers": require_once "Core/Views/GetUsers.php"; break;
 				
 				/*
+				 * Create/edit a group
+				 */
+				case "SaveGroup": require_once "Core/Views/SaveGroup.php"; break;
+				
+				/*
+				 * Get a list of all groups
+				 */
+				case "GetGroups": require_once "Core/Views/GetGroups.php"; break;
+				
+				/*
 				 * Do an online check
 				 */
 				case "ConnectivityCheck":
