@@ -1203,6 +1203,18 @@ var CreateAndGrantPermission = function() {
 	});
 }
 
+var GetGroupUsers = function() {
+	var $this = $(this);
+	
+	var groupID = $this.data("group");
+	
+	HideAllActions();
+	HideLoading();
+	$("#GroupUsers").css("display","block");
+	
+	
+}
+
 var DeleteUser = function() {
 	var $this = $(this);
 	

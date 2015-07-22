@@ -9,6 +9,9 @@
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
+	$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
+	$mode = (isset($_GET["mode"]) ? $_GET["mode"] : "all");
+	
 	try {
 		$userManager = UserManager::GetInstance();
 		
