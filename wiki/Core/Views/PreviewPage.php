@@ -12,6 +12,7 @@
 	 */
 	
 	require_once "Core/ThirdParty/ParseDown.php";
+	require_once "Core/ThirdParty/ParsedownExtra.php";
 	
 	$title = $_POST["title"];
 	$content = $_POST["content"];
@@ -36,8 +37,9 @@
 		}
 			
 		$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
-		$parseDown = new \ParseDown;
+		$parseDown = new \ParsedownExtra;
 		$content = $parseDown->text($content);
+		$content = str_replace("<table>","<table class='table table-bordered'>",$content);
 		$page->Content = $content;
 		
 		if(!$customOutput) {
