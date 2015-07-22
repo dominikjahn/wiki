@@ -43,7 +43,7 @@ body
 }
 
 #SignInForm, #SignUpForm, #ChangePasswordForm, #PageNotFound, #NotAuthorized, #Offline, #DisplayPage, #EditPage, #NewPage, #PreviewPage, #Versions, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
-#NavPublicPage, #NavProtectedPage, #NavPrivatePage, #Users, #EditPermissions, #NewUserForm
+#NavPublicPage, #NavProtectedPage, #NavPrivatePage, #Users, #EditPermissions, #NewUserForm, #NewGroupForm
 {
 	display: none;
 }

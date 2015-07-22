@@ -70,6 +70,7 @@ $(function()
 	$('#EditPage-DeletePage').click(DeletePage);
 	$('#EditPermissions-NewPermissionSet').click(CreateAndGrantPermission);
 	$('#Users-NewUser').click(DisplayNewUserForm);
+	$('#Users-NewGroup').click(DisplayNewGroupForm);
 	
 	CheckLoginCredentials();
 });
@@ -389,6 +390,7 @@ var HideAllActions = function() {
 	$('#Users').css("display","none");
 	$('#EditPermissions').css("display","none");
 	$('#NewUserForm').css("display","none");
+	$('#NewGroupForm').css("display","none");
 	
 	// Error pages
 	$("#PageNotFound").css("display","none");
@@ -936,6 +938,12 @@ var DisplayNewUserForm = function() {
 	HideAllActions();
 	HideLoading();
 	$('#NewUserForm').css("display","block");
+}
+
+var DisplayNewGroupForm = function() {
+	HideAllActions();
+	HideLoading();
+	$('#NewGroupForm').css("display","block");
 }
 
 var CreateNewUser = function() {

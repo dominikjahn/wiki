@@ -57,6 +57,10 @@
 		}
 		
 		public function Delete() {
+			if(!self::$currentUser->HasPermission("DELETE_USERS")) {
+				throw new NotAuthorizedToDeleteUsersException();
+			}
+			
 			if($this->ID === 1 || $this->ID === 2) {
 				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
 			}
