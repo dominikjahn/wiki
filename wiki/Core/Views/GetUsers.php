@@ -17,35 +17,56 @@
 	try {
 		$userManager = UserManager::GetInstance();
 		
-		$users = $userManager->GetAll();
+		$users = [];
 		
-		if($groupID) {
+		if(!$groupID) {
+			$users = $userManager->GetAll();
+		} else {
 			$groupManager = GroupManager::GetInstance();
 			$groupMemManager = GroupMemberManager::GetInstance();
 			
 			$group = $groupManager->GetByID($groupID);
 			$members = $groupMemManager->GetByGroup($group);
 			
-			$filtered = [];
-			
-			if($mode == "EXCLUDE") {
-				$filtered = $users;
-			}
-			
-			foreach($members as $member) {
-				foreach($users as $u => $user) {
-					if($user->ID === $member->ID) {
-						if($mode == "INCLUDE") {
-							$filtered[] = $user;
-						} else if($mode == "EXCLUDE") {
-							unset($filtered[$u]);
+			if($mode == "INCLUDE") {
+				foreach($members as $member) {
+					$users[] = $member->User;
+				}
+			} else {
+				
+				$allUsers = $userManager->GetAll();
+				
+				foreach($allUsers as $u => $user) {
+					$isMember = false;
+					
+					foreach($members as $member) {
+						if($member->User->ID === $user->ID) {
+							$isMember = true;
+							break;
 						}
+					}
+					
+					if(!$isMember) {
+						$users[] = $user;
 					}
 				}
 			}
 			
-			$users = $filtered;
+			/*echo "All users:\n";
+			foreach($users as $user) {
+				echo "  * [".$user->ID."] ".$user->Loginname."\n";
+			}
+			
+			echo "\nMembers:\n";
+			foreach($members as $member) {
+				echo "  * [".$member->User->ID."] ".$member->User->Loginname."\n";
+			}
+			
+			echo "\n";*/
+			
 		}
+		
+		$users = array_values($users);
 		
 		$data->status = 1;
 		$data->message = count($users)." users found";

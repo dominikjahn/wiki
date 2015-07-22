@@ -408,12 +408,12 @@
 				<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group</button>
 			</form>
 			
-			<div id="GroupUsers">
+			<div id="GroupUsers" data-group="">
 				<h1>Users in group '<span id="GroupUsers-Groupname">...</span>'</h1>
 				
 				<div class="row">
 					<div class="col-md-6">
-						<button class="btn btn-danger btn-block">Remove selected users from group <i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i></button>
+						<button class="btn btn-danger btn-block" id="GroupUsers-Remove">Remove selected users from group <i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i></button>
 						<br/>
 						<select class="form-control" multiple="multiple" size="15" id="GroupUsers-InGroup">
 							
@@ -421,7 +421,7 @@
 					</div>
 					
 					<div class="col-md-6">
-						<button class="btn btn-success btn-block"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> Add selected users to group</button>
+						<button class="btn btn-success btn-block" id="GroupUsers-Add"><i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i> Add selected users to group</button>
 						<br/>
 						<select class="form-control" multiple="multiple" size="15" id="GroupUsers-NotInGroup">
 							

@@ -4,6 +4,8 @@
 	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
 	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
 	use Wiki\Domain\Manager\GroupManager;
+	use Wiki\Domain\Manager\UserPermissionManager;
+	use Wiki\Domain\Manager\GroupMemberManager;
 	
 	/**
 	 * @table user
@@ -56,6 +58,46 @@
 			}
 			
 			return $group->HasUser($this);
+		}
+		
+		public function AddToGroup($group) {
+			if(!($group instanceof Group)) {
+				$groupManager = GroupManager::GetInstance();
+				
+				$groupname = $group;
+				$group = $groupManager->GetByName($groupname);
+				
+				if(!$group || $group->Status === 0) {
+					throw new GroupNotFoundException($groupname);
+				}
+			}
+			
+			$groupmember = new GroupMember();
+			$groupmember->Status = 100;
+			$groupmember->Group = $group;
+			$groupmember->User = $this;
+			$groupmember->Save();
+		}
+		
+		public function RemoveFromGroup($group) {
+			if(!($group instanceof Group)) {
+				$groupManager = GroupManager::GetInstance();
+				
+				$groupname = $group;
+				$group = $groupManager->GetByName($groupname);
+				
+				if(!$group || $group->Status === 0) {
+					throw new GroupNotFoundException($groupname);
+				}
+			}
+			
+			$this->GetGroups();
+			
+			foreach($this->groups as $groupmember) {
+				if($groupmember->Group->ID == $group->ID) {
+					return $groupmember->Delete();
+				}
+			}
 		}
 		
 		public function Save() {

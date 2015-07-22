@@ -73,6 +73,9 @@ $(function()
 	$('#Users-NewUser').click(DisplayNewUserForm);
 	$('#Users-NewGroup').click(DisplayNewGroupForm);
 	
+	$("#GroupUsers-Remove").click(RemoveUsersFromGroup);
+	$("#GroupUsers-Add").click(AddUsersToGroup);
+	
 	CheckLoginCredentials();
 });
 
@@ -982,7 +985,7 @@ var GetGroupList = function() {
 				'	</tr>');
 			}
 			
-			$(".GetGroupUsers").click(GetGroupUsers);
+			$(".GetGroupUsers").click(DisplayGroupUsers);
 			$(".DeleteGroup").click(DeleteGroup);
 		},
 		beforeSend: function(xhr)
@@ -1203,16 +1206,145 @@ var CreateAndGrantPermission = function() {
 	});
 }
 
-var GetGroupUsers = function() {
+var DisplayGroupUsers = function() {
 	var $this = $(this);
 	
 	var groupID = $this.data("group");
 	
+	GetGroupUsers(groupID);
+}
+
+var GetGroupUsers = function(groupID) {
 	HideAllActions();
 	HideLoading();
-	$("#GroupUsers").css("display","block");
+	$("#GroupUsers").css("display","block").data("group",groupID);
 	
+	GetUsersInGroup(groupID, function(response) {
+		$("#GroupUsers-InGroup").empty();
+		
+		for(var u = 0; u < response.users.length; u++) {
+			var user = response.users[u];
+			
+			$("#GroupUsers-InGroup").append('<option value="'+user.user_id+'">'+user.loginname+'</option>');
+		}
+	});
 	
+	GetUsersNotInGroup(groupID, function(response) {
+		$("#GroupUsers-NotInGroup").empty();
+		
+		for(var u = 0; u < response.users.length; u++) {
+			var user = response.users[u];
+			
+			$("#GroupUsers-NotInGroup").append('<option value="'+user.user_id+'">'+user.loginname+'</option>');
+		}
+	});
+}
+
+var GetUsersInGroup = function(groupID, positive_callback) {
+	var url = "request.php?command=GetUsers&groupID="+groupID+"&mode=INCLUDE";
+	
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			if(response.status == 404 || response.status == 401) {
+				alert(response.message);
+			} else if(response.status == 1) {
+				positive_callback(response);
+			}
+		},
+		'error': function(xhr, type, message) {
+			alert("GetUsersInGroup\n"+type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+}
+
+var GetUsersNotInGroup = function(groupID, positive_callback) {
+	var url = "request.php?command=GetUsers&groupID="+groupID+"&mode=EXCLUDE";
+	
+	$.ajax({
+		'type': 'GET',
+		'url': url,
+		'dataType': 'json',
+		'success': function(response) {
+			if(response.status == 404 || response.status == 401) {
+				alert(response.message);
+			} else if(response.status == 1) {
+				positive_callback(response);
+			}
+		},
+		'error': function(xhr, type, message) {
+			alert("GetUsersInGroup\n"+type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+}
+
+var RemoveUsersFromGroup = function() {
+	
+	var selected = $("#GroupUsers-InGroup").val();
+	var groupID = $("#GroupUsers").data("group");
+	
+	var url = "request.php?command=SaveGroupMember";
+	var data = {"userIDs": selected, "groupID": groupID};
+	
+	$.ajax({
+		'type': "DELETE",
+		'url': url,
+		'data': data,
+		'dataType': 'json',
+		'success': function(response) {
+			alert(response.message);
+			GetGroupUsers(groupID);
+		},
+		'error': function(xhr, type, message) {
+			alert("RemoveUsersFromGroup\n"+type + ": "+message);
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
+}
+
+var AddUsersToGroup = function() {
+	
+	var selected = $("#GroupUsers-NotInGroup").val();
+	var groupID = $("#GroupUsers").data("group");
+	
+	var url = "request.php?command=SaveGroupMember";
+	var data = {"userIDs": selected, "groupID": groupID};
+	
+	$.ajax({
+		'type': "PUT",
+		'url': url,
+		'data': data,
+		'dataType': 'json',
+		'success': function(response) {
+			alert(response.message);
+			GetGroupUsers(groupID);
+		},
+		'error': function(xhr, type, message) {
+			alert("AddUsersToGroup\n"+type + ": "+message);
+			
+		},
+		beforeSend: function(xhr)
+		{
+			//AddRequest();
+			xhr.setRequestHeader("Authorization", "Basic " + window.btoa(loginname+":"+password));
+		}
+	});
 }
 
 var DeleteUser = function() {

@@ -138,11 +138,16 @@
 				case "GetGroups": require_once "Core/Views/GetGroups.php"; break;
 				
 				/*
+				 * Add/remove user to/from group
+				 */
+				case "SaveGroupMember": require_once "Core/Views/SaveGroupMember.php"; break;
+				
+				/*
 				 * Do an online check
 				 */
-				case "ConnectivityCheck":
-					print json_encode(["status" => 0, "message" => "You are still connected", "timestamp" => date("Y-m-d H:i:s")]);
-					break;
+				//case "ConnectivityCheck":
+				//	print json_encode(["status" => 0, "message" => "You are still connected", "timestamp" => date("Y-m-d H:i:s")]);
+				//	break;
 				
 				default:
 					print json_encode(["status" => 0, "message" => "This command is not supported"]);

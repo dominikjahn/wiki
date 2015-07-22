@@ -30,6 +30,14 @@
 		//
 		
 		public function HasUser(User $user) {
+			$this->GetUsers();
+			
+			foreach($this->users as $groupmember) {
+				if($groupmember->User->ID = $user->ID) {
+					return true;
+				}
+			}
+			
 			return false;
 		}
 		
