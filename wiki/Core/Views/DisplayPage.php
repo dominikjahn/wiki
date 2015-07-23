@@ -33,7 +33,7 @@
 			$data->message = "You are not authorized to see the content on this page";
 			//throw new \Exception("You are not authorized to see the content on this page");
 		} else {
-			
+			Page::SetCurrentPage($page);
 			
 			$content = $page->Content;
 			if(!$raw) {
