@@ -13,6 +13,76 @@ $(function() {
 	{
 		cache = $.parseJSON(fromCache);
 	}
+	
+	var pageName = ExtractPageName().split(':');
+	
+	switch(pageName) {
+		case "NewPage":
+			DisplayNewPageForm();
+			break;
+			
+		case "Search":
+			DisplaySearchForm();
+			break;
+		
+		case "SignUp":
+			DisplaySignUpForm();
+			break;
+			
+		case "SignIn":
+			DisplaySignInForm();
+			break;
+			
+		case "SignOut":
+			SignOut();
+			break;
+			
+		case "ChangePassword":
+			DisplayChangePasswordForm();
+			break;
+			
+		case "Users":
+			DisplayUserList();
+			break;
+			
+		case "Groups":
+			DisplayGroupList();
+			break;
+		
+		case "EditPage":
+			DisplayEditPageForm(pageName[1]);
+			break;
+			
+		case "Versions":
+			DisplayVersions(pageName[1]);
+			break;
+			
+		case "Version":
+			DisplayVersion(pageName[1]);
+			break;
+			
+		case "User":
+			DisplayUser(pageName[1]);
+			break;
+			
+		case "EditUser":
+			DisplayEditUserForm(pageName[1]);
+			break;
+			
+		case "Group":
+			DisplayGroup(pageName[1]);
+			break;
+			
+		case "EditGroup":
+			DisplayEditGroupForm(pageName[1]);
+			
+		case "Category":
+			DisplayCategory(pageName[1]);
+			break;
+			
+		default:
+			DisplayPage(pageName[1]);
+	}
 });
 
 var ExtractPageName = function() {
@@ -26,12 +96,6 @@ var ExtractPageName = function() {
 	}
 	
 	return pageName;
-}
-
-var ExtractView = function() {
-	var hash = window.location.hash.substring(1);
-	
-	return hash;
 }
 
 /*
