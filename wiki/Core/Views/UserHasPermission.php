@@ -36,7 +36,7 @@
 			$data->status = 0;
 			$data->message = "The user does not have this permission";
 		} else {
-			$data->status = 1;
+			$data->status = 200;
 			$data->message = "The user has the permission";
 		}
 		

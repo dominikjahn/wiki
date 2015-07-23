@@ -43,7 +43,7 @@
 			}
 		}
 		
-		$data->status = (int) $success;
+		$data->status = ($success ? 200 : 0);
 		$data->message = "The group membership has successfully been changed";
 		
 	}/* catch(NotAuthorizedToManageUserPermissionsException $e) {

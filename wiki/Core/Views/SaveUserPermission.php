@@ -33,7 +33,7 @@
 			$success = $user->RevokePermission($permissionName);
 		}
 		
-		$data->status = (int) $success;
+		$data->status = ($success ? 200 : 0);
 		$data->message = "The permission has successfully been changed";
 		
 	}/* catch(NotAuthorizedToManageUserPermissionsException $e) {

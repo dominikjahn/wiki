@@ -243,7 +243,7 @@ var SignUp = function() {
 		'success': function(response) {
 			alert(response.message);
 			
-			if(response.status == 1) {
+			if(response.status == 200) {
 				$("#SignUpForm").css("display","none");
 				
 				DisplaySignInForm();
@@ -1198,7 +1198,7 @@ var EditPermissions = function() {
 				$("#UserPermissions-List").append('' +
 				'	<tr>' +
 				'		<td>' + permission.permission + '</td>' +
-				'		<td><input type="checkbox" '+(permission.status == 100 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-user="'+userUserID+'" data-permission="'+permission.permission+'" /></td>' +
+				'		<td><input type="checkbox" '+(permission.status == 20000 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-user="'+userUserID+'" data-permission="'+permission.permission+'" /></td>' +
 				'	</tr>');
 			}
 			
@@ -1320,7 +1320,7 @@ var GetUsersInGroup = function(groupID, positive_callback) {
 		'success': function(response) {
 			if(response.status == 404 || response.status == 401) {
 				alert(response.message);
-			} else if(response.status == 1) {
+			} else if(response.status == 200) {
 				positive_callback(response);
 			}
 		},
@@ -1345,7 +1345,7 @@ var GetUsersNotInGroup = function(groupID, positive_callback) {
 		'success': function(response) {
 			if(response.status == 404 || response.status == 401) {
 				alert(response.message);
-			} else if(response.status == 1) {
+			} else if(response.status == 200) {
 				positive_callback(response);
 			}
 		},
@@ -1443,7 +1443,7 @@ var HasPermission = function(permission, positive_callback, negative_callback) {
 		'success': function(response) {
 			if(response.status == 404 || response.status == 401) {
 				alert(response.message);
-			} else if(response.status == 1) {
+			} else if(response.status == 200) {
 				positive_callback();
 			} else {
 				negative_callback();

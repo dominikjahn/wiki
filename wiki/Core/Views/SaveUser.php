@@ -66,7 +66,7 @@
 		
 		$db->Commit();
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = "The user was saved successfully";
 		
 	} catch(NotAuthorizedToCreateNewUsersException $e) {

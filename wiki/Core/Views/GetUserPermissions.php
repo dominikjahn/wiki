@@ -44,7 +44,7 @@
 			$permissions[] = (object) ["permission" => $permission, "status" => $status];
 		}
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = count($permissions)." permissions found";
 		$data->permissions = $permissions;
 		

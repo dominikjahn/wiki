@@ -14,7 +14,7 @@
 		
 		$groups = $groupManager->GetAll();
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = count($groups)." groups found";
 		$data->groups = $groups;
 		

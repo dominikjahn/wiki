@@ -40,7 +40,7 @@
 			$version->Content = $content;
 			
 			if(!$customOutput) {
-				$data->status = 1;
+				$data->status = 200;
 				$data->message = "Page found";
 				$data->version = $version;
 				$data->no_headline = $noHeadline;

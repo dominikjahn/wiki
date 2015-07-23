@@ -35,7 +35,7 @@
 		} else {
 			$versions = $versionManager->GetByPage($page);
 			
-			$data->status = 1;
+			$data->status = 200;
 			$data->message = count($versions)." versions found";
 			$data->page = $page;
 			$data->versions = $versions;

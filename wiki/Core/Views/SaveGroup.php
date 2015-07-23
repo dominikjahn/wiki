@@ -46,7 +46,7 @@
 			throw new \Exception("Storing the group failed");
 		}
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = "The group was saved successfully";
 		
 	}/* catch(NotAuthorizedToCreateNewUsersException $e) {

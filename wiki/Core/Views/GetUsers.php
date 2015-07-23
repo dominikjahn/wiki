@@ -68,7 +68,7 @@
 		
 		$users = array_values($users);
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = count($users)." users found";
 		$data->users = $users;
 		

@@ -118,7 +118,7 @@
 		
 		$db->Commit();
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = "The page was saved successfully";
 		
 		if($isNewPage) {

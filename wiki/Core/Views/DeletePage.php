@@ -47,7 +47,7 @@
 		
 		$db->Commit();
 		
-		$data->status = 1;
+		$data->status = 200;
 		$data->message = "The page was deleted successfully";
 		
 	} catch(\Exception $e) {
