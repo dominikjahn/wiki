@@ -921,13 +921,14 @@ var GetVersions = function() {
 				'	<tr>' +
 				'		<td><input type="radio" name="left" /></td>' +
 				'		<td><input type="radio" name="right" /></td>' +
-				'		<td>' + timestamp.toLocaleDateString() + '</td>' +
-				'		<td>' + timestamp.toLocaleTimeString() + '</td>' +
+				'		<td><a href="#" data-version="'+version.version_id+'" class="DisplayVersion">' + timestamp.toLocaleDateString() + ' @ ' + timestamp.toLocaleTimeString() + '</a></td>' +
 				'		<td>' + version.user + '</td>' +
 				'		<td>' + version.summary + '</td>' +
 				'		<td>' + minor_edit + '</td>' +
 				'	</tr>');
 			}
+			
+			$(".DisplayVersion").click(DisplayVersion);
 		},
 		beforeSend: function(xhr)
 		{
@@ -939,6 +940,15 @@ var GetVersions = function() {
 			RemoveRequest();
 		}*/
 	});
+}
+
+var DisplayVersion = function() {
+	var $this = $(this);
+	var versionID = $this.data("version");
+	
+	alert("Display revision #"+versionID);
+
+	return false;
 }
 
 var DisplayUserManagement = function() {

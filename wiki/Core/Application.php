@@ -90,7 +90,7 @@
 				/*
 				 * Get a specific version
 				 */
-				//case "DisplayVersion": require_once "Core/Views/DisplayVersion.php"; break;
+				case "DisplayVersion": require_once "Core/Views/DisplayVersion.php"; break;
 					
 				/*
 				 * Delete a page
