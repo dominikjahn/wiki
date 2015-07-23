@@ -567,8 +567,26 @@ var NewPage = function() {
 		$("#NavPreviewChanges").css("display","block");
 		$("#NavSaveChanges").css("display","block");
 			
-	$("textarea.tab").keydown(indent);
-	$('textarea.tab').keypress(autoindent);
+	//$("textarea.tab").keydown(indent);
+	//$('textarea.tab').keypress(autoindent);
+	
+	$("#NewPage-Owner").empty();
+	GetUserList(function(response) {
+		for(var u = 0; u < response.users.length; u++) {
+			var user = response.users[u];
+			
+			$("#NewPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == userID ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+		}
+	});
+	
+	$("#NewPage-Group").empty();
+	GetGroupList(function(response) {
+		for(var g = 0; g < response.groups.length; g++) {
+			var group = response.groups[g];
+			
+			$("#NewPage-Group").append('<option value="'+group.group_id+'">'+group.name+'</option>');
+		}
+	});
 	
 	BindKey(83,SaveChanges,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC
@@ -620,6 +638,27 @@ var EditPage = function() {
 			$("#NavSaveChanges").css("display","block");
 			
 			$("#EditPage-MinorChange").attr("checked",false);
+			
+			var owner_user = response.page.owner;
+			var owner_group = response.page.group;
+			
+			$("#EditPage-Owner").empty();
+			GetUserList(function(response) {
+				for(var u = 0; u < response.users.length; u++) {
+					var user = response.users[u];
+					
+					$("#EditPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == owner_user.user_id ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+				}
+			});
+			
+			$("#EditPage-Group").empty();
+			GetGroupList(function(response) {
+				for(var g = 0; g < response.groups.length; g++) {
+					var group = response.groups[g];
+					
+					$("#EditPage-Group").append('<option value="'+group.group_id+'"'+(group.group_id == owner_group.group_id ? ' selected="selected"' : '')+'>'+group.name+'</option>');
+				}
+			});
 				
 			if(response.page.page_id == 1) {
 				$("#EditPage-DeletePage").attr("disabled",true);
@@ -671,7 +710,9 @@ var SaveChanges = function() {
 		'summary': $("#"+mode+"-InputSummary").val(),
 		'minor_edit': minor_edit,
 		'visibility': $('input[name='+mode+'-Visiblity]:checked').val(),
-		'manipulation': $('input[name='+mode+'-Manipulation]:checked').val()
+		'manipulation': $('input[name='+mode+'-Manipulation]:checked').val(),
+		'owner': $('#'+mode+'-Owner').val(),
+		'group': $('#'+mode+'-Group').val()
 	};
 	
 	$.ajax({
@@ -902,8 +943,42 @@ var GetVersions = function() {
 
 var DisplayUserManagement = function() {
 	HideAllActions();
-	GetUserList();
-	GetGroupList();
+	GetUserList(function (response) {
+		$("#User-List").empty();
+			
+		for(var u = 0; u < response.users.length; u++) {
+			var user = response.users[u];
+			
+			$("#User-List").append('' +
+			'	<tr>' +
+			'		<td>' + user.loginname + '</td>' +
+			'		<td><button type="button" class="btn btn-xs btn-warning EditPermissions" data-user="'+user.user_id+'" data-loginname="'+user.loginname+'" '+(user.user_id == 2 ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-cog" aria-hidden="true"></i> Permissions</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-danger DeleteUser" data-user="'+user.user_id+'" '+((user.user_id == 1 || user.user_id == 2) ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+			'	</tr>');
+		}
+		
+		$(".EditPermissions").click(EditPermissions);
+		$(".DeleteUser").click(DeleteUser);
+	});
+	
+	GetGroupList(function(response) {
+		$("#Group-List").empty();
+			
+		for(var g = 0; g < response.groups.length; g++) {
+			var group = response.groups[g];
+			
+			$("#Group-List").append('' +
+			'	<tr>' +
+			'		<td>' + group.name + '</td>' +
+			'		<td><button type="button" class="btn btn-xs btn-primary GetGroupUsers" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Users</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+			'	</tr>');
+		}
+		
+		$(".GetGroupUsers").click(DisplayGroupUsers);
+		$(".DeleteGroup").click(DeleteGroup);
+	});
+	
 	HideLoading();
 	
 	$("#UserManagement").css("display","block");
@@ -912,7 +987,7 @@ var DisplayUserManagement = function() {
 	return false;
 }
 
-var GetUserList = function() {
+var GetUserList = function(positive_callback) {
 	$.ajax({
 		'type': 'GET',
 		'url': 'request.php?command=GetUsers',
@@ -927,21 +1002,7 @@ var GetUserList = function() {
 				return;
 			}
 			
-			$("#User-List").empty();
-			
-			for(var u = 0; u < response.users.length; u++) {
-				var user = response.users[u];
-				
-				$("#User-List").append('' +
-				'	<tr>' +
-				'		<td>' + user.loginname + '</td>' +
-				'		<td><button type="button" class="btn btn-xs btn-warning EditPermissions" data-user="'+user.user_id+'" data-loginname="'+user.loginname+'" '+(user.user_id == 2 ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-cog" aria-hidden="true"></i> Permissions</button></td>' +
-				'		<td><button type="button" class="btn btn-xs btn-danger DeleteUser" data-user="'+user.user_id+'" '+((user.user_id == 1 || user.user_id == 2) ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
-				'	</tr>');
-			}
-			
-			$(".EditPermissions").click(EditPermissions);
-			$(".DeleteUser").click(DeleteUser);
+			positive_callback(response);
 		},
 		beforeSend: function(xhr)
 		{
@@ -957,7 +1018,7 @@ var GetUserList = function() {
 	return false;
 }
 
-var GetGroupList = function() {
+var GetGroupList = function(positive_callback) {
 	$.ajax({
 		'type': 'GET',
 		'url': 'request.php?command=GetGroups',
@@ -972,21 +1033,7 @@ var GetGroupList = function() {
 				return;
 			}
 			
-			$("#Group-List").empty();
-			
-			for(var g = 0; g < response.groups.length; g++) {
-				var group = response.groups[g];
-				
-				$("#Group-List").append('' +
-				'	<tr>' +
-				'		<td>' + group.name + '</td>' +
-				'		<td><button type="button" class="btn btn-xs btn-primary GetGroupUsers" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Users</button></td>' +
-				'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-group="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
-				'	</tr>');
-			}
-			
-			$(".GetGroupUsers").click(DisplayGroupUsers);
-			$(".DeleteGroup").click(DeleteGroup);
+			positive_callback(response);
 		},
 		beforeSend: function(xhr)
 		{

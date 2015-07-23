@@ -41,6 +41,7 @@
 				"visibility" => $this->visibility,
 				"manipulation" => $this->manipulation,
 				"owner" => $this->owner,
+				"group" => $this->group,
 				"categories" => $this->Categories,
 				"last_edit" => [
 				  "timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
@@ -176,6 +177,11 @@
 		protected $owner;
 		
 		/**
+		 * @field group_owner_id
+		 */
+		protected $group;
+		
+		/**
 		 * @field visibility
 		 */
 		protected $visiblity;
@@ -272,6 +278,26 @@
 		 */
 		protected function SetOwner(User $value) {
 			$this->owner = $value;
+		}
+		
+		# Group
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function GetGroup() {
+			return $this->group;
+		}
+		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		protected function SetGroup(Group $value) {
+			$this->group = $value;
 		}
 		
 		# Visibility

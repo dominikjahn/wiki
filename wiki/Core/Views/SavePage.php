@@ -4,6 +4,8 @@
 	use Wiki\Domain\Page;
 	use Wiki\Domain\Version;
 	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
 	
 	/**
@@ -20,6 +22,8 @@
 	$minor_edit = ((isset($_POST["minor_edit"]) && $_POST["minor_edit"] == "true") ? true : false);
 	$visibility = (isset($_POST["visibility"]) ? $_POST["visibility"] : Page::VIS_PROTECTED);
 	$manipulation = (isset($_POST["manipulation"]) ? $_POST["manipulation"] : Page::MAN_REGISTERED);
+	$ownerID = (isset($_POST["owner"]) ? (int) $_POST["owner"] : null);
+	$groupID = (isset($_POST["group"]) ? (int) $_POST["group"] : null);
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
@@ -52,7 +56,6 @@
 			
 			$page->Status = 100;
 			$page->Name = $name;
-			$page->Owner = $currentUser;
 		}
 		
 		// Check for manipulation mode
@@ -71,10 +74,30 @@
 			throw new \Exception("You are not authorized to create new pages");
 		}
 		
+		$owner = User::GetCurrentUser();
+		if($ownerID) {
+			$userManager = UserManager::GetInstance();
+			
+			$owner = $userManager->GetByID($ownerID);
+			
+			if(!$owner || $owner->Status === 0) {
+				throw new \Exception("User not found");
+			}
+		}
+		
+		$groupManager = GroupManager::GetInstance();
+		$group = $groupManager->GetByID($groupID);
+		
+		if(!$group || $group->Status === 0) {
+			throw new \Exception("Group not found");
+		}
+		
 		$page->Title = $title;
 		$page->Content = $content;
 		$page->Visibility = $visibility;
 		$page->Manipulation = $manipulation;
+		$page->Owner = $owner;
+		$page->Group = $group;
 		
 		$success = $page->Save();
 		

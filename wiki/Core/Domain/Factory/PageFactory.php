@@ -3,6 +3,7 @@
 	
 	use Wiki\Domain\Manager\LogManager;
 	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Domain;
 	use Wiki\Domain\Log;
 	use Wiki\Database\DatabaseRow;
@@ -25,6 +26,7 @@
 		 */
 		public function FromDataRow(Domain $object, DatabaseRow $row) {
 			$userManager = UserManager::GetInstance();
+			$groupManager = GroupManager::GetInstance();
 			$logManager = LogManager::GetInstance();
 			
 			$object->ID = $row->page_id->Integer;
@@ -35,6 +37,7 @@
 			$object->Visibility = $row->visibility->String;
 			$object->Manipulation = $row->manipulation->String;
 			$object->Owner = $userManager->GetByID($row->user_owner_id->Integer);
+			$object->Group = $groupManager->GetByID($row->group_owner_id->Integer);
 			
 			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
 			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
