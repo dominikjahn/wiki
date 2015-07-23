@@ -1434,6 +1434,7 @@ var SetCookie = function(name, value) {
  * Indent on tab
  */
 
+/*
 var indent = function(e) {
 
 	if(e.keyCode === 9) { // tab was pressed
@@ -1456,11 +1457,12 @@ var indent = function(e) {
 		e.preventDefault();
 	}
 };
+//*/
 
 /*
  * Auto indent
  */
-
+/*
 function autoindent(e) {
   var k = e.keyCode || e.charCode;
   if (k != 13) return true;
@@ -1474,7 +1476,7 @@ function autoindent(e) {
   $(this).replaceSelection(ws);
   $(this).setSelection({pos: pos + ws.length});
 }
-
+//*/
 function BindKey(key, functionName, ctrl) {
 	var ctrl = ctrl || false;
 	
@@ -1490,5 +1492,3 @@ function BindKey(key, functionName, ctrl) {
 function UnbindKeys() {
 	$(document).unbind('keydown');
 }
-
-

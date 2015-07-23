@@ -23,15 +23,6 @@ INSERT INTO `%PREFIX%group` (`group_id`, `status`, `checksum`, `name`) VALUES
 (2, 100, '9188062525100d39e479ba0c4ac52a89', 'admin');
 
 --
--- Dumping data for table `groupmember`
---
-
-INSERT INTO `%PREFIX%groupmember` (`groupmember_id`, `status`, `checksum`, `group_id`, `user_id`) VALUES
-(1, 100, 'a2369958a9645eac52b58a8134e2ef5a', 1, 1),
-(2, 100, 'd3ab9b41f98222ad7b5ff8a822172796', 1, 2),
-(3, 100, '93a27b0bd99bac3e68a440b48aa421ab', 2, 2);
-
---
 -- Dumping data for table `log`
 --
 
