@@ -23,13 +23,13 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index.html"><i class="glyphicon glyphicon-home navbar-logo" aria-hidden="true" id="logo"></i></a>
+					<a class="navbar-brand" href="Homepage.html"><i class="glyphicon glyphicon-home navbar-logo" aria-hidden="true" id="logo"></i></a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-left">
 						<li><a href="Search.html" onclick="return DisplaySearchForm();" role="button" aria-expanded="false" id="NavSearch"><i class="glyphicon glyphicon-search"></i> &#160; Search</a></li>
-						<li><a href="#NewPage" role="button" aria-expanded="false" id="NavNewPage"><i class="glyphicon glyphicon-plus"></i> &#160; New page</a></li>
-						<li><a href="Users.html" onclick="return DisplayUserManagement();" role="button" aria-expanded="false" id="NavUsers"><i class="glyphicon glyphicon-user"></i> &#160; User management</a></li>
+						<li><a href="NewPage.html" onclick="return DisplayNewPageForm();" role="button" aria-expanded="false" id="NavNewPage"><i class="glyphicon glyphicon-plus"></i> &#160; New page</a></li>
+						<li><a href="Users.html" onclick="return DisplayUserList();" role="button" aria-expanded="false" id="NavUsers"><i class="glyphicon glyphicon-user"></i> &#160; User management</a></li>
 					</ul>
 					
 					<ul class="nav navbar-nav navbar-right">
@@ -40,8 +40,8 @@
 						<li data-toggle="tooltip" title="This page is private to its group" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavGroupPrivatePage"><i class="glyphicon glyphicon-lock"></i></a></li>
 						
 						<li><a href="#TableOfContents" role="button" aria-expanded="false" id="NavTableOfContents"><i class="glyphicon glyphicon-th-list"></i> &#160; Table of Contents</a></li>
-						<li><a href="#Edit" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
-						<li><a href="#Versions" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
+						<li><a href="Edit:Homepage.html" onclick="return DisplayEditPageForm('Homepage')" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
+						<li><a href="Versions:Homepage.html" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavDropChanges"><i class="glyphicon glyphicon-remove" style="color:#FF5742"></i> &#160; Drop changes</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavPreviewChanges"><i class="glyphicon glyphicon-eye-open" style="color:#FF8800"></i> &#160; Preview changes</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavSaveChanges"><i class="glyphicon glyphicon-floppy-disk" style="color:#8FD55A"></i> &#160; Save changes</a></li>
@@ -303,11 +303,11 @@
 				</div>
 			</form>
 			
-			<div id="PreviewPage">
+			<!-- div id="PreviewPage">
 				<h1 id="PreviewPage-Title"></h1>
 				<hr id="PreviewPage-TitleSeparator" />
 				<div id="PreviewPage-Content"></div>
-			</div>
+			</div-->
 		
 			<div id="Versions">
 				<h1>Revisions for &quot;<span id="Versions-PageTitle">...</span>&quot;</h1>
@@ -483,7 +483,8 @@
 		<script src="assets/js/ace/mode-html.js"></script>
 		<script src="assets/js/md5.js"></script>
 		<script src="assets/js/jquery.fieldselection.js"></script>
-		<script src="assets/application.js"></script>
+		<!--script src="assets/application.js"></script-->
 		<script src="assets/data.js"></script>
+		<script src="assets/view.js"></script>
 	</body>
 </html>
