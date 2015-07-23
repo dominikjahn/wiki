@@ -504,11 +504,11 @@ var DisplayPageContent = function(pagedata, fromCache) {
 	
 	document.title = pagedata.page.title + (fromCache ? " (From cache)" : "");
 	
-	switch(pagedata.visibility) {
+	switch(pagedata.page.visibility) {
 		case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
 		case "PROTECTED": $('#NavProtectedPage').css("display","block"); break;
 		case "PRIVATE": $('#NavPrivatePage').css("display","block"); break;
-		case "GROUPPRIVATE": $('#NavPrivatePage').css("display","block"); break;
+		case "GROUPPRIVATE": $('#NavGroupPrivatePage').css("display","block"); break;
 	}
 	
 	if(pagedata.no_headline) {

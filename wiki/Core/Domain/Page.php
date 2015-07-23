@@ -176,7 +176,7 @@
 				// User needs to be registered and current user is 'guest'
 				($this->manipulation != self::MAN_EVERYONE && $currentUser->ID === 1) ||
 				// User needs to be the owner
-				($this->manipulation == self::MAN_OWNER && $currentUser->ID != $page->Owner->ID) ||
+				($this->manipulation == self::MAN_OWNER && $currentUser->ID != $this->Owner->ID) ||
 				// User needs to be in the group
 				($this->manipulation == self::MAN_GROUP && !$currentUser->IsInGroup($this->group))
 			) {
