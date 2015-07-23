@@ -60,12 +60,7 @@
 		
 		// Check for manipulation mode
 		if(!$isNewPage) {
-			if(
-				// User needs to be registered
-				($page->Manipulation != Page::MAN_EVERYONE && $currentUser->ID === 1) ||
-				// User needs to be the owner
-				($page->Manipulation == Page::MAN_OWNER && $currentUser->ID != $page->Owner->ID)
-			) {
+			if(!$page->CanEdit) {
 				$db->Rollback();
 				throw new \Exception("You are not authorized to edit this page");
 			}

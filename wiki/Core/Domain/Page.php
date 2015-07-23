@@ -152,6 +152,40 @@
 			return md5($this->Status.$this->name.$this->title.$this->content.$this->owner->ID.$this->visibility.$this->manipulation);
 		}
 		
+		protected function GetIsVisible() {
+			$currentUser = User::GetCurrentUser();
+			
+			if(
+				// Page is protected and current user is 'guest'
+				($this->visibility == self::VIS_PROTECTED && $currentUser->ID === 1) ||
+				// Page is private and current user is not the owner
+				($this->visibility == self::VIS_PRIVATE && $this->Owner->ID <> $currentUser->ID) ||
+				// Page is group private and current user is not in the group
+				($this->visibility == self::VIS_GROUPPRIVATE && !$currentUser->IsInGroup($this->group))
+			) {
+				return false;
+			}
+			
+			return true;
+		}
+		
+		protected function GetCanEdit() {
+			$currentUser = User::GetCurrentUser();
+			
+			if(
+				// User needs to be registered and current user is 'guest'
+				($this->manipulation != self::MAN_EVERYONE && $currentUser->ID === 1) ||
+				// User needs to be the owner
+				($this->manipulation == self::MAN_OWNER && $currentUser->ID != $page->Owner->ID) ||
+				// User needs to be in the group
+				($this->manipulation == self::MAN_GROUP && !$currentUser->IsInGroup($this->group))
+			) {
+				return false;
+			}
+			
+			return true;
+		}
+		
 		  //
 		 // ATTRIBUTES
 		//
