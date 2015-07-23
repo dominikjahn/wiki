@@ -29,13 +29,14 @@ $(function()
 		cache = $.parseJSON(fromCache);
 	}
 	
-	var loginname = GetCookie('wiki_loginname');
+	/*var loginname = GetCookie('wiki_loginname');
 	var password = GetCookie('wiki_password');
 	
 	wiki = new Wiki();
-	wiki.SignIn(loginname, password , DoSomething);
+	wiki.SignIn(loginname, password , DoSomething);*/
 	
-	
+	loginname = GetCookie('wiki_loginname');
+	password = GetCookie('wiki_password');
 	
 	$('[data-toggle="tooltip"]').tooltip();
 	
@@ -89,7 +90,7 @@ $(function()
 	$("#GroupUsers-Remove").click(RemoveUsersFromGroup);
 	$("#GroupUsers-Add").click(AddUsersToGroup);
 	
-	//CheckLoginCredentials();
+	CheckLoginCredentials();
 });
 
 var ExtractPageName = function() {
