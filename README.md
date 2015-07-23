@@ -4,6 +4,20 @@ This repository is for a wiki software. It is in no way meant to be a competitio
 
 Pages can be created and made visible only to you or a group of people (e.g. you could create a group `sales` and let only employees in that group see the content of a page). Also, editing of pages can be restricted: a page may be public, but only users in the group `admin` can edit it. Or you can make a page visible only to registered users, but only **you** (the owner of the page) can edit it.
 
+## Features
+
+* Multiple users (users can either sign up themselves or a permitted user can create them)
+* Users can be assigned to groups
+* Individual pages can be
+	* Public
+	* Protected (only visible to signed in users)
+	* Private (only visible to their owner)
+	* Group private (only visible to users in a specific group)
+* Pages can be assigned to categories
+* Pages are stored in a local cache, so your website will still be available even when you can't connect to it
+* Editing of pages can be restricted to everyone, registered users only, their owner only or users in their group only - for each individual page
+* Permitted users can create and edit pages with PHP scripts
+
 # Installation
 
 * Create a directory, e.g. `/var/www/wiki.domain.com`
@@ -14,4 +28,4 @@ Pages can be created and made visible only to you or a group of people (e.g. you
 * Create a virtual host file which points to `/var/www/wiki.domain.com/public_html`
 * Go to your website, e.g. `http://wiki.domain.com`
 * You can sign in using `admin` and `admin`
-* I highly recommend that you change that password immediately! To do that, simply click on your login name on the bottom left of the Wiki website.
+* **I highly recommend that you change that password immediately!** To do that, simply click on your login name on the bottom left of the Wiki website.
