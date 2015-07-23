@@ -47,7 +47,7 @@
 			$page->Content = $content;
 			
 			if(!$customOutput) {
-				$data->status = 1;
+				$data->status = 200;
 				$data->message = "Page found";
 				$data->page = $page;
 				$data->no_headline = $noHeadline;

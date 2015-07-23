@@ -14,6 +14,12 @@ var cache = {};
 var NewPageEditor = null;
 var EditPageEditor = null;
 
+var wiki;
+
+var DoSomething = function() {
+	//wiki.GetPageByName('Homepage', false, function(response) { alert(response.page.title); });
+}
+
 $(function()
 {
 	var fromCache = localStorage.getItem("wiki_cache");
@@ -22,6 +28,14 @@ $(function()
 	{
 		cache = $.parseJSON(fromCache);
 	}
+	
+	var loginname = GetCookie('wiki_loginname');
+	var password = GetCookie('wiki_password');
+	
+	wiki = new Wiki();
+	wiki.SignIn(loginname, password , DoSomething);
+	
+	
 	
 	$('[data-toggle="tooltip"]').tooltip();
 	
@@ -51,8 +65,7 @@ $(function()
 	
 	ExtractPageName();
 	
-	loginname = GetCookie('wiki_loginname');
-	password = GetCookie('wiki_password');
+	
 	
 	$('#SignInForm').submit(SignIn);
 	$('#SignUpForm').submit(SignUp);
@@ -76,7 +89,7 @@ $(function()
 	$("#GroupUsers-Remove").click(RemoveUsersFromGroup);
 	$("#GroupUsers-Add").click(AddUsersToGroup);
 	
-	CheckLoginCredentials();
+	//CheckLoginCredentials();
 });
 
 var ExtractPageName = function() {
