@@ -126,11 +126,11 @@ var Wiki = function() {
 		},
 		
 		'CreateOrSaveUser': function(userdata, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("POST", "request.php?command=SaveUser", userdata, positive_callback, negative_callback, error_callback);
 		},
 		
 		'DeleteUser': function(userID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=DeleteUser", {'userID':userID}, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetGroups': function(positive_callback, negative_callback, error_callback) {
@@ -146,19 +146,20 @@ var Wiki = function() {
 		},
 		
 		'CreateOrSaveGroup': function(groupdata, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("POST", "request.php?command=SaveGroup", groupdata, positive_callback, negative_callback, error_callback);
 		},
 		
 		'DeleteGroup': function(groupID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=DeleteGroup", {'groupID':groupID}, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetUsersInGroup': function(groupID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=GetUsers&groupID="+groupID+"&mode=INCLUDE", null, positive_callback, negative_callback, error_callback);
+			
 		},
 		
 		'GetUsersNotInGroup': function(groupID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=GetUsers&groupID="+groupID+"&mode=EXCLUDE", null, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
@@ -167,7 +168,7 @@ var Wiki = function() {
 		 * @parameter users array with userID's (e.g. [1,2,3])
 		 */
 		'AddUsersToGroup': function(groupID, users, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("PUT", "request.php?command=SaveGroupMember", {'groupID': groupID, 'userIDs': users}, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
@@ -176,7 +177,7 @@ var Wiki = function() {
 		 * @parameter users array with userID's (e.g. [1,2,3])
 		 */
 		'RemoveUsersFromGroup': function(groupID, users, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=SaveGroupMember", {'groupID': groupID, 'userIDs': users}, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
@@ -198,11 +199,12 @@ var Wiki = function() {
 		},
 		
 		'GetPermissionsForUser': function(userID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetUserPermissions&userID="+userID, null, positive_callback, negative_callback, error_callback);
+			
 		},
 		
-		'UserHasPermission': function(userID, permission, positive_callback, negative_callback, error_callback) {
-			
+		'UserHasPermission': function(permission, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=UserHasPermission&userID="+this.currentUserID+"&permission="+permission, null, positive_callback, negative_callback, error_callback);
 		}
 	}
 };

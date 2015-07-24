@@ -106,6 +106,12 @@
 				 * Create/edit a user account
 				 */
 				case "SaveUser": require_once "Core/Views/SaveUser.php"; break;
+				
+				/*
+				 * Delete a user
+				 */
+				case "DeleteUser": require_once "Core/Views/DeleteUser.php"; break;
+				
 					
 				/*
 				 * Create/edit a user account
@@ -136,6 +142,11 @@
 				 * Get a list of all groups
 				 */
 				case "GetGroups": require_once "Core/Views/GetGroups.php"; break;
+				
+				/*
+				 * Delete a group
+				 */
+				case "DeleteGroup": require_once "Core/Views/DeleteGroup.php"; break;
 				
 				/*
 				 * Add/remove user to/from group

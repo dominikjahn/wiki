@@ -1,6 +1,6 @@
 <?php
 	use Wiki\Database\DatabaseConnection;
-	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Tools\Request;
 	
 	/**
@@ -11,26 +11,26 @@
 	
 	$request = Request::GetInstance();
 	
-	$userID = (int) $request->Body["userID"];
+	$groupID = (int) $request->Body["groupID"];
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
-		$page = PageManager::GetInstance()->GetByID($pageID);
+		$group = GroupManager::GetInstance()->GetByID($groupID);
 		
-		if(!$page || $page->Status === 0) {
+		if(!$group || $group->Status === 0) {
 			$this->status = 404;
-			throw new \Exception("The page doesn't exist");
+			throw new \Exception("The group doesn't exist");
 		}
 		
-		$success = $page->Delete();
+		$success = $group->Delete();
 		
 		if(!$success) {
-			throw new \Exception("Deleting the page failed");
+			throw new \Exception("Deleting the group failed");
 		}
 		
 		$data->status = 200;
-		$data->message = "The page was deleted successfully";
+		$data->message = "The group was deleted successfully";
 		
 	} catch(\Exception $e) {
 		$data->message = $e->getMessage();

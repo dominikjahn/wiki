@@ -47,6 +47,7 @@
 		$data->status = 200;
 		$data->message = count($permissions)." permissions found";
 		$data->permissions = $permissions;
+		$data->user = $user;
 		
 	} catch(\Exception $e) {
 		$data->message = $e->getMessage();

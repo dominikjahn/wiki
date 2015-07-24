@@ -12,7 +12,7 @@
 	 * @since 0.1
 	 */
 	
-	$username = (isset($_GET["user"]) ? (int) $_GET["user"] : null);
+	$userID = (isset($_POST["userID"]) ? (int) $_POST["userID"] : null);
 	
 	$loginname = (isset($_POST["loginname"]) ? $_POST["loginname"] : null);
 	$password = (isset($_POST["password"]) ? $_POST["password"] : null);
@@ -31,8 +31,8 @@
 		
 		$user = null;
 		
-		if(!is_null($username)) {
-			$user = UserManager::GetInstance()->GetByLoginname($username);
+		if($userID) {
+			$user = UserManager::GetInstance()->GetByID($userID);
 			
 			if(!$user || $user->Status === 0) {
 				$data->status = 404;

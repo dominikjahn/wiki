@@ -12,7 +12,7 @@
 	 * @since 0.1
 	 */
 	
-	$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
+	$groupID = (isset($_POST["groupID"]) ? (int) $_POST["groupID"] : null);
 	
 	$name = $_POST["name"];
 	
@@ -23,7 +23,7 @@
 		
 		$group = null;
 		
-		if(!is_null($groupID)) {
+		if($groupID) {
 			$group = GroupManager::GetInstance()->GetByID($groupID);
 			
 			if(!$group || $group->Status === 0) {

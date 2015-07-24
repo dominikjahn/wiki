@@ -18,14 +18,21 @@
 		$userManager = UserManager::GetInstance();
 		
 		$users = [];
+		$group = null;
 		
-		if(!$groupID) {
+		if(is_null($groupID)) {
 			$users = $userManager->GetAll();
 		} else {
 			$groupManager = GroupManager::GetInstance();
 			$groupMemManager = GroupMemberManager::GetInstance();
 			
 			$group = $groupManager->GetByID($groupID);
+			
+			if(!$group || $group->Status === 0) {
+				$data->status = 404;
+				throw new \Exception("Group not found");	
+			}
+			
 			$members = $groupMemManager->GetByGroup($group);
 			
 			if($mode == "INCLUDE") {
@@ -71,6 +78,9 @@
 		$data->status = 200;
 		$data->message = count($users)." users found";
 		$data->users = $users;
+		if($group) {
+			$data->group = $group;
+		}
 		
 	} catch(\Exception $e) {
 		$data->message = $e->getMessage();

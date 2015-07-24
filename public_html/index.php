@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<?php
+	$javascriptMode = "";
+	//$javascriptMode = ".min";
+?><!DOCTYPE html>
 <html lang="en" manifest="wiki.appcache">
 	<head>
 		<meta charset="UTF-8">
@@ -189,10 +192,10 @@
 							<div role="tabpanel" class="tab-pane" id="NewPage-AccessTab">
 								<h4>Visibility</h4>
 								
-								<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="NewPage-Visiblity" id="NewPage-PublicPage" value="PUBLIC" checked="checked" /> Public page</label></div>
-		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="NewPage-Visiblity" id="NewPage-ProtectedPage" value="PROTECTED" /> Protected page</label></div>
-		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="NewPage-Visiblity" id="NewPage-PrivatePage" value="PRIVATE" /> Private page</label></div>
-		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group and the owner (even if he is not in the group)"><input type="radio" name="NewPage-Visiblity" id="NewPage-GroupPrivatePage" value="GROUPPRIVATE" /> Group private page</label></div>
+								<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="NewPage-Visibility" id="NewPage-PublicPage" value="PUBLIC" checked="checked" /> Public page</label></div>
+		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="NewPage-Visibility" id="NewPage-ProtectedPage" value="PROTECTED" /> Protected page</label></div>
+		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="NewPage-Visibility" id="NewPage-PrivatePage" value="PRIVATE" /> Private page</label></div>
+		        				<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group and the owner (even if he is not in the group)"><input type="radio" name="NewPage-Visibility" id="NewPage-GroupPrivatePage" value="GROUPPRIVATE" /> Group private page</label></div>
 							  
 						  		<hr/>
 						  		
@@ -269,8 +272,8 @@
 								<div role="tabpanel" class="tab-pane" id="EditPage-AccessTab">
 									<h4>Visibility</h4>
 									
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visibility" id="EditPage-Visiblity-PUBLIC" value="PUBLIC"/> Public page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visibility" id="EditPage-Visiblity-PROTECTED" value="PROTECTED" /> Protected page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PUBLIC" value="PUBLIC"/> Public page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PROTECTED" value="PROTECTED" /> Protected page</label></div>
 									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
 									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
 									
@@ -311,6 +314,25 @@
 				</div>
 			</form>
 			
+			
+			<div class="modal fade" id="DeletePageDialog" role="dialog" data-pageid="">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Delete page</h4>
+						</div>
+						<div class="modal-body">
+							<p>Are you sure you want to delete this page?</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">No</button>
+							<button class="btn btn-danger" id="DeletePageDialog-Confirm">Yes, delete this page</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 			<!-- div id="PreviewPage">
 				<h1 id="PreviewPage-Title"></h1>
 				<hr id="PreviewPage-TitleSeparator" />
@@ -337,8 +359,8 @@
 				<h1>User &amp; Group management</h1>
 				
 				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#Users-UserTab" role="tab" data-toggle="tab">Users</a></li>
-					<li role="presentation"><a href="#Users-GroupTab" role="tab" data-toggle="tab">Groups</a></li>
+					<li role="presentation" class="active"><a href="#Users-UserTab" role="tab" data-toggle="tab" id="UserManagement-UserTab">Users</a></li>
+					<li role="presentation"><a href="#Users-GroupTab" role="tab" data-toggle="tab" id="UserManagement-GroupTab">Groups</a></li>
 				</ul>
 					
 				<div class="tab-content">
@@ -394,7 +416,7 @@
 				
 				<div class="form-group">
 					<label for="NewUserForm-InputLoginName">Login name</label>
-					<input type="text" class="form-control" id="NewUserForm-InputLoginName" />
+					<input type="text" class="form-control" id="NewUserForm-InputLoginname" />
 				</div>
 				<div class="form-group">
 					<label for="NewUserForm-InputPassword">Password</label>
@@ -419,7 +441,7 @@
 				<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group</button>
 			</form>
 			
-			<div id="GroupUsers" data-group="">
+			<div id="GroupUsers" data-groupid="">
 				<h1>Users in group '<span id="GroupUsers-Groupname">...</span>'</h1>
 				
 				<div class="row">
@@ -437,6 +459,44 @@
 						<select class="form-control" multiple="multiple" size="15" id="GroupUsers-NotInGroup">
 							
 						</select>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="modal fade" id="DeleteUserDialog" role="dialog" data-userid="">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Delete user</h4>
+						</div>
+						<div class="modal-body">
+							<p>Are you sure you want to delete this user?</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">No</button>
+							<button class="btn btn-danger" id="DeleteUserDialog-Confirm">Yes, delete this user</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="modal fade" id="DeleteGroupDialog" role="dialog" data-groupid="">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Delete group</h4>
+						</div>
+						<div class="modal-body">
+							<p>Are you sure you want to delete this group?</p>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-default" data-dismiss="modal">No</button>
+							<button class="btn btn-danger" id="DeleteGroupDialog-Confirm">Yes, delete this group</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -489,10 +549,8 @@
 		<script src="assets/js/ace/ace.js"></script>
 		<script src="assets/js/ace/mode-php.js"></script>
 		<script src="assets/js/ace/mode-html.js"></script>
-		<script src="assets/js/md5.js"></script>
-		<script src="assets/js/jquery.fieldselection.js"></script>
-		<!--script src="assets/application.js"></script-->
-		<script src="assets/data.js"></script>
-		<script src="assets/view.js"></script>
+		<script src="assets/js/md5<?php echo $javascriptMode; ?>.js"></script>
+		<script src="assets/data<?php echo $javascriptMode; ?>.js"></script>
+		<script src="assets/view<?php echo $javascriptMode; ?>.js"></script>
 	</body>
 </html>

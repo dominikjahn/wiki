@@ -20,54 +20,6 @@ $(function() {
 	}
 });
 
-var SignIn = function() {
-	Reset();
-	
-	loginname = $('#SignInForm-InputLoginName').val();
-	password = $('#SignInForm-InputPassword').val();
-	
-	password = md5(password);
-	
-	SetCookie("loginname", loginname);
-	SetCookie("password", password);
-	
-	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToPage('Homepage'); }, function(response) { DisplaySignInForm(); alert(response.message); });
-	
-	return true;
-}
-
-var SignOut = function() {
-	SetCookie("loginname", "");
-	SetCookie("password", "");
-	
-	wiki.SignOut(function() { ShowSignInUpLinks(); GoToPage('Homepage'); });
-	
-	return false;
-}
-
-var SignUp = function() {
-	var loginname = $('#SignUpForm-InputLoginName').val();
-	var password = $('#SignUpForm-InputPassword').val();
-	var passwordconfirmation = $('#SignUpForm-InputConfirmPassword').val();
-	
-	if(password != passwordconfirmation) {
-		alert("The passwords aren't alike");
-		return;
-	}
-	
-	password = md5(password);
-	
-	userdata = {'userID': 0, 'loginname': loginname, 'password': password};
-	
-	wiki.CreateOrSaveUser(userdata,
-		function(response) {
-			alert(response.message);
-			DisplaySignInForm();
-		},
-		HandleErrorCodes,
-		DisplayError);
-}
-
 var GoToView = function(view) {
 	
 	var view = view.split('-');
@@ -98,11 +50,11 @@ var GoToView = function(view) {
 			break;
 			
 		case "Users":
-			DisplayUserList();
+			GoToUserList();
 			break;
 			
 		case "Groups":
-			DisplayGroupList();
+			GoToGroupList();
 			break;
 		
 		case "EditPage":
@@ -147,6 +99,7 @@ var Reset = function() {
 	$("#PageNotFound").css("display","none");
 	$("#NotAuthorized").css("display","none");
 	$("#Offline").css("display","none");
+	$("#Error").css("display","none");
 	$("#SignInForm").css("display","none");
 	$("#SignUpForm").css("display","none");
 	$("#ChangePasswordForm").css("display","none");
@@ -230,6 +183,12 @@ var ShowUserInfo = function(response) {
 	logoutLink.click(SignOut);
 	
 	$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
+	
+	wiki.UserHasPermission("MANAGE_USERS",
+							function() {
+								$("#NavUsers").css("display","block").unbind("click").click(GoToUserList); },
+							function() {
+								$("#NavUsers").css("display","none").unbind("click"); });
 }
 
 var ShowSignInUpLinks = function() {
@@ -249,30 +208,93 @@ var ShowSignInUpLinks = function() {
  */
 
 var DisplaySignInForm = function(e) {
+	if(e != 'undefined') e.preventDefault();
+	
 	Reset();
 	HideLoading();
+	
+	UpdateWindow("Sign in", "SignIn.html");
 	$("#SignInForm").css("display","block").unbind("submit").submit(SignIn);
 	
-	e.preventDefault();
 	return false;
 }
 
 var DisplaySignUpForm = function(e) {
+	if(e != 'undefined') e.preventDefault();
+	
 	Reset();
 	HideLoading();
+	
+	UpdateWindow("Sign up", "SignUp.html");
 	$("#SignUpForm").css("display","block").unbind("submit").submit(SignUp);
 	
-	e.preventDefault();
 	return false;
 }
 
 var DisplayChangePasswordForm = function(e) {
+	if(e) { e.preventDefault() };
+	
 	Reset();
 	HideLoading();
-	$("#ChangePasswordForm").css("display","block").unbind("submit").submit(ChnagePassword);
 	
-	e.preventDefault();
+	UpdateWindow("Change password", "ChangePassword.html");
+	$("#ChangePasswordForm").css("display","block").unbind("submit").submit(ChangePassword);
+	
 	return false;
+}
+
+var SignIn = function() {
+	Reset();
+	
+	loginname = $('#SignInForm-InputLoginName').val();
+	password = $('#SignInForm-InputPassword').val();
+	
+	password = md5(password);
+	
+	SetCookie("loginname", loginname);
+	SetCookie("password", password);
+	
+	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToPage('Homepage'); }, function(response) { DisplaySignInForm(); alert(response.message); });
+	
+	return true;
+}
+
+var SignOut = function() {
+	SetCookie("loginname", "");
+	SetCookie("password", "");
+	
+	wiki.SignOut(function() { ShowSignInUpLinks(); GoToPage('Homepage'); });
+	
+	return false;
+}
+
+var SignUp = function() {
+	var loginname = $('#SignUpForm-InputLoginName').val();
+	var password = $('#SignUpForm-InputPassword').val();
+	var passwordconfirmation = $('#SignUpForm-InputConfirmPassword').val();
+	
+	if(password != passwordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+	
+	password = md5(password);
+	
+	userdata = {'userID': 0, 'loginname': loginname, 'password': password};
+	
+	wiki.CreateOrSaveUser(userdata,
+		function(response) {
+			alert(response.message);
+			DisplaySignInForm();
+		},
+		HandleErrorCodes,
+		DisplayError);
+	
+	return false;
+}
+
+var ChangePassword = function() {
+	
 }
 
 /*
@@ -293,7 +315,9 @@ var GoToPage = function(pagename) {
 											
 											UpdateWindow(response.page.title, response.page.name+".html");
 									},
-									function(response) { GetPageFromCache(pagename, false, reponse); },
+									HandleErrorCodes,
+									//function(response) { GetPageFromCache(pagename, false, response); },
+									
 									function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
 	);
 	
@@ -388,6 +412,12 @@ var DisplayEditPageForm = function(response) {
 			}
 		}
 	);
+	
+	if(response.page.page_id === 1) {
+		$("#EditPage-DeletePage").attr("disabled", true);
+	} else {
+		$("#EditPage-DeletePage").attr("disabled", false).unbind("click").click(GoToDeletePageDialog);
+	}
 	
 	$("#NavDropChanges").css("display","block");
 	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewExistingPage);
@@ -522,6 +552,399 @@ var SaveNewPage = function() {
 
 var DropChanges = function() {
 	
+}
+
+var GoToDeletePageDialog = function(e) {
+	var pageID = $("#EditPage").data("pageid");
+
+	$("#DeletePageDialog-Confirm").unbind("click").click(DeletePage);
+	$("#DeletePageDialog").data("pageid",pageID).modal();
+}
+
+var DeletePage = function() {
+	var pageID = $("#DeletePageDialog").data("pageid");
+	
+	wiki.DeletePage(pageID,
+					function(response) {
+						alert(response.message);
+						$("#DeletePageDialog").modal("hide");
+						GoToPage('Homepage');
+					}, HandleErrorCodes, DisplayError);
+}
+
+/*
+ * Users & Groups
+ */
+
+var userListPopulated;
+var groupListPopulated;
+var GoToUserList = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	Reset();
+	
+	userListPopulated = false;
+	groupListPopulated = false;
+	
+	wiki.GetUsers(function(response) { PopulateUserList(response, DisplayUserList); });
+	wiki.GetGroups(function(response) { PopulateGroupList(response, DisplayUserList); });
+	
+	return false;
+}
+
+var GoToGroupList = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	Reset();
+	
+	userListPopulated = false;
+	groupListPopulated = false;
+	
+	wiki.GetUsers(function(response) { PopulateUserList(response, DisplayGroupList); });
+	wiki.GetGroups(function(response) { PopulateGroupList(response, DisplayGroupList); });
+	
+	return false;
+}
+
+var PopulateUserList = function(response, callback) {
+	
+	$("#User-List").empty();
+	
+	for(var u = 0; u < response.users.length; u++) {
+		var user = response.users[u];
+		
+		$("#User-List").append('' +
+			'	<tr>' +
+			'		<td>' + user.loginname + '</td>' +
+			'		<td><button type="button" class="btn btn-xs btn-warning EditPermissions" data-userid="'+user.user_id+'" data-loginname="'+user.loginname+'" '+(user.user_id == 2 ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-cog" aria-hidden="true"></i> Permissions</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-danger DeleteUser" data-userid="'+user.user_id+'" '+((user.user_id == 1 || user.user_id == 2) ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+			'	</tr>');
+	}
+	
+	userListPopulated = true;
+	
+	if(groupListPopulated == true) {
+		callback();
+	}
+	
+}
+
+var PopulateGroupList = function(response, callback) {
+	$("#Group-List").empty();
+	
+	for(var g = 0; g < response.groups.length; g++) {
+		var group = response.groups[g];
+		
+		$("#Group-List").append('' +
+			'	<tr>' +
+			'		<td>' + group.name + '</td>' +
+			'		<td><button type="button" class="btn btn-xs btn-primary GetGroupUsers" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Users</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+			'	</tr>');
+	}
+	
+	groupListPopulated = true;
+	
+	if(userListPopulated == true) {
+		callback();
+	}
+}
+
+var DisplayUserList = function() {
+
+	HideLoading();
+	
+	UpdateWindow("User management", "Users.html");
+	
+	$("#UserManagement").css("display","block");
+	$("#UserManagement-UserTab").tab("show");
+	
+	FinalizeUserManagement();
+}
+
+var DisplayGroupList = function() {
+	
+	HideLoading();
+	
+	UpdateWindow("Group management", "Groups.html");
+	$("#UserManagement").css("display","block");
+	$("#UserManagement-GroupTab").tab("show");
+	
+	FinalizeUserManagement();
+}
+
+var FinalizeUserManagement = function() {
+	$("#Users-NewUser").unbind("click").click(DisplayNewUserForm);
+	$("#Users-NewGroup").unbind("click").click(DisplayNewGroupForm);
+	
+	$(".EditPermissions").unbind("click").click(GoToEditPermissionsForm);
+	$(".DeleteUser").unbind("click").click(GoToDeleteUserDialog);
+	
+	$(".GetGroupUsers").unbind("click").click(GoToGroupMembers);
+	$(".DeleteGroup").unbind("click").click(GoToDeleteGroupDialog);
+	
+	$("#UserManagement-UserTab").on("shown.bs.tab", function() { UpdateWindow("User management", "Users.html"); } );
+	$("#UserManagement-GroupTab").on("shown.bs.tab", function() { UpdateWindow("Group management", "Groups.html"); } );
+}
+
+var DisplayNewUserForm = function(e) {
+	Reset();
+	UpdateWindow("Create a new user", "NewUser.html");
+	HideLoading();
+	$("#NewUserForm").show().submit(SaveNewUser);
+}
+
+var SaveNewUser = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	var loginname = $("#NewUserForm-InputLoginname").val();
+	var password = $("#NewUserForm-InputPassword").val();
+	var confirmPassword = $("#NewUserForm-InputConfirmPassword").val();
+	
+	if(password != confirmPassword) {
+		alert("The passwords don't match");
+		return false;
+	}
+	
+	password = md5(password);
+	
+	var userdata = {
+		'userID': null,
+		'loginname': loginname,
+		'password': password
+	};
+	
+	wiki.CreateOrSaveUser(userdata,
+							function(response) {
+								alert(response.message);
+								GoToUserList();
+							},
+							HandleErrorCodes,
+							DisplayError);
+}
+
+var DisplayNewGroupForm = function(e) {
+	Reset();
+	UpdateWindow("Create a new group", "NewGroup.html");
+	HideLoading();
+	
+	$("#NewGroupForm").show().submit(SaveNewGroup);
+}
+
+var SaveNewGroup = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	var name = $("#NewGroupForm-InputName").val();
+	
+	var groupdata = {
+		'groupID': null,
+		'name': name
+	};
+	
+	wiki.CreateOrSaveGroup(groupdata,
+							function(response) {
+								alert(response.message);
+								GoToGroupList();
+							},
+							HandleErrorCodes,
+							DisplayError);
+}
+
+var GoToEditPermissionsForm = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	Reset();
+	
+	$this = $(this);
+	
+	var userID = $this.data("userid");
+	
+	wiki.GetPermissionsForUser(userID,
+			DisplayEditPermissionsForm,
+			HandleErrorCodes,
+			DisplayError);
+}
+
+var DisplayEditPermissionsForm = function(response) {
+	
+	var user = response.user;
+	
+	UpdateWindow("Edit user permissions", "EditUserPermissions-"+user.loginname+".html");
+	
+	$('#EditPermissions-Loginname').html(user.loginname);
+	$('#EditPermissions-List').empty();
+	
+	for(var p = 0; p < response.permissions.length; p++) {
+		var permission = response.permissions[p];
+		
+		$("#UserPermissions-List").append('' +
+			'	<tr>' +
+			'		<td>' + permission.permission + '</td>' +
+			'		<td><input type="checkbox" '+(permission.status == 20000 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-userid="'+user.userID+'" data-permission="'+permission.permission+'" /></td>' +
+			'	</tr>');
+	}
+	
+	/*
+			$(".EditPermissions-Checkbox").change(GrantOrRevokePermission);
+			$('#EditPermissions-NewPermission').data("user", userUserID);
+	 */
+	
+	HideLoading();
+	
+	$("#EditPermissions").show();
+}
+
+var GoToDeleteUserDialog = function(e) {
+	$this = $(this);
+	
+	var userID = $this.data("userid");
+
+	$("#DeleteUserDialog-Confirm").unbind("click").click(DeleteUser);
+	$("#DeleteUserDialog").data("userid",userID).modal();
+}
+
+var DeleteUser = function() {
+	var userID = $("#DeleteUserDialog").data("userid");
+	
+	wiki.DeleteUser(userID,
+					function(response) {
+						alert(response.message);
+						$("#DeleteUserDialog").modal("hide");
+						GoToUserList();
+					}, HandleErrorCode, DisplayError);
+}
+
+var memberListPopulated = false;
+var nonMemberListPopulated = false;
+
+var GoToGroupMembers = function(e) {
+	Reset();
+	
+	$this = $(this);
+	
+	var groupID = $this.data("groupid");
+	$("#GroupUsers").data("groupid", groupID);
+	
+	RefreshGroupMembers(e);
+}
+
+var RefreshGroupMembers = function(e) {
+	var groupID = $("#GroupUsers").data("groupid");
+	
+	memberListPopulated = false;
+	nonMemberListPopulated = false;
+	
+	wiki.GetUsersInGroup(groupID,
+			function(response) { PopulateMemberList(response, DisplayGroupMembers); },
+			HandleErrorCodes,
+			DisplayError);
+	
+	wiki.GetUsersNotInGroup(groupID,
+			function(response) { PopulateNonMemberList(response, DisplayGroupMembers); },
+			HandleErrorCodes,
+			DisplayError);
+}
+
+var PopulateMemberList = function(response, callback) {
+	
+	$('#GroupUsers-InGroup').empty();
+	
+	for(var u = 0; u < response.users.length; u++) {
+		var user = response.users[u];
+		
+		$("#GroupUsers-InGroup").append('<option value="'+user.user_id+'">'+user.loginname+'</option>');
+	}
+	
+	memberListPopulated = true;
+	
+	if(nonMemberListPopulated == true) {
+		callback();
+	}
+}
+
+var PopulateNonMemberList = function(response, callback) {
+	
+	
+	
+	$('#GroupUsers-NotInGroup').empty();
+	
+	for(var u = 0; u < response.users.length; u++) {
+		var user = response.users[u];
+		
+		$("#GroupUsers-NotInGroup").append('<option value="'+user.user_id+'">'+user.loginname+'</option>');
+	}
+	
+	nonMemberListPopulated = true;
+	
+	if(memberListPopulated == true) {
+		callback(response);
+	}
+}
+
+var DisplayGroupMembers = function(response) {
+	var group = response.group;
+	
+	$('#GroupUsers-Groupname').html(group.name);
+	
+	UpdateWindow("Assign group members in '"+group.name+"'", "GroupMembers-"+group.name+".html");
+	
+	$("#GroupUsers-Remove").unbind("click").click(RemoveUsersFromGroup);
+	$("#GroupUsers-Add").unbind("click").click(AddUsersToGroup);
+	
+	HideLoading();
+	
+	$("#GroupUsers").show();
+}
+
+var RemoveUsersFromGroup = function() {
+	var groupID = $("#GroupUsers").data("groupid");
+	var selected = $("#GroupUsers-InGroup").val();
+	
+	wiki.RemoveUsersFromGroup(groupID, selected,
+			RefreshGroupMembers,
+			HandleErrorCodes,
+			DisplayError);
+}
+
+var AddUsersToGroup = function() {
+	var groupID = $("#GroupUsers").data("groupid");
+	var selected = $("#GroupUsers-NotInGroup").val();
+	
+	wiki.AddUsersToGroup(groupID, selected,
+			RefreshGroupMembers,
+			HandleErrorCodes,
+			DisplayError);
+}
+
+var DeleteGroup = function() {
+	var groupID = $("#DeleteGroupDialog").data("groupid");
+	
+	wiki.DeleteGroup(groupID,
+					function(response) {
+						alert(response.message);
+						$("#DeleteGroupDialog").modal("hide");
+						GoToGroupList();
+					}, HandleErrorCodes, DisplayError);
+}
+
+var GoToDeleteGroupDialog = function(e) {
+$this = $(this);
+	
+	var groupID = $this.data("groupid");
+	
+	$("#DeleteGroupDialog-Confirm").unbind("click").click(DeleteGroup);
+	$("#DeleteGroupDialog").data("groupid",groupID).modal();
+}
+
+var DeleteGroup = function() {
+	var groupID = $("#DeleteGroupDialog").data("groupid");
+	
+	wiki.DeleteGroup(groupID,
+					function(response) {
+						alert(response.message);
+						$("#DeleteGroupDialog").modal("hide");
+						GoToGroupList();
+					}, HandleErrorCodes, DisplayError);
 }
 
 /*
