@@ -14,10 +14,6 @@ $(function() {
 	{
 		cache = $.parseJSON(fromCache);
 	}
-	
-	var pageName = ExtractPageName();
-	
-	GoToView(pageName);
 });
 
 var SignOut = function() {
@@ -32,7 +28,7 @@ var SignOut = function() {
 
 var GoToView = function(view) {
 	
-	var view = view.split(':');
+	var view = view.split('-');
 	
 	switch(view[0]) {
 		case "NewPage":
@@ -68,7 +64,7 @@ var GoToView = function(view) {
 			break;
 		
 		case "EditPage":
-			DisplayEditPageForm(view[1]);
+			GoToEditPageForm(view[1]);
 			break;
 			
 		case "Versions":
@@ -139,6 +135,14 @@ var ExtractPageName = function() {
 	return pageName;
 }
 
+var UpdateWindow = function(title, url) {
+	document.title = title;
+	
+	if(url) {
+		window.history.replaceState({}, title, './'+url);
+	}
+}
+
 var HandleErrorCodes = function(response) {
 	switch(response.status) {
 		case 401:
@@ -151,6 +155,10 @@ var HandleErrorCodes = function(response) {
 	}
 }
 
+/*
+ * Footer bar
+ */
+
 var ShowUserInfo = function(response) {
 	var preText = $('<span>Signed in as </span>');
 	var changePasswordLink = $('<a href="ChangePassword.html"><strong>'+response.user.loginname+'</strong></a>');
@@ -161,6 +169,9 @@ var ShowUserInfo = function(response) {
 	logoutLink.click(SignOut);
 	
 	$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
+	
+	var pageName = ExtractPageName();
+	GoToView(pageName);
 }
 
 var ShowSignInUpLinks = function() {
@@ -173,8 +184,14 @@ var ShowSignInUpLinks = function() {
 	signupLink.click(DisplaySignUpForm);
 	
 	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
+	
+	var pageName = ExtractPageName();
+	GoToView(pageName);
 }
 
+/*
+ * Sign in / sign up / Change password
+ */
 
 var DisplaySignInForm = function() {
 	
@@ -188,6 +205,10 @@ var DisplayChangePasswordForm = function() {
 	
 }
 
+/*
+ * Page
+ */
+
 var DisplayPage = function(pagename) {
 	wiki.GetPageByName(pagename, false,
 									function(response) {
@@ -199,15 +220,20 @@ var DisplayPage = function(pagename) {
 												$("#NavEditPage").css("display","block");
 												$("#NavGetVersions").css("display","block");
 											}
+											
+											UpdateWindow(response.page.title, response.page.name+".html");
 									},
 									function(response) { GetPageFromCache(pagename, false, reponse); },
 									function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
 	);
+	
+	return false;
 }
 
 var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	if(pagename in cache) {
-		DisplayPageContent(cache[pagename], '%title% (From cache)');
+		DisplayPageContent(cache[pagename]);
+		UpdateWindow(cache[pagename].page.title + ' (from cache)', 'Cache:'+pagename+'.html');
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
 	} else {
@@ -216,14 +242,11 @@ var GetPageFromCache = function(pagename, error, response_or_xhr) {
 }
 
 var DisplayPageContent = function(response, titlewrap) {
-	var titlewrap = titlewrap || '%title%';
 	HideLoading();
 	
 	$("#DisplayPage").css("display","block");
 	$("#DisplayPage-Title").html(response.page.title);
 	$("#DisplayPage-Content").html(response.page.content);
-	
-	document.title = titlewrap.replace('%title%',response.page.title);
 	
 	switch(response.page.visibility) {
 		case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
@@ -248,6 +271,26 @@ var DisplayPageContent = function(response, titlewrap) {
 	
 	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
 	$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
+}
+
+var GoToEditPageForm = function(pagename) {
+	Reset();
+	
+	wiki.GetPageByName(pagename, true, DisplayEditPageForm);
+	
+	return false;
+}
+
+var DisplayEditPageForm = function(response) {
+	HideLoading();
+	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
+	
+	$("#EditPage").css("display","block").data("page",response.page.page_id);
+	$("#EditPage-Title").html(response.page.title);
+	$("#EditPage-InputTitle").val(response.page.title);
+	$("#EditPage-InputContent").val(response.page.content).hide();
+	$("#EditPage-Visibility-"+response.page.visibility).attr("checked",true);
+	$("#EditPage-Manipulation-"+response.page.manipulation).attr("checked",true);
 }
 
 /*
