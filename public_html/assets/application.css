@@ -42,7 +42,7 @@ body
 	padding: 10px;
 }
 
-#SignInForm, #SignUpForm, #ChangePasswordForm, #PageNotFound, #NotAuthorized, #Offline, #DisplayPage, #EditPage, #NewPage, #PreviewPage, #Versions, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
+#SignInForm, #SignUpForm, #ChangePasswordForm, #PageNotFound, #NotAuthorized, #Offline, #Error, #DisplayPage, #EditPage, #NewPage, #PreviewPage, #Versions, #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
 #NavPublicPage, #NavProtectedPage, #NavPrivatePage, #UserManagement, #EditPermissions, #NewUserForm, #NewGroupForm, #GroupUsers
 {
 	display: none;

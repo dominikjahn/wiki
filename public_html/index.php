@@ -23,7 +23,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="./Homepage.html" onclick="return DisplayPage('Homepage');"><i class="glyphicon glyphicon-home navbar-logo" aria-hidden="true" id="logo"></i></a>
+					<a class="navbar-brand" href="./Homepage.html" onclick="return GoToPage('Homepage');"><i class="glyphicon glyphicon-home navbar-logo" aria-hidden="true" id="logo"></i></a>
 				</div>
 				<div id="navbar" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-left">
@@ -40,8 +40,8 @@
 						<li data-toggle="tooltip" title="This page is private to its group" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavGroupPrivatePage"><i class="glyphicon glyphicon-lock"></i></a></li>
 						
 						<li><a href="#TableOfContents" role="button" aria-expanded="false" id="NavTableOfContents"><i class="glyphicon glyphicon-th-list"></i> &#160; Table of Contents</a></li>
-						<li><a href="./Edit:Homepage.html" onclick="return GoToEditPageForm('Homepage')" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
-						<li><a href="./Versions:Homepage.html" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
+						<li><a href="./EditPage-Homepage.html" onclick="return GoToEditPageForm('Homepage')" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
+						<li><a href="./Versions-Homepage.html" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavDropChanges"><i class="glyphicon glyphicon-remove" style="color:#FF5742"></i> &#160; Drop changes</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavPreviewChanges"><i class="glyphicon glyphicon-eye-open" style="color:#FF8800"></i> &#160; Preview changes</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavSaveChanges"><i class="glyphicon glyphicon-floppy-disk" style="color:#8FD55A"></i> &#160; Save changes</a></li>
@@ -61,6 +61,14 @@
 					<h1><small><i class="glyphicon glyphicon-refresh glyphicon-animate-slow"></i></small> Loading...</h1>
 				
 					<p>If this takes a little longer you may want to refresh the page.</p>
+				</div>
+			</div>
+			
+			<div id="Error" class="jumbotron">
+				<div class="container">
+					<h1><small><i class="glyphicon glyphicon-flash"></i></small> Error!</h1>
+				
+					<p>Something bad has happened.</p>
 				</div>
 			</div>
 			
@@ -96,12 +104,12 @@
 				<h1>Sign in</h1>
 				
 				<div class="form-group">
-					<label for="InputLoginName">Login name</label>
-					<input type="text" class="form-control" id="InputLoginName" />
+					<label for="SignInForm-InputLoginName">Login name</label>
+					<input type="text" class="form-control" id="SignInForm-InputLoginName" />
 				</div>
 				<div class="form-group">
-					<label for="InputPassword">Password</label>
-					<input type="password" class="form-control" id="InputPassword" />
+					<label for="SignInForm-InputPassword">Password</label>
+					<input type="password" class="form-control" id="SignInForm-InputPassword" />
 				</div>
 				
 				<button type="submit" class="btn btn-lg btn-success">Sign in</button>
@@ -218,7 +226,7 @@
 				</div>
 			</form>
 			
-			<form id="EditPage" accept-charset="UTF-8" data-page="">
+			<form id="EditPage" accept-charset="UTF-8" data-pageID="">
 				<input type="hidden" id="EditPage-InputPageID" value="0" />
 				
 				<h1>Edit page &quot;<span id="EditPage-Title"></span>&quot;</h1>
@@ -261,10 +269,10 @@
 								<div role="tabpanel" class="tab-pane" id="EditPage-AccessTab">
 									<h4>Visibility</h4>
 									
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visiblity-PUBLIC" value="PUBLIC"/> Public page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visiblity-PROTECTED" value="PROTECTED" /> Protected page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visiblity-PRIVATE" value="PRIVATE" /> Private page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visiblity-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visibility" id="EditPage-Visiblity-PUBLIC" value="PUBLIC"/> Public page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visibility" id="EditPage-Visiblity-PROTECTED" value="PROTECTED" /> Protected page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
 									
 									<hr/>
 						  		

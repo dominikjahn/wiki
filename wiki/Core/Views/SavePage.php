@@ -14,8 +14,7 @@
 	 * @since 0.1
 	 */
 	
-	$pageID = (isset($_GET["pageID"]) ? (int) $_GET["pageID"] : null);
-	
+	$pageID = (isset($_POST["pageID"]) ? (int) $_POST["pageID"] : null);
 	$title = $_POST["title"];
 	$content = $_POST["content"];
 	$summary = (isset($_POST["summary"]) ? $_POST["summary"] : null);
@@ -39,7 +38,7 @@
 		$page = null;
 		$name = null;
 		
-		if(!is_null($pageID)) {
+		if($pageID) {
 			$page = PageManager::GetInstance()->GetByID($pageID);
 			
 			if(!$page || $page->Status === 0) {
@@ -121,9 +120,7 @@
 		$data->status = 200;
 		$data->message = "The page was saved successfully";
 		
-		if($isNewPage) {
-			$data->page = $name;
-		}
+		$data->page = PageManager::GetInstance()->GetByID($page->ID);
 		
 	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
 		$data->status = 401;

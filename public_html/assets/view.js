@@ -2,11 +2,15 @@ var wiki;
 var cache = [];
 
 $(function() {
+	Reset();
+	
 	var loginname = GetCookie('wiki_loginname');
 	var password = GetCookie('wiki_password');
 	
+	var view = ExtractPageName();
+	
 	wiki = new Wiki();
-	wiki.SignIn(loginname, password, ShowUserInfo, ShowSignInUpLinks);
+	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
 	
 	var fromCache = localStorage.getItem("wiki_cache");
 	
@@ -16,14 +20,52 @@ $(function() {
 	}
 });
 
+var SignIn = function() {
+	Reset();
+	
+	loginname = $('#SignInForm-InputLoginName').val();
+	password = $('#SignInForm-InputPassword').val();
+	
+	password = md5(password);
+	
+	SetCookie("loginname", loginname);
+	SetCookie("password", password);
+	
+	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToPage('Homepage'); }, function(response) { DisplaySignInForm(); alert(response.message); });
+	
+	return true;
+}
+
 var SignOut = function() {
 	SetCookie("loginname", "");
 	SetCookie("password", "");
 	
-	loginname = "";
-	password = "";
+	wiki.SignOut(function() { ShowSignInUpLinks(); GoToPage('Homepage'); });
 	
-	wiki.SignOut(ShowSignInUpLinks);
+	return false;
+}
+
+var SignUp = function() {
+	var loginname = $('#SignUpForm-InputLoginName').val();
+	var password = $('#SignUpForm-InputPassword').val();
+	var passwordconfirmation = $('#SignUpForm-InputConfirmPassword').val();
+	
+	if(password != passwordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+	
+	password = md5(password);
+	
+	userdata = {'userID': 0, 'loginname': loginname, 'password': password};
+	
+	wiki.CreateOrSaveUser(userdata,
+		function(response) {
+			alert(response.message);
+			DisplaySignInForm();
+		},
+		HandleErrorCodes,
+		DisplayError);
 }
 
 var GoToView = function(view) {
@@ -95,11 +137,12 @@ var GoToView = function(view) {
 			break;
 			
 		default:
-			DisplayPage(view[0]);
+			GoToPage(view[0]);
 	}
 }
 
 var Reset = function() {
+	// Views
 	$("#Loading").css("display","block");
 	$("#PageNotFound").css("display","none");
 	$("#NotAuthorized").css("display","none");
@@ -116,6 +159,24 @@ var Reset = function() {
 	$("#NewUserForm").css("display","none");
 	$("#NewGroupForm").css("display","none");
 	$("#GroupUsers").css("display","none");
+	
+	// Navbar
+	$("#NavEditPage").css("display","none");
+	$("#NavGetVersions").css("display","none");
+	$("#NavDropChanges").css("display","none");
+	$("#NavPreviewChanges").css("display","none");
+	$("#NavSaveChanges").css("display","none");
+	$("#NavBackToComposer").css("display","none");
+	$("#NavPublicPage").css("display","none");
+	$("#NavProtectedPage").css("display","none");
+	$("#NavPrivatePage").css("display","none");
+	$("#NavGroupPrivatePage").css("display","none");
+	
+	// Display loading screen
+	$("#Loading").css("display","block");
+	
+	// Unbind all hotkeys
+	$(document).unbind('keydown');
 }
 
 var HideLoading = function() {
@@ -169,9 +230,6 @@ var ShowUserInfo = function(response) {
 	logoutLink.click(SignOut);
 	
 	$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
-	
-	var pageName = ExtractPageName();
-	GoToView(pageName);
 }
 
 var ShowSignInUpLinks = function() {
@@ -184,41 +242,53 @@ var ShowSignInUpLinks = function() {
 	signupLink.click(DisplaySignUpForm);
 	
 	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
-	
-	var pageName = ExtractPageName();
-	GoToView(pageName);
 }
 
 /*
  * Sign in / sign up / Change password
  */
 
-var DisplaySignInForm = function() {
+var DisplaySignInForm = function(e) {
+	Reset();
+	HideLoading();
+	$("#SignInForm").css("display","block").unbind("submit").submit(SignIn);
 	
+	e.preventDefault();
+	return false;
 }
 
-var DisplaySignUpForm = function() {
+var DisplaySignUpForm = function(e) {
+	Reset();
+	HideLoading();
+	$("#SignUpForm").css("display","block").unbind("submit").submit(SignUp);
 	
+	e.preventDefault();
+	return false;
 }
 
-var DisplayChangePasswordForm = function() {
+var DisplayChangePasswordForm = function(e) {
+	Reset();
+	HideLoading();
+	$("#ChangePasswordForm").css("display","block").unbind("submit").submit(ChnagePassword);
 	
+	e.preventDefault();
+	return false;
 }
 
 /*
  * Page
  */
 
-var DisplayPage = function(pagename) {
+var GoToPage = function(pagename) {
 	wiki.GetPageByName(pagename, false,
 									function(response) {
 											cache[pagename] = response;
 											localStorage.setItem("wiki_cache", JSON.stringify(cache));
-											DisplayPageContent(response);
+											DisplayPage(response);
 											
 											if(response.page.can_edit) {
-												$("#NavEditPage").css("display","block");
-												$("#NavGetVersions").css("display","block");
+												$("#NavEditPage").css("display","block").unbind("click").click(function() { GoToEditPageForm(pagename); }).attr("href","./EditPage-"+pagename+".html");
+												$("#NavGetVersions").css("display","block").unbind("click").click(function() { GoToVersions(pagename); }).attr("href","./Versions-"+pagename+".html");
 											}
 											
 											UpdateWindow(response.page.title, response.page.name+".html");
@@ -232,7 +302,7 @@ var DisplayPage = function(pagename) {
 
 var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	if(pagename in cache) {
-		DisplayPageContent(cache[pagename]);
+		DisplayPage(cache[pagename]);
 		UpdateWindow(cache[pagename].page.title + ' (from cache)', 'Cache:'+pagename+'.html');
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
@@ -241,8 +311,8 @@ var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	}
 }
 
-var DisplayPageContent = function(response, titlewrap) {
-	HideLoading();
+var DisplayPage = function(response, titlewrap) {
+	Reset();
 	
 	$("#DisplayPage").css("display","block");
 	$("#DisplayPage-Title").html(response.page.title);
@@ -271,6 +341,8 @@ var DisplayPageContent = function(response, titlewrap) {
 	
 	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
 	$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
+	
+	HideLoading();
 }
 
 var GoToEditPageForm = function(pagename) {
@@ -282,15 +354,174 @@ var GoToEditPageForm = function(pagename) {
 }
 
 var DisplayEditPageForm = function(response) {
-	HideLoading();
 	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
 	
-	$("#EditPage").css("display","block").data("page",response.page.page_id);
 	$("#EditPage-Title").html(response.page.title);
 	$("#EditPage-InputTitle").val(response.page.title);
 	$("#EditPage-InputContent").val(response.page.content).hide();
+	$("#EditPage-InputSummary").val("");
 	$("#EditPage-Visibility-"+response.page.visibility).attr("checked",true);
 	$("#EditPage-Manipulation-"+response.page.manipulation).attr("checked",true);
+	$("#EditPage-MinorChange").attr("checked",false);
+	$("#EditPage-Owner").empty();
+	$("#EditPage-Group").empty();
+	
+	var currentOwner = response.page.owner;
+	var currentGroup = response.page.group;
+	
+	wiki.GetUsers(
+		function(response) {
+			for(var u = 0; u < response.users.length; u++) {
+				var user = response.users[u];
+					
+				$("#EditPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == currentOwner.user_id ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+			}
+		}
+	);
+	
+	wiki.GetGroups(
+		function(response) {
+			for(var g = 0; g < response.groups.length; g++) {
+				var group = response.groups[g];
+					
+				$("#EditPage-Group").append('<option value="'+group.group_id+'"'+(group.group_id == currentGroup.group_id ? ' selected="selected"' : '')+'>'+group.name+'</option>');
+			}
+		}
+	);
+	
+	$("#NavDropChanges").css("display","block");
+	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewExistingPage);
+	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveExistingPage);
+	
+	BindKey(83,SaveExistingPage,true); // Ctrl+S
+	BindKey(27,DropChanges,false); // ESC
+	
+	EditPageEditor = ace.edit("EditPage-InputContent-Editor");
+	EditPageEditor.getSession().setMode("ace/mode/html");
+	EditPageEditor.getSession().setMode("ace/mode/javascript");
+	EditPageEditor.getSession().setMode("ace/mode/css");
+	EditPageEditor.getSession().setMode("ace/mode/php");
+	//EditPageEditor.getSession().setMode("ace/mode/markdown");
+	EditPageEditor.setOptions({ maxLines: Infinity });
+	EditPageEditor.getSession().setValue($("#EditPage-InputContent").val());
+	
+	HideLoading();
+	$("#EditPage").css("display","block").data("pageID",response.page.page_id);
+}
+
+var PreviewExistingPage = function() {
+
+}
+
+var SaveExistingPage = function() {
+	var pagedata = {
+		'pageID': $("#EditPage").data("pageID"),
+		'title': $("#EditPage-InputTitle").val(),
+		'content': $("#EditPage-InputContent").val(),
+		'summary': $("#EditPage-InputSummary").val(),
+		'minor_edit': ($('#EditPage-MinorChange:checked').length > 0),
+		'visibility': $('input[name=EditPage-Visiblity]:checked').val(),
+		'manipulation': $('input[name=EditPage-Manipulation]:checked').val(),
+		'owner': $("#EditPage-Owner").val(),
+		'group': $("#EditPage-Group").val()
+	};
+	
+	wiki.CreateOrSavePage(pagedata,
+		function(response) {
+			alert("The page was saved successfully");
+			
+			GoToPage(response.page.name);
+		},
+		
+		HandleErrorCodes,
+		DisplayError
+	);
+}
+
+var DisplayNewPageForm = function() {
+	Reset();
+	
+	$("#NewPage-InputTitle").val("");
+	$("#NewPage-InputContent").val("").hide();
+	$("#NewPage-InputSummary").val("Initialized page");
+	$("#NewPage-Visibility-Public").attr("checked",true);
+	$("#NewPage-Manipulation-Everyone").attr("checked",true);
+	$("#NewPage-Owner").empty();
+	$("#NewPage-Group").empty();
+	
+	wiki.GetUsers(
+		function(response) {
+			for(var u = 0; u < response.users.length; u++) {
+				var user = response.users[u];
+					
+				$("#NewPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == wiki.currentUserID ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+			}
+		}
+	);
+	
+	wiki.GetGroups(
+		function(response) {
+			for(var g = 0; g < response.groups.length; g++) {
+				var group = response.groups[g];
+					
+				$("#NewPage-Group").append('<option value="'+group.group_id+'">'+group.name+'</option>');
+			}
+		}
+	);
+	
+	$("#NavDropChanges").css("display","block");
+	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewNewPage);
+	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveNewPage);
+	
+	BindKey(83,SaveNewPage,true); // Ctrl+S
+	BindKey(27,DropChanges,false); // ESC
+	
+	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
+	NewPageEditor.getSession().setMode("ace/mode/html");
+	NewPageEditor.getSession().setMode("ace/mode/javascript");
+	NewPageEditor.getSession().setMode("ace/mode/css");
+	NewPageEditor.getSession().setMode("ace/mode/php");
+	//NewPageEditor.getSession().setMode("ace/mode/markdown");
+	NewPageEditor.setOptions({ maxLines: Infinity });
+	NewPageEditor.getSession().setValue("");
+	
+	HideLoading();
+	$("#NewPage").css("display","block");
+	
+	return false;
+}
+
+var PreviewNewPage = function() {
+
+}
+
+var SaveNewPage = function() {
+	var pagedata = {
+		'pageID': null,
+		'title': $("#NewPage-InputTitle").val(),
+		'content': $("#NewPage-InputContent").val(),
+		'summary': $("#NewPage-InputSummary").val(),
+		'minor_edit': false,
+		'visibility': $('input[name=NewPage-Visiblity]:checked').val(),
+		'manipulation': $('input[name=NewPage-Manipulation]:checked').val(),
+		'owner': $("#NewPage-Owner").val(),
+		'group': $("#NewPage-Group").val()
+	};
+	
+	wiki.CreateOrSavePage(pagedata,
+		
+		function(response) {
+			alert("The page was created successfully");
+			
+			GoToPage(response.page.name);
+		},
+		
+		HandleErrorCodes,
+		DisplayError);
+}
+
+var DropChanges = function() {
+	
 }
 
 /*
@@ -298,18 +529,21 @@ var DisplayEditPageForm = function(response) {
  */
 
 var DisplayNotAuthorizedError = function() {
+	Reset();
 	HideLoading();
-	alert("NOT AUTHORIZED");
+	$("#NotAuthorized").css("display","block");
 }
 
 var DisplayNotFoundError = function() {
+	Reset();
 	HideLoading();
-	alert("NOT FOUND");
+	$("#PageNotFound").css("display","block");
 }
 
 var DisplayError = function(xhr, type, message) {
+	Reset();
 	HideLoading();
-	alert("ERROR");
+	$("#Error").css("display","block");
 }
 
 /*
@@ -345,4 +579,20 @@ var GetCookie = function(name) {
 
 var SetCookie = function(name, value) {
 	document.cookie = "wiki_"+name+"="+value;
+}
+
+/*
+ * Bind hotkeys
+ */
+
+ function BindKey(key, functionName, ctrl) {
+	var ctrl = ctrl || false;
+	
+	$(document).bind('keydown', function (e) {
+		if ((!ctrl || e.ctrlKey) && (e.which == key)) {
+			e.preventDefault();
+			functionName();
+			return false;
+		}
+	});
 }

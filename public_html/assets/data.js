@@ -12,7 +12,9 @@ var Wiki = function() {
 			
 			var positive_callback = positive_callback || function() {};
 			var negative_callback = negative_callback || function() {};
-			var error_callback = error_callback || /*function() {}; */function(xhr, type, message) { alert("! Error !\n\n"+type+": "+message+"\n\nSigned in as "+this.currentUserLoginname); };
+			var error_callback = error_callback || /*function() {}; */	function(xhr, type, message) {
+																			alert("! Error !\n\n"+type+": "+message+"\n\nSigned in as "+this.currentUserLoginname); 
+																		};
 			
 			$.ajax({
 				'type': type,
@@ -112,7 +114,7 @@ var Wiki = function() {
 		},
 		
 		'GetUsers': function(positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetUsers", null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetUserByLoginname': function(loginname, positive_callback, negative_callback, error_callback) {
@@ -132,7 +134,7 @@ var Wiki = function() {
 		},
 		
 		'GetGroups': function(positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetGroups", null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetGroupByName': function(name, positive_callback, negative_callback, error_callback) {
