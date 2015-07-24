@@ -5,6 +5,8 @@ var Wiki = function() {
 		'currentUserPassword': null,
 		
 		'Request': function(type, url, data, positive_callback, negative_callback, error_callback) {
+			var wiki = this;
+			
 			var data = data || null;
 			var type = type || "GET";
 			
@@ -29,8 +31,8 @@ var Wiki = function() {
 				},
 				beforeSend: function(xhr)
 				{
-					if(this.currentUserID) {
-						xhr.setRequestHeader("Authorization", "Basic " + window.btoa(this.currentUserLoginname+":"+this.currentUserPassword));
+					if(wiki.currentUserID) {
+						xhr.setRequestHeader("Authorization", "Basic " + window.btoa(wiki.currentUserLoginname+":"+wiki.currentUserPassword));
 					}
 				}
 			});

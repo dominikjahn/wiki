@@ -194,6 +194,11 @@ var DisplayPage = function(pagename) {
 											cache[pagename] = response;
 											localStorage.setItem("wiki_cache", JSON.stringify(cache));
 											DisplayPageContent(response);
+											
+											if(response.page.can_edit) {
+												$("#NavEditPage").css("display","block");
+												$("#NavGetVersions").css("display","block");
+											}
 									},
 									function(response) { GetPageFromCache(pagename, false, reponse); },
 									function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
@@ -202,7 +207,7 @@ var DisplayPage = function(pagename) {
 
 var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	if(pagename in cache) {
-		DisplayPageContent(cache[pagename]);
+		DisplayPageContent(cache[pagename], '%title% (From cache)');
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
 	} else {
@@ -210,12 +215,39 @@ var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	}
 }
 
-var DisplayPageContent = function(response) {
+var DisplayPageContent = function(response, titlewrap) {
+	var titlewrap = titlewrap || '%title%';
 	HideLoading();
 	
 	$("#DisplayPage").css("display","block");
 	$("#DisplayPage-Title").html(response.page.title);
 	$("#DisplayPage-Content").html(response.page.content);
+	
+	document.title = titlewrap.replace('%title%',response.page.title);
+	
+	switch(response.page.visibility) {
+		case "PUBLIC": $('#NavPublicPage').css("display","block"); break;
+		case "PROTECTED": $('#NavProtectedPage').css("display","block"); break;
+		case "PRIVATE": $('#NavPrivatePage').css("display","block"); break;
+		case "GROUPPRIVATE": $('#NavGroupPrivatePage').css("display","block"); break;
+	}
+
+	if(response.no_headline) {
+		$('#DisplayPage-Title').css("display", "none");
+		$('#DisplayPage-TitleSeparator').css("display", "none");
+	}
+
+	if(response.no_navbar) {
+		$('#Navbar').css("display","none");
+		$('#content').css("margin-top","0px");
+	}
+	
+	if(response.no_footerbar) {
+		$('#FooterBar').css("display","none");
+	}
+	
+	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
+	$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
 }
 
 /*

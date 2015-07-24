@@ -43,6 +43,7 @@
 				"owner" => $this->owner,
 				"group" => $this->group,
 				"categories" => $this->Categories,
+				"can_edit" => $this->CanEdit,
 				"last_edit" => [
 				  "timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
 				  "user" => $this->logModified->User->Loginname
