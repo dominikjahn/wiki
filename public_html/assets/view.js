@@ -109,6 +109,8 @@ var Reset = function() {
 	$("#NewPage").hide();
 	$("#EditPage").hide();
 	$("#Versions").hide();
+	$("#SearchForm").hide();
+	$("#SearchResults").hide();
 	$("#UserManagement").hide();
 	$("#EditPermissions").hide();
 	$("#NewUserForm").hide();
@@ -617,6 +619,42 @@ var DeletePage = function() {
 						$("#DeletePageDialog").modal("hide");
 						GoToPage('Homepage');
 					}, HandleErrorCodes, DisplayError);
+}
+
+var DisplaySearchForm = function() {
+	Reset();
+	HideLoading();
+	$("#SearchForm").show().submit(Search);
+	
+	return false;
+}
+
+var Search = function() {
+	Reset();
+	var keywords = $("#SearchForm-Keywords").val();
+	
+	wiki.GetPagesByKeywords(keywords, DisplaySearchResults);
+	
+	return false;
+}
+
+var DisplaySearchResults = function(response) {
+	$("#SearchResults-NumberOfResults").html(response.pages.length);
+	$("#SearchResults-List").empty();
+	
+	for(var p = 0; p < response.pages.length; p++) {
+		var page = response.pages[p];
+		
+		$("#SearchResults-List").append(''+
+			'<div>' +
+			'	<p><a href="'+page.name+'.html" onclick="return GoToPage(\''+page.name+'\')"><strong>'+page.title+'</strong></a></p>' +
+			'	<p>'+page.content.substring(0,800)+'</p>' +
+			'</div>' +	
+			'<hr/>');
+	}
+	
+	HideLoading();
+	$("#SearchResults").show();
 }
 
 /*

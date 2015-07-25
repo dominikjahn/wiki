@@ -78,6 +78,11 @@
 				case "GetPage": require_once "Core/Views/GetPage.php"; break;
 				
 				/*
+				 * Display the content of a specific page
+				 */
+				case "GetPages": require_once "Core/Views/GetPages.php"; break;
+				
+				/*
 				 * Save changes to a page
 				 */
 				case "SavePage": require_once "Core/Views/SavePage.php"; break;

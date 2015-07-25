@@ -116,6 +116,10 @@ var Wiki = function() {
 			this.Request("DELETE", "request.php?command=DeletePage", {'pageID':pageID}, positive_callback, negative_callback, error_callback);
 		},
 		
+		'GetPagesByKeywords': function(keywords, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=GetPages&keywords="+keywords, null, positive_callback, negative_callback, error_callback);
+		},
+		
 		'GetVersionsByPage': function(pageID, positive_callback, negative_callback, error_callback) {
 			this.Request("GET", "request.php?command=GetVersions&pageID="+pageID, null, positive_callback, negative_callback, error_callback);
 		},

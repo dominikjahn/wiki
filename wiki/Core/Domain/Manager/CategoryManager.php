@@ -85,6 +85,38 @@
 			return $object;
 		}
 		
+		/**
+		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
+		 * @version 0.1
+		 * @since 0.1
+		 */
+		public function SearchByTitle($title) {
+			$db = DatabaseConnection::GetInstance();
+			
+			$sqlObjects = "SELECT category_id, status, checksum, name, title FROM %PREFIX%category WHERE status = 100 AND title LIKE :title";
+			$stmObjects = $db->Prepare($sqlObjects);
+			$resObjects = $stmObjects->Read(["title" => $title]);
+				
+			if(!$resObjects) {
+				return null;
+			}
+				
+			$objects = [];
+			$objectFactory = CategoryFactory::GetInstance();
+				
+			while(($rowObject = $resObjects->NextRow()) != null) {
+				$object = new Category();
+				$this->AddToCache($object);
+				$objectFactory->FromDataRow($object, $rowObject);
+			
+				$objects[] = $object;
+			}
+			
+			$stmObjects->Close();
+				
+			return $objects;
+		}
+		
 		  //
 		 // FUNCTIONS
 		//

@@ -352,6 +352,40 @@
 				</table>
 			</div>
 			
+			<form id="SearchForm">
+				<h1>Search</h1>
+				
+				<div class="form-group">
+					<label for="SearchForm-Keywords">Keywords</label>
+					<textarea class="form-control" id="SearchForm-Keywords" placeholder="Keywords"></textarea>
+				</div>
+				
+				<hr/>
+				
+				<p>
+					Keywords are separated by white spaces. The title and content of a page will be evaluated.<br/>
+					Use quotation marks (&quot;) to group keywords.<br/>
+					Use <code>title:keywords</code> to limit keywords to the title only or <code>-title:keywords</code> for pages where the title doesn't contain the keyword.<br/>
+					Use <code>content:keywords</code> to limit keywords to the content only or <code>-content:keywords</code> for pages where the content doesn't contain the keyword.<br/>
+					Use <code>%words</code>, <code>key%</code> or <code>ke%rds</code> as wildcards in combination with <code>title:</code> and <code>content:</code><br/>
+					Use <code>category:name</code> to look for pages inside a category, or <code>-category:name</code> to avoid pages in that category.
+				</p>
+				
+				<hr/>
+				
+				<p><button class="btn btn-primary" type="submit">Search</button></p>
+			</form>
+			
+			<div id="SearchResults">
+				<h1>Results</h1>
+				
+				<p>We found <span id="SearchResults-NumberOfResults">...</span> pages matching your criteria:</p>
+				
+				<div id="SearchResults-List">
+				
+				</div>
+			</div>
+			
 			<div id="UserManagement">
 				<h1>User &amp; Group management</h1>
 				
