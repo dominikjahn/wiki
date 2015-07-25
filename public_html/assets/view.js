@@ -474,7 +474,7 @@ var DisplayEditPageForm = function(response) {
 	BindKey(83,SaveExistingPage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC
 	
-	EditPageEditor = ace.edit("EditPage-InputContent-Editor");
+	var EditPageEditor = ace.edit("EditPage-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
 	EditPageEditor.getSession().setMode("ace/mode/javascript");
 	EditPageEditor.getSession().setMode("ace/mode/css");
@@ -495,7 +495,7 @@ var SaveExistingPage = function() {
 	var pagedata = {
 		'pageID': $("#EditPage").data("pageID"),
 		'title': $("#EditPage-InputTitle").val(),
-		'content': $("#EditPage-InputContent").val(),
+		'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
 		'summary': $("#EditPage-InputSummary").val(),
 		'minor_edit': ($('#EditPage-MinorChange:checked').length > 0),
 		'visibility': $('input[name=EditPage-Visiblity]:checked').val(),
@@ -578,7 +578,7 @@ var SaveNewPage = function() {
 	var pagedata = {
 		'pageID': null,
 		'title': $("#NewPage-InputTitle").val(),
-		'content': $("#NewPage-InputContent").val(),
+		'content': ace.edit("NewPage-InputContent-Editor").getSession().getValue(),
 		'summary': $("#NewPage-InputSummary").val(),
 		'minor_edit': false,
 		'visibility': $('input[name=NewPage-Visiblity]:checked').val(),
