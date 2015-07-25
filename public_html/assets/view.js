@@ -10,7 +10,12 @@ $(function() {
 	var view = ExtractPageName();
 	
 	wiki = new Wiki();
-	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
+	wiki.defaultNegativeHandler = HandleErrorCodes;
+	wiki.defaultErrorHandler = DisplayError;
+	
+	if(loginname && password) {
+		wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
+	}
 	
 	var fromCache = localStorage.getItem("wiki_cache");
 	
@@ -136,8 +141,8 @@ var HideLoading = function() {
 	$("#Loading").css("display","none");
 }
 
-var ExtractPageName = function() {
-	var currentUrl = window.location.href;
+var ExtractPageName = function(url) {
+	var currentUrl = url || window.location.href;
 	var pageName = currentUrl.split("").reverse().join("").split('/',1);
 	pageName = pageName[0].split("").reverse().join("").split(".",1);
 	pageName = pageName[0];
@@ -149,13 +154,30 @@ var ExtractPageName = function() {
 	return pageName;
 }
 
+var wikiHistory = [];
+
 var UpdateWindow = function(title, url) {
 	document.title = title;
 	
 	if(url) {
 		window.history.replaceState({}, title, './'+url);
+		
+		wikiHistory.push(url);
 	}
 }
+
+/*
+var GoBackInHistory = function() {
+	wikiHistory.pop();
+	var item = wikiHistory[wikiHistory.length-1];
+	
+	alert("Going back to '"+item+"'");
+	
+	var view = ExtractPageName(item);
+	GoToView(view);
+	
+}
+*/
 
 var HandleErrorCodes = function(response) {
 	switch(response.status) {
@@ -195,6 +217,9 @@ var ShowSignInUpLinks = function() {
 	var loginLink = $('<a href="SignIn.html">Sign in</a>');
 	loginLink.click(DisplaySignInForm);
 	
+	SetCookie("loginname","");
+	SetCookie("password","");
+	
 	var sep = $('<span> &bull; </span>');
 	
 	var signupLink = $('<a href="SignUp.html">Sign up</a>');
@@ -208,7 +233,7 @@ var ShowSignInUpLinks = function() {
  */
 
 var DisplaySignInForm = function(e) {
-	if(e != 'undefined') e.preventDefault();
+	if(e) { e.preventDefault(); }
 	
 	Reset();
 	HideLoading();
@@ -220,7 +245,7 @@ var DisplaySignInForm = function(e) {
 }
 
 var DisplaySignUpForm = function(e) {
-	if(e != 'undefined') e.preventDefault();
+	if(e) { e.preventDefault(); }
 	
 	Reset();
 	HideLoading();
@@ -256,7 +281,7 @@ var SignIn = function() {
 	
 	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToPage('Homepage'); }, function(response) { DisplaySignInForm(); alert(response.message); });
 	
-	return true;
+	return false;
 }
 
 var SignOut = function() {
@@ -295,6 +320,30 @@ var SignUp = function() {
 
 var ChangePassword = function() {
 	
+	Reset();
+	
+	currentpassword = $('#ChangePasswordForm-CurrentPassword').val();
+	newpassword = $('#ChangePasswordForm-InputNewPassword').val();
+	newpasswordconfirmation = $('#ChangePasswordForm-InputConfirmNewPassword').val();
+	
+	if(newpassword != newpasswordconfirmation) {
+		alert("The passwords aren't alike");
+		return;
+	}
+
+	currentpassword = md5(currentpassword);
+	newpassword = md5(newpassword);
+	
+	var userdata = {
+			"userID": wiki.currentUserID,
+			"currentpassword":currentpassword,
+			"password":newpassword
+		};
+	
+	wiki.CreateOrSaveUser(userdata,
+							function(response) { alert(response.message); GoToPage('Homepage'); });
+	
+	return false;
 }
 
 /*
@@ -419,7 +468,7 @@ var DisplayEditPageForm = function(response) {
 		$("#EditPage-DeletePage").attr("disabled", false).unbind("click").click(GoToDeletePageDialog);
 	}
 	
-	$("#NavDropChanges").css("display","block");
+	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
 	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewExistingPage);
 	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveExistingPage);
 	
@@ -469,6 +518,7 @@ var SaveExistingPage = function() {
 }
 
 var DisplayNewPageForm = function() {
+	UpdateWindow("Create a new page", "NewPage.html");
 	Reset();
 	
 	$("#NewPage-InputTitle").val("");
@@ -499,7 +549,7 @@ var DisplayNewPageForm = function() {
 		}
 	);
 	
-	$("#NavDropChanges").css("display","block");
+	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
 	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewNewPage);
 	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveNewPage);
 	
@@ -551,7 +601,7 @@ var SaveNewPage = function() {
 }
 
 var DropChanges = function() {
-	
+	GoBackInHistory();
 }
 
 var GoToDeletePageDialog = function(e) {

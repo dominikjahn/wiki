@@ -3,6 +3,11 @@ var Wiki = function() {
 		'currentUserID': null,
 		'currentUserLoginname': null,
 		'currentUserPassword': null,
+		'defaultPositiveHandler': function(response) { alert(response.message); },
+		'defaultNegativeHandler': function(response) { alert(response.message); },
+		'defaultErrorHandler': function(xhr, type, message) {
+				alert("! Error !\n\n"+type+": "+message+"\n\nSigned in as "+this.currentUserLoginname); 
+			},
 		
 		'Request': function(type, url, data, positive_callback, negative_callback, error_callback) {
 			var wiki = this;
@@ -10,11 +15,9 @@ var Wiki = function() {
 			var data = data || null;
 			var type = type || "GET";
 			
-			var positive_callback = positive_callback || function() {};
-			var negative_callback = negative_callback || function() {};
-			var error_callback = error_callback || /*function() {}; */	function(xhr, type, message) {
-																			alert("! Error !\n\n"+type+": "+message+"\n\nSigned in as "+this.currentUserLoginname); 
-																		};
+			var positive_callback = positive_callback || this.defaultPositiveHandler;
+			var negative_callback = negative_callback || this.defaultNegativeHandler;
+			var error_callback = error_callback       || this.defaultErrorHandler;
 			
 			$.ajax({
 				'type': type,
