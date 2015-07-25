@@ -98,7 +98,7 @@ var Wiki = function() {
 		 * @returns {status, message, page: {page_id, name, content, visibility, modification, last_edit: {user_id, loginname, timestamp}}}
 		 */
 		'GetPageByName': function(name, positive_callback, negative_callback, error_callback) {
-			this.Request("GET", "request.php?command=GetPage&page="+name, null, positive_callback, negative_callback, error_callback);
+			this.Request("GET", "request.php?command=GetPage&name="+name, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
