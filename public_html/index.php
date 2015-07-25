@@ -392,7 +392,7 @@
 				</div>
 			</div>
 			
-			<form id="EditPermissions" accept-charset="UTF-8">
+			<form id="EditPermissions" accept-charset="UTF-8" data-userid="">
 				<h1>Edit permissions for user '<span id="EditPermissions-Loginname">...</span>'</h1>
 				
 				<table class="table table-striped table-hover">

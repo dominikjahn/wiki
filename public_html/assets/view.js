@@ -759,6 +759,13 @@ var GoToEditPermissionsForm = function(e) {
 	
 	var userID = $this.data("userid");
 	
+	$("#EditPermissions").data("userid", userID);
+	RefreshEditPermissionsForm();
+}
+
+var RefreshEditPermissionsForm = function() {
+	var userID = $("#EditPermissions").data("userid");
+	
 	wiki.GetPermissionsForUser(userID,
 			DisplayEditPermissionsForm,
 			HandleErrorCodes,
@@ -772,7 +779,7 @@ var DisplayEditPermissionsForm = function(response) {
 	UpdateWindow("Edit user permissions", "EditUserPermissions-"+user.loginname+".html");
 	
 	$('#EditPermissions-Loginname').html(user.loginname);
-	$('#EditPermissions-List').empty();
+	$('#UserPermissions-List').empty();
 	
 	for(var p = 0; p < response.permissions.length; p++) {
 		var permission = response.permissions[p];
@@ -780,18 +787,55 @@ var DisplayEditPermissionsForm = function(response) {
 		$("#UserPermissions-List").append('' +
 			'	<tr>' +
 			'		<td>' + permission.permission + '</td>' +
-			'		<td><input type="checkbox" '+(permission.status == 20000 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-userid="'+user.userID+'" data-permission="'+permission.permission+'" /></td>' +
+			'		<td><input type="checkbox" '+(permission.status == 100 ? 'checked="checked"' : '')+' class="EditPermissions-Checkbox" data-userid="'+user.user_id+'" data-permission="'+permission.permission+'" /></td>' +
 			'	</tr>');
 	}
 	
-	/*
-			$(".EditPermissions-Checkbox").change(GrantOrRevokePermission);
-			$('#EditPermissions-NewPermission').data("user", userUserID);
-	 */
+	$(".EditPermissions-Checkbox").change(GrantOrRevokePermission);
+	$('#EditPermissions-NewPermission').data("userid", user.user_id)
+	$('#EditPermissions-NewPermissionSet').unbind("click").click(CreateAndGrantPermission);
 	
 	HideLoading();
 	
 	$("#EditPermissions").show();
+}
+
+var GrantOrRevokePermission = function() {
+	var $this = $(this);
+	
+	var userID = $this.data("userid");
+	var permission = $this.data("permission");
+	var type = $(this).is(":checked");
+	
+	switch(type) {
+		case true:
+			wiki.GrantPermissions(userID, [permission],
+					function(response) { alert(response.message); },
+					HandleErrorCodes,
+					DisplayError);
+			break;
+			
+		case false:
+			wiki.RevokePermissions(userID, [permission],
+					function(response) { alert(response.message); },
+					HandleErrorCodes,
+					DisplayError);
+			break;
+	}
+}
+
+var CreateAndGrantPermission = function() {
+	
+	var userID = $('#EditPermissions-NewPermission').data("userid");
+	var permission = $('#EditPermissions-NewPermission').val();
+	
+	wiki.GrantPermissions(userID, [permission],
+				function(response) {
+					alert(response.message);
+					RefreshEditPermissionsForm();
+				},
+				HandleErrorCodes,
+				DisplayError);
 }
 
 var GoToDeleteUserDialog = function(e) {

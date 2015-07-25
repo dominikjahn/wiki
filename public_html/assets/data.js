@@ -186,7 +186,7 @@ var Wiki = function() {
 		 * @parameter permissions array (e.g. [CREATE_PAGES, CREATE_USERS])
 		 */
 		'GrantPermissions': function(userID, permissions, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("PUT", "request.php?command=SaveUserPermission", {'userID': userID, 'permissions': permissions}, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
@@ -195,7 +195,7 @@ var Wiki = function() {
 		 * @parameter permissions array (e.g. [CREATE_PAGES, CREATE_USERS])
 		 */
 		'RevokePermissions': function(userID, permissions, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("DELETE", "request.php?command=SaveUserPermission", {'userID': userID, 'permissions': permissions}, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetPermissionsForUser': function(userID, positive_callback, negative_callback, error_callback) {

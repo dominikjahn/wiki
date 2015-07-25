@@ -49,6 +49,7 @@
 			if(!$success) {
 				$total_success = false;
 				// rollback
+				throw new \Exception("Something failed");
 				break;
 			}
 		}
