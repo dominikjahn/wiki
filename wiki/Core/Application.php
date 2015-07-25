@@ -73,6 +73,11 @@
 				case "DisplayPage": require_once "Core/Views/DisplayPage.php"; break;
 				
 				/*
+				 * Display the content of a specific page
+				 */
+				case "GetPage": require_once "Core/Views/GetPage.php"; break;
+				
+				/*
 				 * Save changes to a page
 				 */
 				case "SavePage": require_once "Core/Views/SavePage.php"; break;
@@ -88,6 +93,11 @@
 				case "GetVersions": require_once "Core/Views/GetVersions.php"; break;
 				
 				/*
+				 * Get a list of revisions of a specific page
+				 */
+				case "GetVersion": require_once "Core/Views/GetVersion.php"; break;
+				
+				/*
 				 * Get a specific version
 				 */
 				case "DisplayVersion": require_once "Core/Views/DisplayVersion.php"; break;
@@ -96,6 +106,11 @@
 				 * Delete a page
 				 */
 				case "DeletePage": require_once "Core/Views/DeletePage.php"; break;
+				
+				/*
+				 * Get a category
+				 */
+				case "GetCategory": require_once "Core/Views/GetCategory.php"; break;
 					
 				/*
 				 * Check login credentials
@@ -112,7 +127,6 @@
 				 */
 				case "DeleteUser": require_once "Core/Views/DeleteUser.php"; break;
 				
-					
 				/*
 				 * Create/edit a user account
 				 */
@@ -132,6 +146,11 @@
 				 * Get a list of all users
 				 */
 				case "GetUsers": require_once "Core/Views/GetUsers.php"; break;
+					
+				/*
+				 * Get a list of all users
+				 */
+				case "GetUser": require_once "Core/Views/GetUser.php"; break;
 				
 				/*
 				 * Create/edit a group
@@ -142,6 +161,11 @@
 				 * Get a list of all groups
 				 */
 				case "GetGroups": require_once "Core/Views/GetGroups.php"; break;
+				
+				/*
+				 * Get a list of all groups
+				 */
+				case "GetGroup": require_once "Core/Views/GetGroup.php"; break;
 				
 				/*
 				 * Delete a group

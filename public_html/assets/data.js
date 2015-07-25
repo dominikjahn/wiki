@@ -86,18 +86,26 @@ var Wiki = function() {
 		},
 		
 		/**
+		 * Render a page
+		 * @returns {status, message, page: {page_id, name, content, visibility, modification, last_edit: {user_id, loginname, timestamp}}}
+		 */
+		'DisplayPage': function(name, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=DisplayPage&page="+name, null, positive_callback, negative_callback, error_callback);
+		},
+		
+		/**
 		 * Retrieves a page by its name
 		 * @returns {status, message, page: {page_id, name, content, visibility, modification, last_edit: {user_id, loginname, timestamp}}}
 		 */
-		'GetPageByName': function(name, raw, positive_callback, negative_callback, error_callback) {
-			this.Request("GET", "request.php?command=DisplayPage&page="+name+(raw ? "&raw" : ""), null, positive_callback, negative_callback, error_callback);
+		'GetPageByName': function(name, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=GetPage&page="+name, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		/**
 		 * Retrieves a page by its ID
 		 */
-		'GetPageByID': function(pageID, raw, positive_callback, negative_callback, error_callback) {
-			this.Request("GET", "request.php?command=DisplayPage&pageID="+pageID+(raw ? "&raw" : ""), null, positive_callback, negative_callback, error_callback);
+		'GetPageByID': function(pageID, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=GetPage&pageID="+pageID, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'CreateOrSavePage': function(pagedata, positive_callback, negative_callback, error_callback) {
@@ -109,11 +117,11 @@ var Wiki = function() {
 		},
 		
 		'GetVersionsByPage': function(pageID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetVersions&pageID="+pageID, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetVersionByID': function(versionID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetVersion&versionID="+versionID, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetUsers': function(positive_callback, negative_callback, error_callback) {
@@ -121,11 +129,11 @@ var Wiki = function() {
 		},
 		
 		'GetUserByLoginname': function(loginname, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetUser&loginname="+loginname, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetUserByID': function(userID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetUser&userID="+userID, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'CreateOrSaveUser': function(userdata, positive_callback, negative_callback, error_callback) {
@@ -141,11 +149,11 @@ var Wiki = function() {
 		},
 		
 		'GetGroupByName': function(name, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetGroup&name="+name, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'GetGroupByID': function(groupID, positive_callback, negative_callback, error_callback) {
-		
+			this.Request("GET", "request.php?command=GetGroup&groupID="+groupID, null, positive_callback, negative_callback, error_callback);
 		},
 		
 		'CreateOrSaveGroup': function(groupdata, positive_callback, negative_callback, error_callback) {
@@ -158,7 +166,6 @@ var Wiki = function() {
 		
 		'GetUsersInGroup': function(groupID, positive_callback, negative_callback, error_callback) {
 			this.Request("DELETE", "request.php?command=GetUsers&groupID="+groupID+"&mode=INCLUDE", null, positive_callback, negative_callback, error_callback);
-			
 		},
 		
 		'GetUsersNotInGroup': function(groupID, positive_callback, negative_callback, error_callback) {

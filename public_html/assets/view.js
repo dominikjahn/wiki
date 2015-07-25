@@ -6,16 +6,13 @@ $(function() {
 	
 	var loginname = GetCookie('wiki_loginname');
 	var password = GetCookie('wiki_password');
-	
 	var view = ExtractPageName();
 	
 	wiki = new Wiki();
 	wiki.defaultNegativeHandler = HandleErrorCodes;
 	wiki.defaultErrorHandler = DisplayError;
 	
-	if(loginname && password) {
-		wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
-	}
+	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
 	
 	var fromCache = localStorage.getItem("wiki_cache");
 	
@@ -100,45 +97,45 @@ var GoToView = function(view) {
 
 var Reset = function() {
 	// Views
-	$("#Loading").css("display","block");
-	$("#PageNotFound").css("display","none");
-	$("#NotAuthorized").css("display","none");
-	$("#Offline").css("display","none");
-	$("#Error").css("display","none");
-	$("#SignInForm").css("display","none");
-	$("#SignUpForm").css("display","none");
-	$("#ChangePasswordForm").css("display","none");
-	$("#DisplayPage").css("display","none");
-	$("#NewPage").css("display","none");
-	$("#EditPage").css("display","none");
-	$("#Versions").css("display","none");
-	$("#UserManagement").css("display","none");
-	$("#EditPermissions").css("display","none");
-	$("#NewUserForm").css("display","none");
-	$("#NewGroupForm").css("display","none");
-	$("#GroupUsers").css("display","none");
+	$("#Loading").show();
+	$("#PageNotFound").hide();
+	$("#NotAuthorized").hide();
+	$("#Offline").hide();
+	$("#Error").hide();
+	$("#SignInForm").hide();
+	$("#SignUpForm").hide();
+	$("#ChangePasswordForm").hide();
+	$("#DisplayPage").hide();
+	$("#NewPage").hide();
+	$("#EditPage").hide();
+	$("#Versions").hide();
+	$("#UserManagement").hide();
+	$("#EditPermissions").hide();
+	$("#NewUserForm").hide();
+	$("#NewGroupForm").hide();
+	$("#GroupUsers").hide();
 	
 	// Navbar
-	$("#NavEditPage").css("display","none");
-	$("#NavGetVersions").css("display","none");
-	$("#NavDropChanges").css("display","none");
-	$("#NavPreviewChanges").css("display","none");
-	$("#NavSaveChanges").css("display","none");
-	$("#NavBackToComposer").css("display","none");
-	$("#NavPublicPage").css("display","none");
-	$("#NavProtectedPage").css("display","none");
-	$("#NavPrivatePage").css("display","none");
-	$("#NavGroupPrivatePage").css("display","none");
+	$("#NavEditPage").hide();
+	$("#NavGetVersions").hide();
+	$("#NavDropChanges").hide();
+	$("#NavPreviewChanges").hide();
+	$("#NavSaveChanges").hide();
+	$("#NavBackToComposer").hide();
+	$("#NavPublicPage").hide();
+	$("#NavProtectedPage").hide();
+	$("#NavPrivatePage").hide();
+	$("#NavGroupPrivatePage").hide();
 	
 	// Display loading screen
-	$("#Loading").css("display","block");
+	$("#Loading").show();
 	
 	// Unbind all hotkeys
 	$(document).unbind('keydown');
 }
 
 var HideLoading = function() {
-	$("#Loading").css("display","none");
+	$("#Loading").hide();
 }
 
 var ExtractPageName = function(url) {
@@ -210,7 +207,7 @@ var ShowUserInfo = function(response) {
 							function() {
 								$("#NavUsers").css("display","block").unbind("click").click(GoToUserList); },
 							function() {
-								$("#NavUsers").css("display","none").unbind("click"); });
+								$("#NavUsers").css("display","block").unbind("click"); });
 }
 
 var ShowSignInUpLinks = function() {
@@ -239,7 +236,7 @@ var DisplaySignInForm = function(e) {
 	HideLoading();
 	
 	UpdateWindow("Sign in", "SignIn.html");
-	$("#SignInForm").css("display","block").unbind("submit").submit(SignIn);
+	$("#SignInForm").show().unbind("submit").submit(SignIn);
 	
 	return false;
 }
@@ -251,7 +248,7 @@ var DisplaySignUpForm = function(e) {
 	HideLoading();
 	
 	UpdateWindow("Sign up", "SignUp.html");
-	$("#SignUpForm").css("display","block").unbind("submit").submit(SignUp);
+	$("#SignUpForm").show().unbind("submit").submit(SignUp);
 	
 	return false;
 }
@@ -263,7 +260,7 @@ var DisplayChangePasswordForm = function(e) {
 	HideLoading();
 	
 	UpdateWindow("Change password", "ChangePassword.html");
-	$("#ChangePasswordForm").css("display","block").unbind("submit").submit(ChangePassword);
+	$("#ChangePasswordForm").show().unbind("submit").submit(ChangePassword);
 	
 	return false;
 }
@@ -351,23 +348,23 @@ var ChangePassword = function() {
  */
 
 var GoToPage = function(pagename) {
-	wiki.GetPageByName(pagename, false,
-									function(response) {
-											cache[pagename] = response;
-											localStorage.setItem("wiki_cache", JSON.stringify(cache));
-											DisplayPage(response);
-											
-											if(response.page.can_edit) {
-												$("#NavEditPage").css("display","block").unbind("click").click(function() { GoToEditPageForm(pagename); }).attr("href","./EditPage-"+pagename+".html");
-												$("#NavGetVersions").css("display","block").unbind("click").click(function() { GoToVersions(pagename); }).attr("href","./Versions-"+pagename+".html");
-											}
-											
-											UpdateWindow(response.page.title, response.page.name+".html");
-									},
-									HandleErrorCodes,
-									//function(response) { GetPageFromCache(pagename, false, response); },
-									
-									function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
+	wiki.DisplayPage(pagename,
+					function(response) {
+							cache[pagename] = response;
+							localStorage.setItem("wiki_cache", JSON.stringify(cache));
+							DisplayPage(response);
+							
+							if(response.page.can_edit) {
+								$("#NavEditPage").css("display","block").unbind("click").click(function() { GoToEditPageForm(pagename); }).attr("href","./EditPage-"+pagename+".html");
+								$("#NavGetVersions").css("display","block").unbind("click").click(function() { GoToVersions(pagename); }).attr("href","./Versions-"+pagename+".html");
+							}
+							
+							UpdateWindow(response.page.title, response.page.name+".html");
+					},
+					HandleErrorCodes,
+					//function(response) { GetPageFromCache(pagename, false, response); },
+					
+					function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
 	);
 	
 	return false;
@@ -387,7 +384,7 @@ var GetPageFromCache = function(pagename, error, response_or_xhr) {
 var DisplayPage = function(response, titlewrap) {
 	Reset();
 	
-	$("#DisplayPage").css("display","block");
+	$("#DisplayPage").show();
 	$("#DisplayPage-Title").html(response.page.title);
 	$("#DisplayPage-Content").html(response.page.content);
 	
@@ -404,12 +401,12 @@ var DisplayPage = function(response, titlewrap) {
 	}
 
 	if(response.no_navbar) {
-		$('#Navbar').css("display","none");
+		$('#Navbar').hide();
 		$('#content').css("margin-top","0px");
 	}
 	
 	if(response.no_footerbar) {
-		$('#FooterBar').css("display","none");
+		$('#FooterBar').hide();
 	}
 	
 	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
@@ -485,7 +482,7 @@ var DisplayEditPageForm = function(response) {
 	EditPageEditor.getSession().setValue($("#EditPage-InputContent").val());
 	
 	HideLoading();
-	$("#EditPage").css("display","block").data("pageID",response.page.page_id);
+	$("#EditPage").show().data("pageID",response.page.page_id);
 }
 
 var PreviewExistingPage = function() {
@@ -566,7 +563,7 @@ var DisplayNewPageForm = function() {
 	NewPageEditor.getSession().setValue("");
 	
 	HideLoading();
-	$("#NewPage").css("display","block");
+	$("#NewPage").show();
 	
 	return false;
 }
@@ -706,7 +703,7 @@ var DisplayUserList = function() {
 	
 	UpdateWindow("User management", "Users.html");
 	
-	$("#UserManagement").css("display","block");
+	$("#UserManagement").show();
 	$("#UserManagement-UserTab").tab("show");
 	
 	FinalizeUserManagement();
@@ -717,7 +714,7 @@ var DisplayGroupList = function() {
 	HideLoading();
 	
 	UpdateWindow("Group management", "Groups.html");
-	$("#UserManagement").css("display","block");
+	$("#UserManagement").show();
 	$("#UserManagement-GroupTab").tab("show");
 	
 	FinalizeUserManagement();
@@ -1046,19 +1043,19 @@ var DeleteGroup = function() {
 var DisplayNotAuthorizedError = function() {
 	Reset();
 	HideLoading();
-	$("#NotAuthorized").css("display","block");
+	$("#NotAuthorized").show();
 }
 
 var DisplayNotFoundError = function() {
 	Reset();
 	HideLoading();
-	$("#PageNotFound").css("display","block");
+	$("#PageNotFound").show();
 }
 
 var DisplayError = function(xhr, type, message) {
 	Reset();
 	HideLoading();
-	$("#Error").css("display","block");
+	$("#Error").show();
 }
 
 /*

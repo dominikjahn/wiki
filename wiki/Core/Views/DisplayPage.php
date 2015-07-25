@@ -12,8 +12,8 @@
 	require_once "Core/ThirdParty/ParseDown.php";
 	require_once "Core/ThirdParty/ParsedownExtra.php";
 	
-	$pagename = $_GET["page"];
-	$raw = (isset($_GET["raw"]) ? true : false);
+	$pagename = (isset($_GET["page"]) ? $_GET["page"] : null);
+	$pageID = (isset($_GET["pageID"]) ? (int) $_GET["pageID"] : null);
 	
 	$pageID = $title = $content = $owner_id = $visibility = $lastedit = null;
 	
@@ -22,7 +22,15 @@
 	$noHeadline = $noNavbar = $noFooterbar = $customOutput = false;
 	
 	try {
-		$page = PageManager::GetInstance()->GetByName($pagename);
+		$page = null;
+		$pageManager = PageManager::GetInstance();
+		
+		if($pagename) {
+			$page = $pageManager->GetByName($pagename);
+		} else {
+			$page = $pageManager->GetByID($pageID);
+		}
+		
 		$currentUser = User::GetCurrentUser();
 		
 		if(!$page || $page->status === 0) {
@@ -36,13 +44,11 @@
 			Page::SetCurrentPage($page);
 			
 			$content = $page->Content;
-			if(!$raw) {
-				$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
+			$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
 				
-				$parseDown = new \ParsedownExtra;
-				$content = $parseDown->text($content);
-				$content = str_replace("<table>","<table class='table table-bordered'>",$content);
-			}
+			$parseDown = new \ParsedownExtra;
+			$content = $parseDown->text($content);
+			$content = str_replace("<table>","<table class='table table-bordered'>",$content);
 			
 			$page->Content = $content;
 			

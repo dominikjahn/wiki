@@ -1,7 +1,4 @@
-<?php
-	$javascriptMode = "";
-	//$javascriptMode = ".min";
-?><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" manifest="wiki.appcache">
 	<head>
 		<meta charset="UTF-8">
@@ -549,8 +546,8 @@
 		<script src="assets/js/ace/ace.js"></script>
 		<script src="assets/js/ace/mode-php.js"></script>
 		<script src="assets/js/ace/mode-html.js"></script>
-		<script src="assets/js/md5<?php echo $javascriptMode; ?>.js"></script>
-		<script src="assets/data<?php echo $javascriptMode; ?>.js"></script>
-		<script src="assets/view<?php echo $javascriptMode; ?>.js"></script>
+		<script src="assets/js/md5.min.js"></script>
+		<script src="assets/data.js"></script>
+		<script src="assets/view.js"></script>
 	</body>
 </html>
