@@ -76,7 +76,7 @@
 			$groupmember->Status = 100;
 			$groupmember->Group = $group;
 			$groupmember->User = $this;
-			$groupmember->Save();
+			return $groupmember->Save();
 		}
 		
 		public function RemoveFromGroup($group) {

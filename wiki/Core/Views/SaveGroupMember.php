@@ -26,7 +26,11 @@
 			throw new \Exception("The group doesn't exist");
 		}
 		
+		$total_success = false;
+		
 		foreach($userIDs as $userID) {
+			$total_success = true;
+			
 			$user = UserManager::GetInstance()->GetByID($userID);
 			
 			if(!$user || $user->Status === 0) {
@@ -41,10 +45,16 @@
 			} else if($request->Method == "DELETE") {
 				$success = $user->RemoveFromGroup($group);
 			}
+			
+			if(!$success) {
+				$total_success = false;
+				// rollback
+				break;
+			}
 		}
 		
-		$data->status = ($success ? 200 : 0);
-		$data->message = "The group membership has successfully been changed";
+		$data->status = ($total_success ? 200 : 0);
+		$data->message = "The user has successfully been ".($request->Method == "PUT" ? "added" : "removed");
 		
 	}/* catch(NotAuthorizedToManageUserPermissionsException $e) {
 		$data->status = 401;

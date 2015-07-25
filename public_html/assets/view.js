@@ -825,10 +825,10 @@ var GoToGroupMembers = function(e) {
 	var groupID = $this.data("groupid");
 	$("#GroupUsers").data("groupid", groupID);
 	
-	RefreshGroupMembers(e);
+	RefreshGroupMembers();
 }
 
-var RefreshGroupMembers = function(e) {
+var RefreshGroupMembers = function() {
 	var groupID = $("#GroupUsers").data("groupid");
 	
 	memberListPopulated = false;
@@ -858,13 +858,11 @@ var PopulateMemberList = function(response, callback) {
 	memberListPopulated = true;
 	
 	if(nonMemberListPopulated == true) {
-		callback();
+		callback(response);
 	}
 }
 
 var PopulateNonMemberList = function(response, callback) {
-	
-	
 	
 	$('#GroupUsers-NotInGroup').empty();
 	
@@ -901,7 +899,7 @@ var RemoveUsersFromGroup = function() {
 	var selected = $("#GroupUsers-InGroup").val();
 	
 	wiki.RemoveUsersFromGroup(groupID, selected,
-			RefreshGroupMembers,
+			function(response) { alert(response.message); RefreshGroupMembers(); },
 			HandleErrorCodes,
 			DisplayError);
 }
@@ -911,7 +909,7 @@ var AddUsersToGroup = function() {
 	var selected = $("#GroupUsers-NotInGroup").val();
 	
 	wiki.AddUsersToGroup(groupID, selected,
-			RefreshGroupMembers,
+			function(response) { alert(response.message); RefreshGroupMembers(); },
 			HandleErrorCodes,
 			DisplayError);
 }
