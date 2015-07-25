@@ -420,7 +420,7 @@ var DisplayPage = function(response, titlewrap) {
 var GoToEditPageForm = function(pagename) {
 	Reset();
 	
-	wiki.GetPageByName(pagename, true, DisplayEditPageForm);
+	wiki.GetPageByName(pagename, DisplayEditPageForm);
 	
 	return false;
 }
