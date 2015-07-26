@@ -539,7 +539,7 @@ var BackToEditPageForm = function() {
 
 var SaveExistingPage = function() {
 	var pagedata = {
-		'pageID': $("#EditPage").data("pageID"),
+		'pageID': $("#EditPage").data("pageid"),
 		'title': $("#EditPage-InputTitle").val(),
 		'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
 		'summary': $("#EditPage-InputSummary").val(),
