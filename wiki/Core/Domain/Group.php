@@ -51,6 +51,11 @@
 				throw new NotAuthorizedToCreateOrEditGroupsException();
 			}
 			
+			// Check that the name is valid
+			if(!preg_match("#^([a-z0-9]{3,20})$#", $this->name)) {
+				throw new \Exception("The name contains characters which are not allowed for a group name. Three to twenty characters, only lower-cased letters and numbers.");
+			}
+			
 			$duplicateName = self::NameTaken($this->Name);
 				
 			if($duplicateName && $duplicateName->ID != $this->ID) {

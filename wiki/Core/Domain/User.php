@@ -111,6 +111,11 @@
 			if(($this->ID === 1 || $this->ID === 2) && $this->Status !== 100) {
 				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
 			}
+			//var_dump(preg_match("#^([a-z0-9]{3,20})$#", $this->loginname));
+			// Check that the name is valid
+			if(!preg_match("#^([a-z0-9]{3,20})$#", $this->loginname)) {
+				throw new \Exception("The name contains characters which are not allowed for a login name. Three to twenty characters, only lower-cased letters and numbers.");
+			}
 			
 			$duplicateLoginname = self::LoginnameTaken($this->Loginname);
 			

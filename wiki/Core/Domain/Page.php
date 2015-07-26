@@ -5,6 +5,7 @@
 	use Wiki\Domain\Manager\CategoryManager;
 	use Wiki\Domain\Manager\CategoryPageManager;
 	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	use Wiki\Tools\StringTools;
 	
 	/**
 	 * @table page
@@ -438,31 +439,7 @@
 		//
 		
 		public static function NormalizeTitle($title) {
-			$name = str_replace([" ","\t"]," ",$title);
-			$name = str_replace(["Ä", "ä", "Ö", "ö", "Ü", "ü", "ß", "Á","á","À","à","Ã","ã","É","é","È","è","Ó","ó","Ò","ò","Õ","õ","Í","í","Ì","ì","Ú","ú","Ù","ù","Ñ","ñ"],
-								["Ae","ae","Oe","oe","Ue","ue","ss","A","a","A","a","A","a","E","e","E","e","O","o","O","o","O","o","I","i","I","i","U","u","U","u","N","n"],
-								$name);
-								
-			$name = trim($name);
-			
-			$name = str_replace(" ","_",$name);
-			
-			// Remove all non-allowed characters
-			$nameClean = null;
-			
-			for($p = 0; $p < strlen($name); $p++) {
-				$char = ord(substr($name,$p,1));
-				
-				if(($char >= 48 && $char <=57) || ($char >= 65 && $char <= 90) || ($char >= 97 && $char <= 122) || $char == 95) {
-					$nameClean .= substr($name,$p,1);
-				}
-			}
-			
-			while(strpos($name,"__") !== false) {
-				$name = str_replace("__","_",$name);
-			}
-			
-			return $nameClean;
+			return StringTools::NormailzeString($title);
 		}
 		
 		public static function NameTaken($name) {
