@@ -63,6 +63,12 @@
 				throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
 			}
 			
+			$duplicateName = self::NameTaken($this->Name);
+				
+			if($duplicateName && $duplicateName->ID != $this->ID) {
+				throw new \Exception("The name is already taken");
+			}
+			
 			$success = parent::Save();
 			
 			if(!$success) {
@@ -459,7 +465,18 @@
 			return $nameClean;
 		}
 		
-		public static function CheckForDuplicatePageName($name) {
+		public static function NameTaken($name) {
+			$pageManager = PageManager::GetInstance();
+			$page = $pageManager->GetByName($name);
+				
+			if(!$page) {
+				return false;
+			}
+				
+			return $page;
+		}
+		
+		/*public static function CheckForDuplicatePageName($name) {
 			$origName = $name;
 			
 			$attempt = 0;
@@ -479,7 +496,7 @@
 			}
 			
 			return $name;
-		}
+		}*/
 		
 		  //
 		 // CONSTANTS

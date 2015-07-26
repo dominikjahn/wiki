@@ -51,7 +51,7 @@
 			$page = new Page();
 			
 			$name = Page::NormalizeTitle($title);
-			$name = Page::CheckForDuplicatePageName($name);
+			//$name = Page::CheckForDuplicatePageName($name);
 			
 			$page->Status = 100;
 			$page->Name = $name;
