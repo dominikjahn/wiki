@@ -43,7 +43,7 @@
 			
 			if(!is_null($password)) {
 				// First we need to check if $currentpassword matches the password
-				if(!$user->MatchPassword($currentpassword)) {
+				if(!$user->MatchPassword($currentpassword) && $user->ID == $currentUser->ID) {
 					throw new CurrentPasswordDoesNotMatchException();
 				}
 				
@@ -53,9 +53,10 @@
 			$user = new User();
 			
 			$user->Status = 100;
-			$user->Loginname = $loginname;
 			$user->Password = $password;
 		}
+		
+		$user->Loginname = $loginname;
 		
 		$success = $user->Save();
 		

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" manifest="wiki.appcache">
+<!--html lang="en" manifest="wiki.appcache"-->
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8-8" />
@@ -401,7 +402,7 @@
 						<table class="table table-striped table-hover">
 							<thead>
 								<th>User</th>
-								<th colspan="2">Action</th>
+								<th colspan="3">Action</th>
 							</thead>
 							<tbody id="User-List">
 							</tbody>
@@ -414,7 +415,7 @@
 						<table class="table table-striped table-hover">
 							<thead>
 								<th>Group</th>
-								<th colspan="2">Action</th>
+								<th colspan="3">Action</th>
 							</thead>
 							<tbody id="Group-List">
 							</tbody>
@@ -442,23 +443,23 @@
 				</table>
 			</form>
 			
-			<form id="NewUserForm" accept-charset="UTF-8">
-				<h1>New user</h1>
+			<form id="EditUserForm" accept-charset="UTF-8">
+				<h1 id="EditUserForm-Title">New user</h1>
 				
 				<div class="form-group">
-					<label for="NewUserForm-InputLoginName">Login name</label>
-					<input type="text" class="form-control" id="NewUserForm-InputLoginname" />
+					<label for="EditUserForm-InputLoginName">Login name</label>
+					<input type="text" class="form-control" id="EditUserForm-InputLoginname" />
 				</div>
 				<div class="form-group">
-					<label for="NewUserForm-InputPassword">Password</label>
-					<input type="password" class="form-control" id="NewUserForm-InputPassword" />
+					<label for="EditUserForm-InputPassword">Password</label>
+					<input type="password" class="form-control" id="EditUserForm-InputPassword" />
 				</div>
 				<div class="form-group">
-					<label for="NewUserForm-InputConfirmPassword">Confirm password</label>
-					<input type="password" class="form-control" id="NewUserForm-InputConfirmPassword" />
+					<label for="EditUserForm-InputConfirmPassword">Confirm password</label>
+					<input type="password" class="form-control" id="EditUserForm-InputConfirmPassword" />
 				</div>
 				
-				<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user</button>
+				<button type="submit" class="btn btn-success" id="EditUserForm-Button"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user</button>
 			</form>
 			
 			<form id="NewGroupForm" accept-charset="UTF-8">

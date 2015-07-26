@@ -126,7 +126,7 @@ var Reset = function() {
 	$("#SearchResults").hide();
 	$("#UserManagement").hide();
 	$("#EditPermissions").hide();
-	$("#NewUserForm").hide();
+	$("#EditUserForm").hide();
 	$("#NewGroupForm").hide();
 	$("#GroupUsers").hide();
 	
@@ -773,6 +773,7 @@ var PopulateUserList = function(response, callback) {
 		$("#User-List").append('' +
 			'	<tr>' +
 			'		<td>' + user.loginname + '</td>' +
+			'		<td><button type="button" class="btn btn-xs btn-primary EditUser" data-userid="'+user.user_id+'" data-loginname="'+user.loginname+'"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Edit</button></td>' +
 			'		<td><button type="button" class="btn btn-xs btn-warning EditPermissions" data-userid="'+user.user_id+'" data-loginname="'+user.loginname+'" '+(user.user_id == 2 ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-cog" aria-hidden="true"></i> Permissions</button></td>' +
 			'		<td><button type="button" class="btn btn-xs btn-danger DeleteUser" data-userid="'+user.user_id+'" '+((user.user_id == 1 || user.user_id == 2) ? 'disabled="disabled"' : '')+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
 			'	</tr>');
@@ -795,7 +796,8 @@ var PopulateGroupList = function(response, callback) {
 		$("#Group-List").append('' +
 			'	<tr>' +
 			'		<td>' + group.name + '</td>' +
-			'		<td><button type="button" class="btn btn-xs btn-primary GetGroupUsers" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Users</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-primary EditGroup" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Edit</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-warning GetGroupUsers" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Members</button></td>' +
 			'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
 			'	</tr>');
 	}
@@ -834,9 +836,11 @@ var FinalizeUserManagement = function() {
 	$("#Users-NewUser").unbind("click").click(DisplayNewUserForm);
 	$("#Users-NewGroup").unbind("click").click(DisplayNewGroupForm);
 	
+	$(".EditUser").unbind("click").click(GoToEditUserForm);
 	$(".EditPermissions").unbind("click").click(GoToEditPermissionsForm);
 	$(".DeleteUser").unbind("click").click(GoToDeleteUserDialog);
 	
+	//$(".EditGroup").unbind("click").click(GoToEditGroupForm);
 	$(".GetGroupUsers").unbind("click").click(GoToGroupMembers);
 	$(".DeleteGroup").unbind("click").click(GoToDeleteGroupDialog);
 	
@@ -847,16 +851,49 @@ var FinalizeUserManagement = function() {
 var DisplayNewUserForm = function(e) {
 	Reset();
 	UpdateWindow("Create a new user", "NewUser.html");
+	$("#EditUserForm-Title").html("New user");
+	$("#EditUserForm-Button").html('<i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user');
+	
+	$("#EditUserForm-InputLoginname").val("");
+	$("#EditUserForm-InputPassword").val("");
+	$("#EditUserForm-InputConfirmPassword").val("");
+	
 	HideLoading();
-	$("#NewUserForm").show().unbind("submit").submit(SaveNewUser);
+	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid","");
 }
 
-var SaveNewUser = function(e) {
+var GoToEditUserForm = function() {
+	var $this = $(this);
+	
+	var userid = $this.data("userid");
+	
+	wiki.GetUserByID(userid, DisplayEditUserForm);
+}
+
+var DisplayEditUserForm = function(response) {
+	Reset();
+	UpdateWindow("Edit user '"+response.user.loginname+"'", "EditUser-"+response.user.loginname+".html");
+	$("#EditUserForm-Title").html("Edit user '"+response.user.loginname+"'");
+	$("#EditUserForm-Button").html('<i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Save user');
+	$("#EditUserForm-InputLoginname").val(response.user.loginname);
+	$("#EditUserForm-InputPassword").val("");
+	$("#EditUserForm-InputConfirmPassword").val("");
+	HideLoading();
+	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid",response.user.user_id);
+}
+
+var SaveUser = function(e) {
 	if(e) { e.preventDefault(); }
 	
-	var loginname = $("#NewUserForm-InputLoginname").val();
-	var password = $("#NewUserForm-InputPassword").val();
-	var confirmPassword = $("#NewUserForm-InputConfirmPassword").val();
+	var userID = $("#EditUserForm").data("userid");
+	var loginname = $("#EditUserForm-InputLoginname").val();
+	var password = $("#EditUserForm-InputPassword").val();
+	var confirmPassword = $("#EditUserForm-InputConfirmPassword").val();
+	
+	if(!userID && !password) {
+		alert("You need to provide a password");
+		return false;
+	}
 	
 	if(password != confirmPassword) {
 		alert("The passwords don't match");
@@ -866,7 +903,7 @@ var SaveNewUser = function(e) {
 	password = md5(password);
 	
 	var userdata = {
-		'userID': null,
+		'userID': userID,
 		'loginname': loginname,
 		'password': password
 	};
