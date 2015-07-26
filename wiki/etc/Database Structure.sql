@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS `%PREFIX%category` (
   `status` tinyint(3) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `name` char(140) CHARACTER SET ascii NOT NULL,
-  `title` varchar(560) COLLATE utf8mb4_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  `title` varchar(560) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS `%PREFIX%categorypage` (
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
   `page_id` int(10) unsigned NOT NULL,
-  `alias` varchar(560) COLLATE utf8mb4_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  `alias` varchar(560) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `group`
@@ -53,7 +53,7 @@ CREATE TABLE `%PREFIX%group` (
   `status` tinyint(3) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `name` varchar(20) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +68,7 @@ CREATE TABLE `%PREFIX%groupmember` (
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -84,9 +84,9 @@ CREATE TABLE `%PREFIX%log` (
   `object_table` varchar(20) CHARACTER SET ascii NOT NULL,
   `object_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
-  `type` enum('CREATE','MODIFY','DELETE') COLLATE utf8mb4_bin NOT NULL,
+  `type` enum('CREATE','MODIFY','DELETE') COLLATE utf8mb4_unicode_ci NOT NULL,
   `timestamp` datetime NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -100,13 +100,13 @@ CREATE TABLE `%PREFIX%page` (
   `status` tinyint(4) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `name` varchar(140) CHARACTER SET ascii NOT NULL,
-  `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
-  `content` text COLLATE utf8mb4_bin NOT NULL,
+  `title` varchar(560) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_owner_id` int(10) unsigned NOT NULL,
   `group_owner_id` int(10) unsigned NOT NULL,
-  `visibility` enum('PUBLIC','PROTECTED','PRIVATE','GROUPPRIVATE') COLLATE utf8mb4_bin NOT NULL DEFAULT 'PUBLIC',
-  `manipulation` enum('EVERYONE','REGISTERED','OWNER','GROUP') COLLATE utf8mb4_bin NOT NULL DEFAULT 'REGISTERED'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  `visibility` enum('PUBLIC','PROTECTED','PRIVATE','GROUPPRIVATE') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'PUBLIC',
+  `manipulation` enum('EVERYONE','REGISTERED','OWNER','GROUP') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'REGISTERED'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -121,7 +121,7 @@ CREATE TABLE `%PREFIX%user` (
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `loginname` char(20) CHARACTER SET ascii NOT NULL,
   `password` char(32) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -136,7 +136,7 @@ CREATE TABLE `%PREFIX%userpermission` (
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `permission` varchar(50) CHARACTER SET ascii NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -150,11 +150,11 @@ CREATE TABLE `%PREFIX%version` (
   `status` tinyint(3) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `page_id` int(10) unsigned NOT NULL,
-  `title` varchar(560) COLLATE utf8mb4_bin NOT NULL,
-  `content` text COLLATE utf8mb4_bin NOT NULL,
-  `summary` varchar(500) COLLATE utf8mb4_bin NOT NULL,
+  `title` varchar(560) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `summary` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
   `minor_edit` tinyint(1) NOT NULL DEFAULT b'0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables
