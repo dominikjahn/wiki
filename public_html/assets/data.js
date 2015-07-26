@@ -120,6 +120,10 @@ var Wiki = function() {
 			this.Request("GET", "request.php?command=GetPages&keywords="+keywords, null, positive_callback, negative_callback, error_callback);
 		},
 		
+		'PreviewPage': function(pagedata, positive_callback, negative_callback, error_callback) {
+			this.Request("POST", "request.php?command=PreviewPage", pagedata, positive_callback, negative_callback, error_callback);
+		},
+		
 		'GetVersionsByPage': function(pageID, positive_callback, negative_callback, error_callback) {
 			this.Request("GET", "request.php?command=GetVersions&pageID="+pageID, null, positive_callback, negative_callback, error_callback);
 		},

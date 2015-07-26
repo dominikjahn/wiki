@@ -1,7 +1,9 @@
 <?php
 	use Wiki\Domain\User;
 	use Wiki\Domain\Page;
+	use Wiki\Domain\Log;
 	use Wiki\Domain\Manager\PageManager;
+	use Wiki\Domain\Manager\CategoryManager;
 	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
 	
 	
@@ -41,11 +43,15 @@
 		$content = $parseDown->text($content);
 		$content = str_replace("<table>","<table class='table table-bordered'>",$content);
 		$page->Content = $content;
+		$page->LogModified = new Log();
+		$page->LogModified->User = User::GetCurrentUser();
+		$page->LogModified->Timestamp = new \DateTime();
+		$page->LogCreated = $page->LogModified;
 		
 		if(!$customOutput) {
 			$data->status = 200;
 			$data->message = "Preview created";
-			$data->page = (object) ["title" => $title, "content" => $page->Content];
+			$data->page = $page; //(object) ["title" => $title, "content" => $page->Content];
 			$data->no_headline = $noHeadline;
 			$data->no_navbar = $noNavbar;
 			$data->no_footerbar = $noFooterbar;

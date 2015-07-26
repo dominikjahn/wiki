@@ -383,7 +383,7 @@ var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	}
 }
 
-var DisplayPage = function(response, titlewrap) {
+var DisplayPage = function(response) {
 	Reset();
 	
 	$("#DisplayPage").show();
@@ -448,7 +448,7 @@ var DisplayEditPageForm = function(response) {
 					
 				$("#EditPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == currentOwner.user_id ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
 			}
-		}
+		}, function(response) { alert(response.message); }, function() {}
 	);
 	
 	wiki.GetGroups(
@@ -458,7 +458,7 @@ var DisplayEditPageForm = function(response) {
 					
 				$("#EditPage-Group").append('<option value="'+group.group_id+'"'+(group.group_id == currentGroup.group_id ? ' selected="selected"' : '')+'>'+group.name+'</option>');
 			}
-		}
+		}, function(response) { alert(response.message); }, function() {}
 	);
 	
 	if(response.page.page_id === 1) {
@@ -488,7 +488,31 @@ var DisplayEditPageForm = function(response) {
 }
 
 var PreviewExistingPage = function() {
+	Reset();
+	
+	var title = $("#EditPage-InputTitle").val();
+	
+	UpdateWindow(title + ' (Preview)');
+	
+	var pagedata = {
+			'title': title,
+			'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
+		};
+	
+	wiki.PreviewPage(pagedata,
+						function(response) {
+							DisplayPage(response);
+							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToEditPageForm);
+						});
+}
 
+var BackToEditPageForm = function() {
+	$("#DisplayPage").hide();
+	$("#EditPage").show();
+	$("#NavBackToComposer").hide();
+	$("#NavDropChanges").css("display","block");
+	$("#NavPreviewChanges").css("display","block");
+	$("#NavSaveChanges").css("display","block");
 }
 
 var SaveExistingPage = function() {
@@ -571,7 +595,31 @@ var DisplayNewPageForm = function() {
 }
 
 var PreviewNewPage = function() {
+	Reset();
+	
+	var title = $("#NewPage-InputTitle").val();
+	
+	UpdateWindow(title + ' (Preview)');
+	
+	var pagedata = {
+			'title': title,
+			'content': ace.edit("NewPage-InputContent-Editor").getSession().getValue(),
+		};
+	
+	wiki.PreviewPage(pagedata,
+						function(response) {
+							DisplayPage(response);
+							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToNewPageForm);
+						});
+}
 
+var BackToNewPageForm = function() {
+	$("#DisplayPage").hide();
+	$("#NewPage").show();
+	$("#NavBackToComposer").hide();
+	$("#NavDropChanges").css("display","block");
+	$("#NavPreviewChanges").css("display","block");
+	$("#NavSaveChanges").css("display","block");
 }
 
 var SaveNewPage = function() {
@@ -624,7 +672,7 @@ var DeletePage = function() {
 var DisplaySearchForm = function() {
 	Reset();
 	HideLoading();
-	$("#SearchForm").show().submit(Search);
+	$("#SearchForm").show().unbind("submit").submit(Search);
 	
 	return false;
 }
@@ -639,6 +687,8 @@ var Search = function() {
 }
 
 var DisplaySearchResults = function(response) {
+	UpdateWindow("Search results", "Search.html?keywords=");
+	
 	$("#SearchResults-NumberOfResults").html(response.pages.length);
 	$("#SearchResults-List").empty();
 	
