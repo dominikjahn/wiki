@@ -10,6 +10,10 @@
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
 	try {
+		if(!User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
+			throw new \Exception("You are not authorized to retrieve a list of groups");
+		}
+		
 		$groupManager = GroupManager::GetInstance();
 		
 		$groups = $groupManager->GetAll();

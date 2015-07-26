@@ -3,6 +3,7 @@
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
+	use Wiki\Domain\Domain\User;
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
@@ -15,6 +16,10 @@
 	$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "INCLUDE");
 	
 	try {
+		if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
+			throw new \Exception("You are not authorized to retrieve a list of users");
+		}
+		
 		$userManager = UserManager::GetInstance();
 		
 		$users = [];
