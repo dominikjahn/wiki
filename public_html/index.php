@@ -577,9 +577,7 @@
 
 		<script src="assets/js/jquery-1.11.2.min.js"></script>
 		<script src="assets/js/bootstrap.min.js"></script>
-		<script src="assets/js/ace/ace.js"></script>
-		<script src="assets/js/ace/mode-php.js"></script>
-		<script src="assets/js/ace/mode-html.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js"></script>
 		<script src="assets/js/md5.min.js"></script>
 		<script src="assets/data.js"></script>
 		<script src="assets/view.js"></script>
