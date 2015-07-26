@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <?php
 	if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
-		echo '<html lang="en" manifest="wiki.appcache">';
-	} else {
 		echo '<html lang="en">';
+	} else {
+		echo '<html lang="en" manifest="wiki.appcache">';
 	}
 ?>
 	<head>
