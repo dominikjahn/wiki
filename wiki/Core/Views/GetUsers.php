@@ -3,7 +3,7 @@
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
-	use Wiki\Domain\Domain\User;
+	use Wiki\Domain\User;
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
