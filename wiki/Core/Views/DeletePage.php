@@ -11,7 +11,7 @@
 	
 	$request = Request::GetInstance();
 	
-	$userID = (int) $request->Body["userID"];
+	$pageID = (int) $request->Body["pageID"];
 	
 	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
 	
