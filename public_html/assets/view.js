@@ -448,7 +448,7 @@ var GoToEditPageForm = function(pagename) {
 var DisplayEditPageForm = function(response) {
 	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
 	
-	$("#EditPage").date("pageid", response.page.page_id);
+	$("#EditPage").data("pageid", response.page.page_id);
 	
 	$("#EditPage-Title").html(response.page.title);
 	$("#EditPage-InputTitle").val(response.page.title);
