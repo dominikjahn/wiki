@@ -75,6 +75,10 @@ var GoToView = function(view) {
 			DisplayUser(view[1]);
 			break;
 			
+		case "NewUser":
+			DisplayNewUserForm();
+			break;
+			
 		case "EditUser":
 			DisplayEditUserForm(view[1]);
 			break;
@@ -83,8 +87,13 @@ var GoToView = function(view) {
 			DisplayGroup(view[1]);
 			break;
 			
+		case "NewGroup":
+			DisplayNewGroupForm();
+			break;
+			
 		case "EditGroup":
 			DisplayEditGroupForm(view[1]);
+			break;
 			
 		case "Category":
 			DisplayCategory(viewName[1]);
@@ -837,7 +846,7 @@ var DisplayNewUserForm = function(e) {
 	Reset();
 	UpdateWindow("Create a new user", "NewUser.html");
 	HideLoading();
-	$("#NewUserForm").show().submit(SaveNewUser);
+	$("#NewUserForm").show().unbind("submit").submit(SaveNewUser);
 }
 
 var SaveNewUser = function(e) {
@@ -874,7 +883,7 @@ var DisplayNewGroupForm = function(e) {
 	UpdateWindow("Create a new group", "NewGroup.html");
 	HideLoading();
 	
-	$("#NewGroupForm").show().submit(SaveNewGroup);
+	$("#NewGroupForm").show().unbind("submit").submit(SaveNewGroup);
 }
 
 var SaveNewGroup = function(e) {

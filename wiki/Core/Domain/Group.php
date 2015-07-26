@@ -3,6 +3,7 @@
 	
 	use Wiki\Exception\NotAuthorizedToCreateOrEditGroupsException;
 	use Wiki\Domain\Manager\GroupMemberManager;
+	use Wiki\Domain\Manager\GroupManager;
 	
 	/**
 	 * @table group
@@ -48,6 +49,12 @@
 				throw new NotAuthorizedToCreateOrEditGroupsException();
 			} else if($this->ID && $currentUser->HasPermission("EDIT_GROUPS")) {
 				throw new NotAuthorizedToCreateOrEditGroupsException();
+			}
+			
+			$duplicateName = self::NameTaken($this->Name);
+				
+			if($duplicateName && $duplicateName->ID != $this->ID) {
+				throw new \Exception("The name is already taken");
 			}
 			
 			return parent::Save();
@@ -140,6 +147,21 @@
 		//protected function SetUsers($value) {
 		//	$this->users = $value;
 		//}
+		
+		  //
+		 // FUNCTIONS
+		//
+		
+		public static function NameTaken($name) {
+			$groupManager = GroupManager::GetInstance();
+			$group = $groupManager->GetByName($name);
+				
+			if(!$group) {
+				return false;
+			}
+				
+			return $group;
+		}
 		
 		  //
 		 // CONSTANTS
