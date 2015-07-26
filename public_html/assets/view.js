@@ -63,41 +63,49 @@ var GoToView = function(view) {
 			GoToEditPageForm(view[1]);
 			break;
 			
-		case "Versions":
-			DisplayVersions(view[1]);
-			break;
+		//case "Versions":
+		//	DisplayVersions(view[1]);
+		//	break;
 			
-		case "Version":
-			DisplayVersion(view[1]);
-			break;
+		//case "Version":
+		//	DisplayVersion(view[1]);
+		//	break;
 			
-		case "User":
-			DisplayUser(view[1]);
-			break;
+		//case "User":
+		//	DisplayUser(view[1]);
+		//	break;
 			
 		case "NewUser":
 			DisplayNewUserForm();
 			break;
 			
 		case "EditUser":
-			DisplayEditUserForm(view[1]);
+			GoToEditUserFormByLoginname(view[1]);
 			break;
 			
-		case "Group":
-			DisplayGroup(view[1]);
+		case "EditUserPermissions":
+			GoToEditPermissionsFormByLoginname(view[1]);
 			break;
+			
+		//case "Group":
+		//	DisplayGroup(view[1]);
+		//	break;
 			
 		case "NewGroup":
 			DisplayNewGroupForm();
 			break;
 			
 		case "EditGroup":
-			DisplayEditGroupForm(view[1]);
+			GoToEditGroupFormByName(view[1]);
 			break;
 			
-		case "Category":
-			DisplayCategory(viewName[1]);
+		case "GroupMembers":
+			GoToGroupMembersByName(view[1]);
 			break;
+			
+		//case "Category":
+		//	DisplayCategory(viewName[1]);
+		//	break;
 			
 		default:
 			GoToPage(view[0]);
@@ -870,6 +878,10 @@ var GoToEditUserForm = function() {
 	wiki.GetUserByID(userid, DisplayEditUserForm);
 }
 
+var GoToEditUserFormByLoginname = function(loginname) {
+	wiki.GetUserByLoginname(loginname, DisplayEditUserForm);
+}
+
 var DisplayEditUserForm = function(response) {
 	Reset();
 	UpdateWindow("Edit user '"+response.user.loginname+"'", "EditUser-"+response.user.loginname+".html");
@@ -937,6 +949,10 @@ var GoToEditGroupForm = function() {
 	wiki.GetGroupByID(groupid, DisplayEditGroupForm);
 }
 
+var GoToEditGroupFormByName = function(name) {
+	wiki.GetGroupByName(name, DisplayEditGroupForm);
+}
+
 var DisplayEditGroupForm = function(response) {
 	Reset();
 	UpdateWindow("Edit group '"+response.group.name+"'", "EditGroup-"+response.group.name+".html");
@@ -978,6 +994,16 @@ var GoToEditPermissionsForm = function(e) {
 	
 	$("#EditPermissions").data("userid", userID);
 	RefreshEditPermissionsForm();
+}
+
+var GoToEditPermissionsFormByLoginname = function(loginname) {
+	wiki.GetUserByLoginname(loginname,
+						function(response) {
+							var userID = response.user.user_id;
+							$("#EditPermissions").data("userid", userID);
+							
+							RefreshEditPermissionsForm();
+						});
 }
 
 var RefreshEditPermissionsForm = function() {
@@ -1050,9 +1076,7 @@ var CreateAndGrantPermission = function() {
 				function(response) {
 					alert(response.message);
 					RefreshEditPermissionsForm();
-				},
-				HandleErrorCodes,
-				DisplayError);
+				});
 }
 
 var GoToDeleteUserDialog = function(e) {
@@ -1072,11 +1096,21 @@ var DeleteUser = function() {
 						alert(response.message);
 						$("#DeleteUserDialog").modal("hide");
 						GoToUserList();
-					}, HandleErrorCode, DisplayError);
+					});
 }
 
 var memberListPopulated = false;
 var nonMemberListPopulated = false;
+
+var GoToGroupMembersByName = function(name) {
+	wiki.GetGroupByName(name,
+						function(response) {
+							var groupID = response.group.group_id;
+							$("#GroupUsers").data("groupid", groupID);
+							
+							RefreshGroupMembers();
+						});
+}
 
 var GoToGroupMembers = function(e) {
 	Reset();
