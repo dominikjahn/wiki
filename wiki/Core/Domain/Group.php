@@ -47,7 +47,7 @@
 			
 			if(!$this->ID && !$currentUser->HasPermission("CREATE_GROUPS")) {
 				throw new NotAuthorizedToCreateOrEditGroupsException();
-			} else if($this->ID && $currentUser->HasPermission("EDIT_GROUPS")) {
+			} else if($this->ID && !$currentUser->HasPermission("EDIT_GROUPS")) {
 				throw new NotAuthorizedToCreateOrEditGroupsException();
 			}
 			

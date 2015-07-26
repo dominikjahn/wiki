@@ -462,15 +462,15 @@
 				<button type="submit" class="btn btn-success" id="EditUserForm-Button"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user</button>
 			</form>
 			
-			<form id="NewGroupForm" accept-charset="UTF-8">
-				<h1>New group</h1>
+			<form id="EditGroupForm" accept-charset="UTF-8">
+				<h1 id="EditGroupForm-Title">New group</h1>
 				
 				<div class="form-group">
-					<label for="NewGroupForm-InputName">Name</label>
-					<input type="text" class="form-control" id="NewGroupForm-InputName" />
+					<label for="EditGroupForm-InputName">Name</label>
+					<input type="text" class="form-control" id="EditGroupForm-InputName" />
 				</div>
 				
-				<button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group</button>
+				<button type="submit" class="btn btn-success" id="EditGroupForm-Button"><i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group</button>
 			</form>
 			
 			<div id="GroupUsers" data-groupid="">

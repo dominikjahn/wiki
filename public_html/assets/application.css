@@ -49,7 +49,7 @@ body
 #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
 #NavPublicPage, #NavProtectedPage, #NavPrivatePage,
 
-#UserManagement, #EditPermissions, #EditUserForm, #NewGroupForm, #GroupUsers, #SearchForm, #SearchResults
+#UserManagement, #EditPermissions, #EditUserForm, #EditGroupForm, #GroupUsers, #SearchForm, #SearchResults
 {
 	display: none;
 }

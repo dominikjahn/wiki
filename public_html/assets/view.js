@@ -127,7 +127,7 @@ var Reset = function() {
 	$("#UserManagement").hide();
 	$("#EditPermissions").hide();
 	$("#EditUserForm").hide();
-	$("#NewGroupForm").hide();
+	$("#EditGroupForm").hide();
 	$("#GroupUsers").hide();
 	
 	// Navbar
@@ -840,7 +840,7 @@ var FinalizeUserManagement = function() {
 	$(".EditPermissions").unbind("click").click(GoToEditPermissionsForm);
 	$(".DeleteUser").unbind("click").click(GoToDeleteUserDialog);
 	
-	//$(".EditGroup").unbind("click").click(GoToEditGroupForm);
+	$(".EditGroup").unbind("click").click(GoToEditGroupForm);
 	$(".GetGroupUsers").unbind("click").click(GoToGroupMembers);
 	$(".DeleteGroup").unbind("click").click(GoToDeleteGroupDialog);
 	
@@ -920,18 +920,41 @@ var SaveUser = function(e) {
 var DisplayNewGroupForm = function(e) {
 	Reset();
 	UpdateWindow("Create a new group", "NewGroup.html");
-	HideLoading();
+	$("#EditGroupForm-Title").html("New group");
+	$("#EditGroupForm-Button").html('<i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group');
 	
-	$("#NewGroupForm").show().unbind("submit").submit(SaveNewGroup);
+	$("#EditGroupForm-InputName").val("");
+	
+	HideLoading();
+	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid","");
 }
 
-var SaveNewGroup = function(e) {
+var GoToEditGroupForm = function() {
+	var $this = $(this);
+	
+	var groupid = $this.data("groupid");
+	
+	wiki.GetGroupByID(groupid, DisplayEditGroupForm);
+}
+
+var DisplayEditGroupForm = function(response) {
+	Reset();
+	UpdateWindow("Edit group '"+response.group.name+"'", "EditGroup-"+response.group.name+".html");
+	$("#EditGroupForm-Title").html("Edit group '"+response.group.name+"'");
+	$("#EditGroupForm-Button").html('<i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Save group');
+	$("#EditGroupForm-InputName").val(response.group.name);
+	HideLoading();
+	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid",response.group.group_id);
+}
+
+var SaveGroup = function(e) {
 	if(e) { e.preventDefault(); }
 	
-	var name = $("#NewGroupForm-InputName").val();
+	var groupID = $("#EditGroupForm").data("groupid");
+	var name = $("#EditGroupForm-InputName").val();
 	
 	var groupdata = {
-		'groupID': null,
+		'groupID': groupID,
 		'name': name
 	};
 	
