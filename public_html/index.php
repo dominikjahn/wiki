@@ -271,8 +271,8 @@
 									
 									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PUBLIC" value="PUBLIC"/> Public page</label></div>
 									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PROTECTED" value="PROTECTED" /> Protected page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visiblity" id="EditPage-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
 									
 									<hr/>
 						  		
