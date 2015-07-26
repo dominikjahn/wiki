@@ -234,7 +234,7 @@ var ShowUserInfo = function(response) {
 							function() {
 								$("#NavUsers").css("display","block").unbind("click").click(GoToUserList); },
 							function() {
-								$("#NavUsers").css("display","block").unbind("click"); });
+								$("#NavUsers").css("display","hide").unbind("click"); });
 }
 
 var ShowSignInUpLinks = function() {
