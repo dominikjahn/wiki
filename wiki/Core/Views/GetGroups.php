@@ -1,6 +1,8 @@
 <?php
 
 	use Wiki\Domain\Manager\GroupManager;
+	use Wiki\Domain\User;
+	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
