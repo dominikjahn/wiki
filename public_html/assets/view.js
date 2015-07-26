@@ -448,6 +448,8 @@ var GoToEditPageForm = function(pagename) {
 var DisplayEditPageForm = function(response) {
 	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
 	
+	$("#EditPage").date("pageid", response.page.page_id);
+	
 	$("#EditPage-Title").html(response.page.title);
 	$("#EditPage-InputTitle").val(response.page.title);
 	$("#EditPage-InputContent").val(response.page.content).hide();
@@ -504,7 +506,7 @@ var DisplayEditPageForm = function(response) {
 	EditPageEditor.getSession().setValue($("#EditPage-InputContent").val());
 	
 	HideLoading();
-	$("#EditPage").show().data("pageID",response.page.page_id);
+	$("#EditPage").show();
 }
 
 var PreviewExistingPage = function() {
