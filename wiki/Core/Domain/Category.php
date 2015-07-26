@@ -29,6 +29,16 @@
 		 // METHODS
 		//
 		
+		public function Save() {
+			$duplicateName = self::NameTaken($this->Name);
+			
+			if($duplicateName && $duplicateName->ID != $this->ID) {
+				throw new \Exception("The name is already taken");
+			}
+
+			return parent::Save();
+		}
+		
 		public function jsonSerialize() {
 			return [
 				"category_id" => $this->id,
@@ -123,26 +133,19 @@
 		 // FUNCTIONS
 		//
 		
-		public static function CheckForDuplicateName($name) {
-			$origName = $name;
-			
-			$attempt = 0;
-			
+		  //
+		 // FUNCTIONS
+		//
+		
+		public static function NameTaken($name) {
 			$catManager = CategoryManager::GetInstance();
-			
-			while(true) {
-				$cat = $catManager->GetByName($name);
+			$category = $catManager->GetByName($name);
 				
-				if(!$cat) {
-					break;
-				} else {
-					$attempt++;
-					
-					$name = $origName."-".$attempt;
-				}
+			if(!$category) {
+				return false;
 			}
-			
-			return $name;
+				
+			return $category;
 		}
 		
 		  //
