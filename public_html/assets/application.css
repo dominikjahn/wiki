@@ -42,7 +42,7 @@ body
 	padding: 10px;
 }
 
-#SignInForm, #SignUpForm, #ChangePasswordForm,
+#ChangePasswordForm,
 #PageNotFound, #NotAuthorized, #Offline, #Error,
 #DisplayPage, #EditPage, #NewPage, #PreviewPage,
 #Versions,

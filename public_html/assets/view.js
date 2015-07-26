@@ -123,8 +123,8 @@ var Reset = function() {
 	$("#NotAuthorized").hide();
 	$("#Offline").hide();
 	$("#Error").hide();
-	$("#SignInForm").hide();
-	$("#SignUpForm").hide();
+	//$("#SignInForm").hide();
+	//$("#SignUpForm").hide();
 	$("#ChangePasswordForm").hide();
 	$("#DisplayPage").hide();
 	$("#NewPage").hide();
@@ -259,11 +259,11 @@ var ShowSignInUpLinks = function() {
 var DisplaySignInForm = function(e) {
 	if(e) { e.preventDefault(); }
 	
-	Reset();
-	HideLoading();
+	/*Reset();
+	HideLoading();*/
 	
-	UpdateWindow("Sign in", "SignIn.html");
-	$("#SignInForm").show().unbind("submit").submit(SignIn);
+	UpdateWindow("Sign in");
+	$("#SignInForm").modal("show").unbind("submit").submit(SignIn);
 	
 	return false;
 }
@@ -274,8 +274,9 @@ var DisplaySignUpForm = function(e) {
 	Reset();
 	HideLoading();
 	
-	UpdateWindow("Sign up", "SignUp.html");
-	$("#SignUpForm").show().unbind("submit").submit(SignUp);
+	UpdateWindow("Sign up");
+	
+	$("#SignUpForm").modal("show").unbind("submit").submit(SignUp);
 	
 	return false;
 }
@@ -292,7 +293,11 @@ var DisplayChangePasswordForm = function(e) {
 	return false;
 }
 
-var SignIn = function() {
+var SignIn = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	$("#SignInForm").modal("hide");
+	
 	Reset();
 	
 	loginname = $('#SignInForm-InputLoginName').val();
@@ -334,6 +339,7 @@ var SignUp = function() {
 	wiki.CreateOrSaveUser(userdata,
 		function(response) {
 			alert(response.message);
+			$("#SignUpForm").modal("hide");
 			DisplaySignInForm();
 		},
 		HandleErrorCodes,

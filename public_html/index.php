@@ -101,7 +101,7 @@
 				</div>
 			</div>
 			
-			<form id="SignInForm" accept-charset="UTF-8">
+			<!--form id="SignInForm" accept-charset="UTF-8">
 				<h1>Sign in</h1>
 				
 				<div class="form-group">
@@ -114,25 +114,61 @@
 				</div>
 				
 				<button type="submit" class="btn btn-lg btn-success">Sign in</button>
+			</form-->
+			
+			<form id="SignInForm" accept-charset="UTF-8" class="modal fade" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Sign in</h4>
+						</div>
+						<div class="modal-body">
+							
+							<div class="form-group">
+								<label for="SignInForm-InputLoginName">Login name</label>
+								<input type="text" class="form-control" id="SignInForm-InputLoginName" />
+							</div>
+							<div class="form-group">
+								<label for="SignInForm-InputPassword">Password</label>
+								<input type="password" class="form-control" id="SignInForm-InputPassword" />
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" type="submit">Sign in</button>
+						</div>
+					</div>
+				</div>
 			</form>
 			
-			<form id="SignUpForm" accept-charset="UTF-8">
-				<h1>Sign up</h1>
-				
-				<div class="form-group">
-					<label for="SignUpForm-InputLoginName">Login name</label>
-					<input type="text" class="form-control" id="SignUpForm-InputLoginName" />
+			<form id="SignUpForm" accept-charset="UTF-8" class="modal fade" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Sign up</h4>
+						</div>
+						<div class="modal-body">
+							
+							<div class="form-group">
+								<label for="SignUpForm-InputLoginName">Login name</label>
+								<input type="text" class="form-control" id="SignUpForm-InputLoginName" />
+							</div>
+							<div class="form-group">
+								<label for="SignUpForm-InputPassword">Password</label>
+								<input type="password" class="form-control" id="SignUpForm-InputPassword" />
+							</div>
+							<div class="form-group">
+								<label for="SignUpForm-InputConfirmPassword">Confirm password</label>
+								<input type="password" class="form-control" id="SignUpForm-InputConfirmPassword" />
+							</div>
+							
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" type="submit">Sign up</button>
+						</div>
+					</div>
 				</div>
-				<div class="form-group">
-					<label for="SignUpForm-InputPassword">Password</label>
-					<input type="password" class="form-control" id="SignUpForm-InputPassword" />
-				</div>
-				<div class="form-group">
-					<label for="SignUpForm-InputConfirmPassword">Confirm password</label>
-					<input type="password" class="form-control" id="SignUpForm-InputConfirmPassword" />
-				</div>
-				
-				<button type="submit" class="btn btn-lg btn-success">Sign up</button>
 			</form>
 			
 			<form id="ChangePasswordForm" accept-charset="UTF-8">
