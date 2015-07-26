@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<!--html lang="en" manifest="wiki.appcache"-->
-<html lang="en">
+<?php
+	if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
+		echo '<html lang="en" manifest="wiki.appcache">';
+	} else {
+		echo '<html lang="en">';
+	}
+?>
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8-8" />
