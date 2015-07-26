@@ -96,6 +96,10 @@ var GoToView = function(view) {
 }
 
 var Reset = function() {
+	$('#Navbar').show();
+	$('#content').css("margin-top","60px");
+	$('#FooterBar').show();
+	
 	// Views
 	$("#Loading").show();
 	$("#PageNotFound").hide();
@@ -180,6 +184,10 @@ var GoBackInHistory = function() {
 
 var HandleErrorCodes = function(response) {
 	switch(response.status) {
+		case 0:
+			alert(response.message);
+			break;
+		
 		case 401:
 			DisplayNotAuthorizedError();
 			break;
@@ -398,8 +406,11 @@ var DisplayPage = function(response) {
 	}
 
 	if(response.no_headline) {
-		$('#DisplayPage-Title').css("display", "none");
-		$('#DisplayPage-TitleSeparator').css("display", "none");
+		$('#DisplayPage-Title').hide();
+		$('#DisplayPage-TitleSeparator').hide();
+	} else {
+		$('#DisplayPage-Title').show();
+		$('#DisplayPage-TitleSeparator').show();
 	}
 
 	if(response.no_navbar) {

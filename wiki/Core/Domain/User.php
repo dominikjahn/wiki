@@ -6,6 +6,7 @@
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\UserPermissionManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
+	use Wiki\Domain\Manager\UserManager;
 	
 	/**
 	 * @table user
@@ -109,6 +110,12 @@
 			
 			if(($this->ID === 1 || $this->ID === 2) && $this->Status !== 100) {
 				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
+			}
+			
+			$duplicateLoginname = self::LoginnameTaken($this->Loginname);
+			
+			if($duplicateLoginname && $duplicateLoginname->ID != $this->ID) {
+				throw new \Exception("The loginname is already taken");
 			}
 			
 			return parent::Save();
@@ -311,6 +318,17 @@
 		  //
 		 // FUNCTIONS
 		//
+		
+		public static function LoginnameTaken($name) {
+			$userManager = UserManager::GetInstance();
+			$user = $userManager->GetByLoginname($name);
+			
+			if(!$user) {
+				return false;
+			}
+			
+			return $user;
+		}
 		
 		/**
 		 * @author Dominik Jahn <dominik1991jahn@gmail.com>
