@@ -544,7 +544,7 @@ var SaveExistingPage = function() {
 		'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
 		'summary': $("#EditPage-InputSummary").val(),
 		'minor_edit': ($('#EditPage-MinorChange:checked').length > 0),
-		'visibility': $('input[name=EditPage-Visiblity]:checked').val(),
+		'visibility': $('input[name=EditPage-Visibility]:checked').val(),
 		'manipulation': $('input[name=EditPage-Manipulation]:checked').val(),
 		'owner': $("#EditPage-Owner").val(),
 		'group': $("#EditPage-Group").val()
@@ -651,7 +651,7 @@ var SaveNewPage = function() {
 		'content': ace.edit("NewPage-InputContent-Editor").getSession().getValue(),
 		'summary': $("#NewPage-InputSummary").val(),
 		'minor_edit': false,
-		'visibility': $('input[name=NewPage-Visiblity]:checked').val(),
+		'visibility': $('input[name=NewPage-Visibility]:checked').val(),
 		'manipulation': $('input[name=NewPage-Manipulation]:checked').val(),
 		'owner': $("#NewPage-Owner").val(),
 		'group': $("#NewPage-Group").val()
