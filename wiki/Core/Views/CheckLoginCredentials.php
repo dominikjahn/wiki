@@ -11,7 +11,7 @@
 	$password = $_GET["password"]; // This should already be md5'ed
 	$found = false;
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$userManager = UserManager::GetInstance();

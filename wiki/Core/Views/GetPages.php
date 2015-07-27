@@ -10,7 +10,7 @@
 	
 	$keywords = $_GET["keywords"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$pages = [];

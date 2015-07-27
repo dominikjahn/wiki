@@ -12,7 +12,7 @@
 	$loginname = (isset($_GET["loginname"]) ? $_GET["loginname"] : null);
 	$userID = (isset($_GET["userID"]) ? (int) $_GET["userID"] : null);
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$user = null;

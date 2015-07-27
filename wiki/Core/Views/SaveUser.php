@@ -19,7 +19,7 @@
 	$password = (isset($_POST["password"]) ? $_POST["password"] : null);
 	$currentpassword = (isset($_POST["currentpassword"]) ? $_POST["currentpassword"] : null);
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$db = DatabaseConnection::GetInstance();

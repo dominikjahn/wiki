@@ -25,7 +25,7 @@
 	$manipulation = (isset($_POST["manipulation"]) ? $_POST["manipulation"] : Page::MAN_REGISTERED);
 	$ownerID = (isset($_POST["owner"]) ? (int) $_POST["owner"] : null);
 	$groupID = (isset($_POST["group"]) ? (int) $_POST["group"] : null);
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$db = DatabaseConnection::GetInstance();

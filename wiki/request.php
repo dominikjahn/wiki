@@ -19,6 +19,6 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
-		print json_encode(["status" => 0, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
+		print json_encode(["status" => 500, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
 	}
 ?>

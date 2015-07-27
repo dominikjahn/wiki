@@ -15,7 +15,7 @@
 	$userID = (int) $request->Body["userID"];
 	$permissions = $request->Body["permissions"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$user = UserManager::GetInstance()->GetByID($userID);

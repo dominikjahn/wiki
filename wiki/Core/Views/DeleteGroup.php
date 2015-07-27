@@ -13,7 +13,7 @@
 	
 	$groupID = (int) $request->Body["groupID"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$group = GroupManager::GetInstance()->GetByID($groupID);

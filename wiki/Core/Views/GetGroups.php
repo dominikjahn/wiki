@@ -9,7 +9,7 @@
 	 * @since 0.1
 	 */
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		if(!User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {

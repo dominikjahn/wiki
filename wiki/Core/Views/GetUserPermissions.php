@@ -11,7 +11,7 @@
 	 
 	$user = (int) $_GET["userID"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$userManager = UserManager::GetInstance();

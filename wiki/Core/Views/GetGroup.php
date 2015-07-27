@@ -12,7 +12,7 @@
 	$name = (isset($_GET["name"]) ? $_GET["name"] : null);
 	$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$group = null;

@@ -15,7 +15,7 @@
 	
 	$versionID = (int) $_GET["versionID"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	$noHeadline = $noNavbar = $noFooterbar = $customOutput = false;
 	

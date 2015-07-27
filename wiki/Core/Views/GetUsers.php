@@ -10,7 +10,7 @@
 	 * @since 0.1
 	 */
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
 	$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "INCLUDE");

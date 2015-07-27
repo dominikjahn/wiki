@@ -13,7 +13,7 @@
 	
 	$pageID = (int) $request->Body["pageID"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$page = PageManager::GetInstance()->GetByID($pageID);

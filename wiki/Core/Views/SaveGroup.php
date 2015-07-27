@@ -16,7 +16,7 @@
 	
 	$name = $_POST["name"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$isNewGroup = true;

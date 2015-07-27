@@ -12,7 +12,7 @@
 	$pagename = (isset($_GET["name"]) ? $_GET["name"] : null);
 	$pageID = (isset($_GET["pageID"]) ? (int) $_GET["pageID"] : null);
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$page = null;

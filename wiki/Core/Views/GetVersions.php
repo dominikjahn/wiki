@@ -13,7 +13,7 @@
 	 
 	$pagename = (int) $_GET["page"];
 	
-	$data = (object) ["status" => 0, "message" => "An unknown error occured"];
+	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
 	
 	try {
 		$pageManager = PageManager::GetInstance();
