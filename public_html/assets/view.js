@@ -250,6 +250,8 @@ var ShowSignInUpLinks = function() {
 	signupLink.click(DisplaySignUpForm);
 	
 	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
+	
+	$("#NavUsers").css("display","hide").unbind("click");
 }
 
 /*
@@ -262,7 +264,7 @@ var DisplaySignInForm = function(e) {
 	/*Reset();
 	HideLoading();*/
 	
-	UpdateWindow("Sign in");
+	//UpdateWindow("Sign in");
 	$("#SignInForm").modal("show").unbind("submit").submit(SignIn);
 	
 	return false;
@@ -274,7 +276,7 @@ var DisplaySignUpForm = function(e) {
 	Reset();
 	HideLoading();
 	
-	UpdateWindow("Sign up");
+	//UpdateWindow("Sign up");
 	
 	$("#SignUpForm").modal("show").unbind("submit").submit(SignUp);
 	

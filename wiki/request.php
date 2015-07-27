@@ -18,6 +18,6 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
-		echo "Fatal error: ".$e->getMessage()."\n".str_repeat("=",50)."\n\n".$e->getTraceAsString();
+		print json_encode(["status"] => 0, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
 	}
 ?>
