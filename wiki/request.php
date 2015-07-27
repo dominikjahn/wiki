@@ -11,7 +11,7 @@
 	
 	chdir(__DIR__);
 	
-	require_once "Configuration.php";
+	require_once "../Configuration.php";
 	require_once "Core/Exception/BaseException.php";
 	require_once "Core/Exception/ClassNotFoundException.php";
 	require_once "Core/ClassLoader.php";
@@ -19,6 +19,6 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
-		print json_encode(["status"] => 0, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
+		print json_encode(["status" => 0, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
 	}
 ?>

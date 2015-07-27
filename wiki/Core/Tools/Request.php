@@ -25,7 +25,7 @@
 			$this->useragent = $headers["User-Agent"];
 			$this->accept = $headers["Accept"];
 			$this->acceptlanguage = $headers["Accept-Language"];
-			$this->requesturi = str_replace(Configuration::WWW_ROOT, null, $_SERVER["REQUEST_URI"]);
+			$this->requesturi = str_replace(Configuration::DOC_ROOT, null, $_SERVER["REQUEST_URI"]);
 			
 		}
 		

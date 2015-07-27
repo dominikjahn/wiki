@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <?php
+	require_once "../Configuration.php";
+	
 	if($_SERVER["HTTP_HOST"] == "localhost" || $_SERVER["HTTP_HOST"] == "127.0.0.1" || $_SERVER["HTTP_HOST"] == "::1") {
 		echo '<html lang="en">';
 	} else {
 		echo '<html lang="en" manifest="wiki.appcache">';
 	}
 ?>
+
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8-8" />
@@ -13,6 +16,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 		
 		<title>Wiki</title>
+		
+		<base dir="<?php echo Wiki\Configuration::WWW_ROOT; ?>" />
 
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="assets/application.css" rel="stylesheet" />
