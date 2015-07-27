@@ -11,6 +11,7 @@
 	
 	chdir(__DIR__);
 	
+	require_once "Configuration.php";
 	require_once "Core/Exception/BaseException.php";
 	require_once "Core/Exception/ClassNotFoundException.php";
 	require_once "Core/ClassLoader.php";
