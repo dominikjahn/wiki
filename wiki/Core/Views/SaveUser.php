@@ -5,6 +5,7 @@
 	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
 	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
 	use Wiki\Exception\CurrentPasswordDoesNotMatchException;
+	use Wiki\Exception\UserNotFoundException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -36,7 +37,7 @@
 			
 			if(!$user || $user->Status === 0) {
 				$data->status = 404;
-				throw new \Exception("The user doesn't exist");
+				throw new UserNotFoundException();
 			}
 			
 			$isNewUser = false;

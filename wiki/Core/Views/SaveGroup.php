@@ -2,7 +2,7 @@
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Group;
 	use Wiki\Domain\Manager\GroupManager;
-	//use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
+	use Wiki\Exception\GroupNotFoundException;
 	//use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
 	//use Wiki\Exception\CurrentPasswordDoesNotMatchException;
 	
@@ -28,7 +28,7 @@
 			
 			if(!$group || $group->Status === 0) {
 				$data->status = 404;
-				throw new \Exception("The group doesn't exist");
+				throw new GroupNotFoundException();
 			}
 			
 			$isNewGroup = false;

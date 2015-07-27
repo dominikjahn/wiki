@@ -55,7 +55,7 @@
 				$user = $userManager->GetByID(1);
 				
 				if(!$user || $user->Status === 0) {
-					throw new \Exception("The guest user cannot be deleted. Please reactivate the user.");
+					throw new GuestUserDeactivatedException();
 				}
 			}
 			

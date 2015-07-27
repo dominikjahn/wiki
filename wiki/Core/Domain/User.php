@@ -1,12 +1,16 @@
 <?php
 	namespace Wiki\Domain;
 	
-	use Wiki\Exception\NotAuthorizedToCreateNewUsersException;
-	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
+	use Wiki\Exception\AuthorizationMissing;
+	use Wiki\Exception\CannotDeleteGuestOrAdminUserException;
+	use Wiki\Exception\GroupNotFoundException;
+	use Wiki\Exception\LoginnameContainsIllegalCharactersException;
+	use Wiki\Exception\LoginnameAlreadyTakenException;
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\UserPermissionManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
 	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Domain\GroupNotFoundException;
 	
 	/**
 	 * @table user
@@ -103,24 +107,24 @@
 		
 		public function Save() {
 			if(!$this->ID && !self::$currentUser->HasPermission("CREATE_USERS")) {
-				throw new NotAuthorizedToCreateNewUsersException();
+				throw new AuthorizationMissing("You are not permitted to create users");
 			} else if($this->ID && self::$currentUser->ID != $this->ID && !self::$currentUser->HasPermission("EDIT_USER_ACCOUNTS")) {
-				throw new NotAuthorizedToEditOtherUsersException();
+				throw new AuthorizationMissing("You are not permitted to edit other users");
 			}
 			
 			if(($this->ID === 1 || $this->ID === 2) && $this->Status !== 100) {
-				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
+				throw new CannotDeleteGuestOrAdminUserException();
 			}
 			//var_dump(preg_match("#^([a-z0-9]{3,20})$#", $this->loginname));
 			// Check that the name is valid
 			if(!preg_match("#^([a-z0-9]{3,20})$#", $this->loginname)) {
-				throw new \Exception("The name contains characters which are not allowed for a login name. Three to twenty characters, only lower-cased letters and numbers.");
+				throw new LoginnameContainsIllegalCharactersException();
 			}
 			
 			$duplicateLoginname = self::LoginnameTaken($this->Loginname);
 			
 			if($duplicateLoginname && $duplicateLoginname->ID != $this->ID) {
-				throw new \Exception("The loginname is already taken");
+				throw new LoginnameAlreadyTakenException();
 			}
 			
 			return parent::Save();
@@ -128,11 +132,11 @@
 		
 		public function Delete() {
 			if(!self::$currentUser->HasPermission("DELETE_USERS")) {
-				throw new NotAuthorizedToDeleteUsersException();
+				throw new AuthorizationMissingException("You are not permitted to delete other users");
 			}
 			
 			if($this->ID === 1 || $this->ID === 2) {
-				throw new \Exception("You cannot delete the 'guest' or 'admin' users");
+				throw new CannotDeleteGuestOrAdminUserException();
 			}
 			
 			return parent::Delete();

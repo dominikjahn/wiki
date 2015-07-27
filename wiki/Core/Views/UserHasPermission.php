@@ -2,7 +2,8 @@
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\User;
-	use Wiki\Exception\NotAuthorizedToManageUserPermissionsException;
+	use Wiki\Exception\AuthorizationMissingException;
+	use Wiki\Exception\UserNotFoundException;
 	use Wiki\Tools\Request;
 	
 	/**
@@ -24,12 +25,12 @@
 		
 		if(!$user || $user->Status === 0) {
 			$data->status = 404;
-			throw new \Exception("The user doesn't exist");
+			throw new UserNotFoundException();
 		}
 		
 		if($user->ID != $currentUser->ID && !$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
 			$data->status = 401;
-			throw new \Exception("You are not authorized to check the permissions of other users");
+			throw new AuthorizationMissingException("You are not authorized to check the permissions of other users");
 		}
 		
 		if(!$user->HasPermission($permissionName)) {

@@ -6,7 +6,9 @@
 	use Wiki\Domain\Manager\PageManager;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
-	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	use Wiki\Exception\AuthorizationMissingException;
+	use Wiki\Exception\PageNotFoundException;
+	use Wiki\Exception\GroupNotFoundException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -43,7 +45,7 @@
 			
 			if(!$page || $page->Status === 0) {
 				$data->status = 0;
-				throw new \Exception("The page doesn't exist");
+				throw new PageNotFoundException();
 			}
 			
 			$isNewPage = false;
@@ -61,11 +63,11 @@
 		if(!$isNewPage) {
 			if(!$page->CanEdit) {
 				$db->Rollback();
-				throw new \Exception("You are not authorized to edit this page");
+				throw new AuthorizationMissingException("You are not authorized to edit this page");
 			}
 		} else if(!$currentUser->HasPermission("CREATE_PAGES")) {
 			$db->Rollback();
-			throw new \Exception("You are not authorized to create new pages");
+			throw new AuthorizationMissingException("You are not authorized to create new pages");
 		}
 		
 		$owner = User::GetCurrentUser();
@@ -75,7 +77,7 @@
 			$owner = $userManager->GetByID($ownerID);
 			
 			if(!$owner || $owner->Status === 0) {
-				throw new \Exception("User not found");
+				throw new UserNotFoundException();
 			}
 		}
 		
@@ -83,7 +85,7 @@
 		$group = $groupManager->GetByID($groupID);
 		
 		if(!$group || $group->Status === 0) {
-			throw new \Exception("Group not found");
+			throw new GroupNotFoundException();
 		}
 		
 		$page->Title = $title;
@@ -122,7 +124,7 @@
 		
 		$data->page = PageManager::GetInstance()->GetByID($page->ID);
 		
-	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
+	} catch(AuthorizationMissingException $e) {
 		$data->status = 401;
 		$data->message = $e->getMessage();
 	} catch(\Exception $e) {

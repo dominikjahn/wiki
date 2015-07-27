@@ -1,7 +1,9 @@
 <?php
 	namespace Wiki\Domain;
 	
-	use Wiki\Exception\NotAuthorizedToCreateOrEditGroupsException;
+	use Wiki\Exception\AuthorizationMissingException;
+	use Wiki\Exception\GroupNameContainsIllegalCharactersException;
+	use Wiki\Exception\GroupNameAlreadyTaken;
 	use Wiki\Domain\Manager\GroupMemberManager;
 	use Wiki\Domain\Manager\GroupManager;
 	
@@ -46,20 +48,20 @@
 			$currentUser = User::GetCurrentUser();
 			
 			if(!$this->ID && !$currentUser->HasPermission("CREATE_GROUPS")) {
-				throw new NotAuthorizedToCreateOrEditGroupsException();
+				throw new AuthorizationMissingException("You are not permitted to create groups");
 			} else if($this->ID && !$currentUser->HasPermission("EDIT_GROUPS")) {
-				throw new NotAuthorizedToCreateOrEditGroupsException();
+				throw new AuthorizationMissingException("You are not permitted to edit groups");
 			}
 			
 			// Check that the name is valid
 			if(!preg_match("#^([a-z0-9]{3,20})$#", $this->name)) {
-				throw new \Exception("The name contains characters which are not allowed for a group name. Three to twenty characters, only lower-cased letters and numbers.");
+				throw new GroupNameContainsIllegalCharactersException();
 			}
 			
 			$duplicateName = self::NameTaken($this->Name);
 				
 			if($duplicateName && $duplicateName->ID != $this->ID) {
-				throw new \Exception("The name is already taken");
+				throw new GroupNameAlreadyTaken();
 			}
 			
 			return parent::Save();
@@ -69,7 +71,7 @@
 			$currentUser = User::GetCurrentUser();
 			
 			if(!$currentUser->HasPermission("DELETE_GROUPS")) {
-				throw new NotAuthorizedToCreateOrEditGroupsException();
+				throw new AuthorizationMissingException("You are not permitted to delete groups");
 			}
 			
 			return parent::Delete();

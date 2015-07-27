@@ -24,14 +24,13 @@
 		$page = $pageManager->GetByName($pagename);
 		
 		if(!$page) {
-			$data->status = 404;
-			$data->message = "The page you are trying to get versions from doesn't exist";
-		} else if(
-			($page->Visibility == Page::VIS_PROTECTED && $currentUser->ID === 1) ||
-			($page->Visibility == Page::VIS_PRIVATE && ($currentUser->ID === 1 || $page->Owner->ID != $currentUser->ID))
-		) {
-			$data->status = 401;
-			$data->message = "You are not authorized to see the versions of this page";
+			throw new PageNotFoundException();
+			//$data->status = 404;
+			//$data->message = "The page you are trying to get versions from doesn't exist";
+		} else if(!$page->IsVisible) {
+			throw new AuthorizationMissingException();
+			//$data->status = 401;
+			//$data->message = "You are not authorized to see the versions of this page";
 		} else {
 			$versions = $versionManager->GetByPage($page);
 			

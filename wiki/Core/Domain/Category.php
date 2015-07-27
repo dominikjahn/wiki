@@ -3,6 +3,7 @@
 	
 	use Wiki\Domain\Manager\CategoryManager;
 	use Wiki\Domain\Manager\CategoryPageManager;
+	use Wiki\Exception\CategoryNameAlreadyTakenException;
 	
 	/**
 	 * @table category
@@ -33,7 +34,7 @@
 			$duplicateName = self::NameTaken($this->Name);
 			
 			if($duplicateName && $duplicateName->ID != $this->ID) {
-				throw new \Exception("The name is already taken");
+				throw new CategoryNameAlreadyTakenException();
 			}
 
 			return parent::Save();

@@ -2,6 +2,7 @@
 	namespace Wiki\Database;
 	
 	use Wiki\Configuration;
+	use Wiki\Exception\NoSuchPropertyException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -32,7 +33,7 @@
 					break;
 					
 				default:
-					throw new \Exception("Unsupported database driver");
+					throw new DatabaseDriverNotSupportedException();
 			}
 			
 			$this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -160,7 +161,7 @@
 		public function __get($field) {
 			switch($field) {
 				case "LastInsertedID": return $this->GetLastInsertedID(); break;
-				default: throw new \Exception("No such field '".$field."'");
+				default: throw new NoSuchPropertyException($field);
 			}
 		}
 		

@@ -2,6 +2,7 @@
 	namespace Wiki\Database;
 	
 	use Wiki\Domain\Domain;
+	use Wiki\Domain\NoSuchPropertyException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -120,7 +121,7 @@
 		public function __get($field) {
 			switch($field) {
 				case "AffectedRows": return $this->GetAffectedRows(); break;
-				default: throw new \Exception("No such field '".$field."'");
+				default: throw new NoSuchPropertyException($field);
 			}
 		}
 	}

@@ -2,7 +2,8 @@
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
-	use Wiki\Exception\NotAuthorizedToManageUserPermissionsException;
+	use Wiki\Exception\GroupNotFoundException;
+	use Wiki\Exception\UserNotFoundException;
 	use Wiki\Tools\Request;
 	
 	/**
@@ -23,7 +24,7 @@
 		
 		if(!$group || $group->Status === 0) {
 			$data->status = 404;
-			throw new \Exception("The group doesn't exist");
+			throw new GroupNotFoundException();
 		}
 		
 		$total_success = false;
@@ -35,7 +36,7 @@
 			
 			if(!$user || $user->Status === 0) {
 				$data->status = 404;
-				throw new \Exception("The user doesn't exist");
+				throw new UserNotFoundException();
 			} else 
 			
 			$success = false;

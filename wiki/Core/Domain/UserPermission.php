@@ -1,6 +1,9 @@
 <?php
 	namespace Wiki\Domain;
 	
+	use Wiki\Exception\AuthorizationMissingException;
+	use Wiki\Exception\CannotRevokeAdminPermissionException;
+	
 	/**
 	 * @table userpermission
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -30,11 +33,11 @@
 			$currentUser = User::GetCurrentUser();
 			
 			if(!$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
-				throw new \Exception("You are not permitted to grant permissions");
+				throw new AuthorizationMissingException("You are not permitted to grant permissions");
 			}
 			
 			if($this->permission == "SUBADMIN" && !$currentUser->HasPermission("ADMIN")) {
-				throw new \Exception("Only the admin can grant or revoke the SUBADMIN permission");
+				throw new AuthorizationMissingException("Only the admin can grant or revoke the SUBADMIN permission");
 			}
 			
 			if($this->permission != "ADMIN") {
@@ -42,7 +45,7 @@
 			}
 			
 			// If the permission is "ADMIN", throw an exception! ADMIN is an implicit permission which is granted by the ID of the user
-			throw new \Exception("You cannot grant nor revoke the implicit permission 'ADMIN'");
+			throw new AuthorizationMissingException("You cannot grant nor revoke the implicit permission 'ADMIN'");
 		}
 		
 		/**
@@ -54,11 +57,11 @@
 			$currentUser = User::GetCurrentUser();
 			
 			if(!$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
-				throw new \Exception("You are not permitted to revoke permissions");
+				throw new AuthorizationMissingException("You are not permitted to revoke permissions");
 			}
 			
 			if($this->permission == "SUBADMIN" && !$currentUser->HasPermission("ADMIN")) {
-				throw new \Exception("Only the admin can grant or revoke the SUBADMIN permission");
+				throw new AuthorizationMissingException("Only the admin can grant or revoke the SUBADMIN permission");
 			}
 			
 			if($this->permission != "ADMIN") {
@@ -66,7 +69,7 @@
 			}
 			
 			// If the permission is "ADMIN", throw an exception! ADMIN is an implicit permission which is granted by the ID of the user
-			throw new \Exception("You cannot revoke the implicit permission 'ADMIN'");
+			throw new CannotRevokeAdminPermissionException("You cannot revoke the implicit permission 'ADMIN'");
 		}
 		
 		public function jsonSerialize() {

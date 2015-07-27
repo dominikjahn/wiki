@@ -1,7 +1,7 @@
 <?php
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
-	use Wiki\Exception\NotAuthorizedToManageUserPermissionsException;
+	use Wiki\Exception\UserNotFoundException;
 	use Wiki\Tools\Request;
 	
 	/**
@@ -22,7 +22,7 @@
 		
 		if(!$user || $user->Status === 0) {
 			$data->status = 404;
-			throw new \Exception("The user doesn't exist");
+			throw new UserNotFoundException();
 		}
 		
 		$total_success = false;
@@ -30,7 +30,6 @@
 		foreach($permissions as $permissionName) {
 			$total_success = true;
 			
-		
 			if($request->Method == "PUT") {
 				$success = $user->GrantPermission($permissionName);
 			} else if($request->Method == "DELETE") {

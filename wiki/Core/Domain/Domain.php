@@ -4,6 +4,7 @@
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Tools\PHPDocParser;
 	use Wiki\Exception\ChecksumMismatchException;
+	use Wiki\Exception\NoSuchPropertyException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -149,7 +150,7 @@
 			$getter = "Get".$field;
 			
 			if(!method_exists($this, $getter)) {
-				throw new \Exception("Field '".get_class($this)."->".$field."' does not exist or is write-only");
+				throw new NoSuchPropertyException(get_class($this)."->".$field);
 			}
 			
 			return static::$getter();
@@ -164,7 +165,7 @@
 			$setter = "Set".$field;
 			
 			if(!method_exists($this, $setter)) {
-				throw new \Exception("Field '".get_class($this)."->".$field."' does not exist or is read-only");
+				throw new NoSuchPropertyException(get_class($this)."->".$field);
 			}
 			
 			$oldValue = $this->__get($field);

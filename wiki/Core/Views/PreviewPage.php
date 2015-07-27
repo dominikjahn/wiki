@@ -35,7 +35,7 @@
 		 */
 		$scripts = preg_match("/<?php(.+?)?>/msu",$content);
 		if($scripts > 0 && (!User::GetCurrentUser() || !User::GetCurrentUser()->HasPermission("SCRIPTING"))) {
-			throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
+			throw new AuthorizationMissingException("You are not permitted to preview pages with scripts");
 		}
 			
 		$content = ParseWiki($content, $noHeadline, $noNavbar, $noFooterbar, $customOutput);
@@ -58,9 +58,9 @@
 		} else {
 			$data = $page->Content;
 		}
-	} catch(NotAuthorizedToCreateOrEditPagesWithScriptsException $e) {
+	} catch(AuthorizationMissingException $e) {
 		$data->status = 401;
-		$data->message = "You are not authorized to preview this page as it contains a PHP script";
+		$data->message = $e->getMessage();
 	} catch(\Exception $e) {
 		$data->status = 0;
 		$data->message = $e->getMessage();

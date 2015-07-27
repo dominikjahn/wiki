@@ -17,7 +17,7 @@
 	
 	try {
 		if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
-			throw new \Exception("You are not authorized to retrieve a list of users");
+			throw new AuthorizationMissingException(); //\Exception("You are not authorized to retrieve a list of users");
 		}
 		
 		$userManager = UserManager::GetInstance();
@@ -35,7 +35,7 @@
 			
 			if(!$group || $group->Status === 0) {
 				$data->status = 404;
-				throw new \Exception("Group not found");	
+				throw new GroupNotFoundException();
 			}
 			
 			$members = $groupMemManager->GetByGroup($group);

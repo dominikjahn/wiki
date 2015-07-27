@@ -4,7 +4,9 @@
 	use Wiki\Domain\Manager\PageManager;
 	use Wiki\Domain\Manager\CategoryManager;
 	use Wiki\Domain\Manager\CategoryPageManager;
-	use Wiki\Exception\NotAuthorizedToCreateOrEditPagesWithScriptsException;
+	use Wiki\Exception\AuthorizationMissingException;
+	use Wiki\Exception\PagenameAlreadyTakenException;
+	use Wiki\Exception\CannotDeleteHomepageException;
 	use Wiki\Tools\StringTools;
 	
 	/**
@@ -61,13 +63,13 @@
 			$scripts = preg_match("/<?php(.+?)?>/msu",$this->content);
 			
 			if($scripts > 0 && (!User::GetCurrentUser() || !User::GetCurrentUser()->HasPermission("SCRIPTING"))) {
-				throw new NotAuthorizedToCreateOrEditPagesWithScriptsException();
+				throw new AuthorizationMissingException("You are not permitted to create or edit pages with scripts");
 			}
 			
 			$duplicateName = self::NameTaken($this->Name);
 				
 			if($duplicateName && $duplicateName->ID != $this->ID) {
-				throw new \Exception("The name is already taken");
+				throw new PagenameAlreadyTakenException();
 			}
 			
 			$success = parent::Save();
@@ -150,7 +152,7 @@
 		
 		public function Delete() {
 			if($this->id === 1) {
-				throw new \Exception("You cannot delete the 'Homepage' page");
+				throw new CannotDeleteHomepageException();
 			}
 			
 			return parent::Delete();
