@@ -17,66 +17,68 @@
 			$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
 			$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "INCLUDE");
 		
-			if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
-				throw new AuthorizationMissingException(); //\Exception("You are not authorized to retrieve a list of users");
-			}
-			
-			$userManager = UserManager::GetInstance();
-			
 			$users = [];
 			$group = null;
 			
-			if(is_null($groupID)) {
-				$users = $userManager->GetAll();
+			if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
+				$users[] = User::GetCurrentUser();
 			} else {
-				$groupManager = GroupManager::GetInstance();
-				$groupMemManager = GroupMemberManager::GetInstance();
+				$userManager = UserManager::GetInstance();
 				
-				$group = $groupManager->GetByID($groupID);
+				$users = [];
 				
-				if(!$group || $group->Status === 0) {
-					$this->Status = 404;
-					throw new GroupNotFoundException();
-				}
-				
-				$members = $groupMemManager->GetByGroup($group);
-				
-				if($mode == "INCLUDE") {
-					foreach($members as $member) {
-						$users[] = $member->User;
-					}
+				if(is_null($groupID)) {
+					$users = $userManager->GetAll();
 				} else {
+					$groupManager = GroupManager::GetInstance();
+					$groupMemManager = GroupMemberManager::GetInstance();
 					
-					$allUsers = $userManager->GetAll();
+					$group = $groupManager->GetByID($groupID);
 					
-					foreach($allUsers as $u => $user) {
-						$isMember = false;
-						
+					if(!$group || $group->Status === 0) {
+						$this->Status = 404;
+						throw new GroupNotFoundException();
+					}
+					
+					$members = $groupMemManager->GetByGroup($group);
+					
+					if($mode == "INCLUDE") {
 						foreach($members as $member) {
-							if($member->User->ID === $user->ID) {
-								$isMember = true;
-								break;
+							$users[] = $member->User;
+						}
+					} else {
+						
+						$allUsers = $userManager->GetAll();
+						
+						foreach($allUsers as $u => $user) {
+							$isMember = false;
+							
+							foreach($members as $member) {
+								if($member->User->ID === $user->ID) {
+									$isMember = true;
+									break;
+								}
+							}
+							
+							if(!$isMember) {
+								$users[] = $user;
 							}
 						}
-						
-						if(!$isMember) {
-							$users[] = $user;
-						}
 					}
+					
+					/*echo "All users:\n";
+					foreach($users as $user) {
+						echo "  * [".$user->ID."] ".$user->Loginname."\n";
+					}
+					
+					echo "\nMembers:\n";
+					foreach($members as $member) {
+						echo "  * [".$member->User->ID."] ".$member->User->Loginname."\n";
+					}
+					
+					echo "\n";*/
+					
 				}
-				
-				/*echo "All users:\n";
-				foreach($users as $user) {
-					echo "  * [".$user->ID."] ".$user->Loginname."\n";
-				}
-				
-				echo "\nMembers:\n";
-				foreach($members as $member) {
-					echo "  * [".$member->User->ID."] ".$member->User->Loginname."\n";
-				}
-				
-				echo "\n";*/
-				
 			}
 			
 			$users = array_values($users);
