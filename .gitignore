@@ -1,5 +1,5 @@
 .settings/*
 .project
-wiki/Core/Configuration.php
+Configuration.php
 wiki/php.ini
 public_html/wiki.appcache
