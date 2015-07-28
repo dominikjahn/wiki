@@ -92,6 +92,10 @@
 				}
 			}
 			
+			if($group->ID === 1) {
+				throw new CannotRemoveUserFromPublicGroupException();
+			}
+			
 			$this->GetGroups();
 			
 			foreach($this->groups as $groupmember) {

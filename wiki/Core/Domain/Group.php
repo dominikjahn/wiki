@@ -34,6 +34,11 @@
 		//
 		
 		public function HasUser(User $user) {
+			// Every user is in 'public' group
+			if($this->ID === 1) {
+				return true;
+			}
+			
 			$this->GetUsers();
 			
 			foreach($this->users as $groupmember) {

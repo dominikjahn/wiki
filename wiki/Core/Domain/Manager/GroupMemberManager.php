@@ -57,29 +57,44 @@
 		 * @since 0.1
 		 */
 		public function GetByGroup(Group $group) {
-			$db = DatabaseConnection::GetInstance();
-			
-			$sqlObjects = "SELECT groupmember_id, status, checksum, group_id, user_id FROM %PREFIX%groupmember WHERE status = 100 AND group_id = :group";
-			$stmObjects = $db->Prepare($sqlObjects);
-			
-			$resObjects = $stmObjects->Read(["group" => $group]);
-			
-			if(!$resObjects) {
-				return null;
-			}
 			
 			$objects = [];
-			$objectFactory = GroupMemberFactory::GetInstance();
 			
-			while(($rowObject = $resObjects->NextRow()) != null) {
-				$object = new GroupMember();
-				$this->AddToCache($object);
-				$objectFactory->FromDataRow($object, $rowObject);
+			if($group->ID !== 1) {
+				$db = DatabaseConnection::GetInstance();
 				
-				$objects[] = $object;
+				$sqlObjects = "SELECT groupmember_id, status, checksum, group_id, user_id FROM %PREFIX%groupmember WHERE status = 100 AND group_id = :group";
+				$stmObjects = $db->Prepare($sqlObjects);
+				
+				$resObjects = $stmObjects->Read(["group" => $group]);
+				
+				if(!$resObjects) {
+					return null;
+				}
+				
+				$objectFactory = GroupMemberFactory::GetInstance();
+				
+				while(($rowObject = $resObjects->NextRow()) != null) {
+					$object = new GroupMember();
+					$this->AddToCache($object);
+					$objectFactory->FromDataRow($object, $rowObject);
+					
+					$objects[] = $object;
+				}
+			
+				$stmObjects->Close();
+			} else {
+				$users = UserManager::GetInstance()->GetAll();
+				
+				foreach($users as $user) {
+					$member = new GroupMember();
+					$member->Status = 100;
+					$member->Group = $group;
+					$member->User = $user;
+					
+					$objects[] = $member;
+				}
 			}
-		
-			$stmObjects->Close();
 			
 			return $objects;
 		}
@@ -112,6 +127,25 @@
 			}
 		
 			$stmObjects->Close();
+			
+			// Check if 'public' group is included
+			$public_found = false;
+			
+			foreach($objects as $object) {
+				if($object->Group->ID === 1) {
+					$public_found = true;
+					break;
+				}
+			}
+			
+			if(!$public_found) {
+				$member = new GroupMember();
+				$member->Status = 100;
+				$member->Group = GroupManager::GetInstance()->GetByID(1);
+				$member->User = $user;
+				
+				$objects[] = $member;
+			}
 			
 			return $objects;
 		}
