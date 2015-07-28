@@ -462,10 +462,10 @@ var DisplayNewPageForm = function(e) {
 	$("#EditPageForm-InputTitle").val("");
 	$("#EditPageForm-InputContent").val("").hide();
 	$("#EditPageForm-InputSummary").val("Initialized page");
-	$("#EditPageForm-MinorChange").attr("checked",true);
+	$("#EditPageForm-MinorChange").prop("checked",true);
 	$("#EditPageForm-MinorChangeWrapper").hide();
-	$("#EditPageForm-Visibility-PUBLIC").attr("checked",true);
-	$("#EditPageForm-Manipulation-EVERYONE").attr("checked",true);
+	$("#EditPageForm-Visibility-PUBLIC").prop("checked",true);
+	$("#EditPageForm-Manipulation-EVERYONE").prop("checked",true);
 	$("#EditPageForm-DeletePage").hide();
 	InitializeAceEditor("");
 	
@@ -514,9 +514,9 @@ var DisplayEditPageForm = function(response) {
 	$("#EditPageForm-InputTitle").val(response.page.title);
 	$("#EditPageForm-InputContent").val(response.page.content).hide();
 	$("#EditPageForm-InputSummary").val("");
-	$("#EditPageForm-Visibility-"+response.page.visibility).attr("checked",true);
-	$("#EditPageForm-Manipulation-"+response.page.manipulation).attr("checked",true);
-	$("#EditPageForm-MinorChange").attr("checked",false);
+	$("#EditPageForm-Visibility-"+response.page.visibility).prop("checked",true);
+	$("#EditPageForm-Manipulation-"+response.page.manipulation).prop("checked",true);
+	$("#EditPageForm-MinorChange").prop("checked",false);
 	$("#EditPageForm-MinorChangeWrapper").show();
 	$("#EditPageForm-Owner").empty();
 	$("#EditPageForm-Group").empty();

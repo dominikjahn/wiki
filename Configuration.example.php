@@ -11,7 +11,7 @@
 		const DATABASE_NAME = "wiki";
 		const DATABASE_CHARSET = "utf8mb4";
 		const DATABASE_PREFIX = "";
-		const DOC_ROOT = "/cb/wiki/public_html/";
+		const DOC_ROOT = "/";
 		const WWW_ROOT = "http://localhost".self::DOC_ROOT;
 	}
 ?>
