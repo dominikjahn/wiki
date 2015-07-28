@@ -9,6 +9,8 @@
 	use Wiki\Exception\NotAuthorizedToEditOtherUsersException;
 	use Wiki\Exception\CurrentPasswordDoesNotMatchException;
 	use Wiki\Exception\UserNotFoundException;
+	use Wiki\Exception\CannotCreateUserWithoutPasswordException;
+	use Wiki\Configuration;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -56,10 +58,17 @@
 				$user = new User();
 				
 				$user->Status = 100;
-				$user->Password = $password;
 			}
 			
 			$user->Loginname = $loginname;
+			
+			if(!is_null($password)) {
+				if(is_null($userID)) {
+					throw new CannotCreateUserWithoutPasswordException();
+				}
+				
+				$user->Password = password_hash($password, \PASSWORD_DEFAULT);
+			}
 			
 			$success = $user->Save();
 			

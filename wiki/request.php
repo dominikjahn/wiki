@@ -19,9 +19,14 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
-		if($e->getCode() > 0) {
-			http_response_code($e->getCode());
+		if($e->getCode() == 0) {
+			$status = 500;
+		} else {
+			$status = $e->getCode();
 		}
-		print json_encode(["status" => 500, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
+		
+		http_response_code(200);
+		
+		print json_encode(["status" => $status, "message" => $e->getMessage()]);//, "exception" => get_class($e), "details" => $e->getTraceAsString()]);
 	}
 ?>

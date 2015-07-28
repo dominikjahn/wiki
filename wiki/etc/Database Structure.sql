@@ -120,7 +120,7 @@ CREATE TABLE `%PREFIX%user` (
   `status` tinyint(3) unsigned NOT NULL,
   `checksum` char(32) CHARACTER SET ascii NOT NULL,
   `loginname` char(20) CHARACTER SET ascii NOT NULL,
-  `password` char(32) CHARACTER SET ascii NOT NULL
+  `password` char(255) CHARACTER SET ascii NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

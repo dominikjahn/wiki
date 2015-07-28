@@ -305,7 +305,7 @@ var SignIn = function(e) {
 	loginname = $('#SignInForm-InputLoginName').val();
 	password = $('#SignInForm-InputPassword').val();
 	
-	password = md5(password);
+	//password = md5(password);
 	
 	SetCookie("loginname", loginname);
 	SetCookie("password", password);
@@ -334,7 +334,7 @@ var SignUp = function() {
 		return;
 	}
 	
-	password = md5(password);
+	//password = md5(password);
 	
 	userdata = {'userID': 0, 'loginname': loginname, 'password': password};
 	
@@ -363,13 +363,13 @@ var ChangePassword = function() {
 		return;
 	}
 
-	currentpassword = md5(currentpassword);
-	newpassword = md5(newpassword);
+	//currentpassword = md5(currentpassword);
+	//newpassword = md5(newpassword);
 	
 	var userdata = {
 			"userID": wiki.currentUserID,
-			"currentpassword":currentpassword,
-			"password":newpassword
+			"currentpassword":encodeURIComponent(currentpassword),
+			"password":encodeURIComponent(newpassword)
 		};
 	
 	wiki.CreateOrSaveUser(userdata,
@@ -917,12 +917,12 @@ var SaveUser = function(e) {
 		return false;
 	}
 	
-	password = md5(password);
+	//password = md5(password);
 	
 	var userdata = {
 		'userID': userID,
 		'loginname': loginname,
-		'password': password
+		'password': encodeURIComponent(password)
 	};
 	
 	wiki.CreateOrSaveUser(userdata,

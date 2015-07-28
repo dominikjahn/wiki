@@ -43,11 +43,7 @@
 		 * @since 0.1
 		 */
 		public function MatchPassword($password) {
-			if(strtolower($this->password) == strtolower($password)) {
-				return true;
-			}
-			
-			return false;
+			return password_verify($password, $this->password);
 		}
 		
 		public function IsInGroup($group) {

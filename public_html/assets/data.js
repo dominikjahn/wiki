@@ -27,8 +27,10 @@ var Wiki = function() {
 				'success': function(response) {
 					if(response.status == 200) {
 						positive_callback(response);
-					} else {
+					} else if(response.status != 500) {
 						negative_callback(response);
+					} else {
+						error_callback(null, "error", null);
 					}
 				},
 				'error': function(xhr, type, message) {
@@ -50,7 +52,7 @@ var Wiki = function() {
 		'SignIn': function(loginname, password, positive_callback, negative_callback, error_callback) {
 			var wiki = this;
 			
-			this.Request(	"GET", "request.php?command=CheckLoginCredentials&loginname="+loginname+"&password="+password, null,
+			this.Request(	"GET", "request.php?command=CheckLoginCredentials&loginname="+loginname+"&password="+encodeURIComponent(password), null,
 			
 							// positive_callback
 							function(response) {

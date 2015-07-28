@@ -43,7 +43,6 @@
 			$user = null;
 			
 			if($loginname && $password) {
-				
 				$user = $userManager->GetByLoginname($loginname);
 				
 				if(!$user || $user->Status === 0 || !$user->MatchPassword($password)) {
@@ -78,7 +77,7 @@
 				
 				print $response;
 			} finally {
-				http_response_code($status);
+				http_response_code(200);
 				
 				// Close the database connection
 				DatabaseConnection::GetInstance()->Close();
