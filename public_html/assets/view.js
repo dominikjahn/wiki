@@ -810,8 +810,8 @@ var PopulateGroupList = function(response, callback) {
 			'	<tr>' +
 			'		<td>' + group.name + '</td>' +
 			'		<td><button type="button" class="btn btn-xs btn-primary EditGroup" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Edit</button></td>' +
-			'		<td><button type="button" class="btn btn-xs btn-warning GetGroupUsers" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Members</button></td>' +
-			'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-groupid="'+group.group_id+'"><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-warning GetGroupUsers" data-groupid="'+group.group_id+'"'+(group.group_id == 1 ? 'disabled="disabled"' : "")+'><i class="glyphicon glyphicon-user" aria-hidden="true"></i> Members</button></td>' +
+			'		<td><button type="button" class="btn btn-xs btn-danger DeleteGroup" data-groupid="'+group.group_id+'"'+(group.group_id == 1 ? 'disabled="disabled"' : "")+'><i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Delete</button></td>' +
 			'	</tr>');
 	}
 	

@@ -5,6 +5,8 @@
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\User;
 	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Exception\UserNotFoundException;
+	use Wiki\Exception\AuthorizationMissingException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
@@ -21,11 +23,11 @@
 			$user = $userManager->GetByID($user);
 			
 			if(!$user || $user->Status === 0) {
-				throw new \Exception("The user doesn't exist");
+				throw new UserNotFoundException();
 			}
 			
 			if($user->ID != $currentUser->ID && !$currentUser->HasPermission("ALTER_USERPERMISSIONS")) {
-				throw new \Exception("You are not allowed to manage user permissions");
+				throw new AuthorizationMissingException("You are not allowed to manage user permissions");
 			}
 			
 			// This isn't good, but gotta do it for now

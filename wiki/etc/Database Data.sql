@@ -19,8 +19,8 @@ SET time_zone = "+00:00";
 --
 
 INSERT INTO `%PREFIX%group` (`group_id`, `status`, `checksum`, `name`) VALUES
-(1, 100, '7853d18ca181b6e3cf472792614b61f2', 'public'),
-(2, 100, '9188062525100d39e479ba0c4ac52a89', 'admin');
+(1, 100, '$2y$10$7cZyhGgZjfmibcS7jZlVe.hGO5p5OKU7/QHdQG/zyqSpVKRK3Gpf.', 'public'),
+(2, 100, '$2y$10$G5NT6yz5tn/iiilk1mRbAOofwVdDYIr0owvPshPTEJQQ84tt/vRce', 'admin');
 
 --
 -- Dumping data for table `log`

@@ -1,6 +1,7 @@
 <?php
 	namespace Wiki\Domain;
 	
+	use Wiki\Exception\CannotDeletePublicGroupException;
 	use Wiki\Exception\AuthorizationMissingException;
 	use Wiki\Exception\GroupNameContainsIllegalCharactersException;
 	use Wiki\Exception\GroupNameAlreadyTaken;
@@ -53,6 +54,10 @@
 				throw new AuthorizationMissingException("You are not permitted to edit groups");
 			}
 			
+			if($this->ID === 1 && $this->Status !== 100) {
+				throw new CannotDeletePublicGroupException();
+			}
+			
 			// Check that the name is valid
 			if(!preg_match("#^([a-z0-9]{3,20})$#", $this->name)) {
 				throw new GroupNameContainsIllegalCharactersException();
@@ -72,6 +77,10 @@
 			
 			if(!$currentUser->HasPermission("DELETE_GROUPS")) {
 				throw new AuthorizationMissingException("You are not permitted to delete groups");
+			}
+			
+			if($this->ID === 1) {
+				throw new CannotDeletePublicGroupException();
 			}
 			
 			return parent::Delete();

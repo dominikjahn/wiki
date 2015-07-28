@@ -42,7 +42,6 @@
 			} else if(!$page->IsVisible) {
 				$this->Status = 401;
 				$this->Message = "You are not authorized to see the content on this page";
-				//throw new \Exception("You are not authorized to see the content on this page");
 			} else {
 				Page::SetCurrentPage($page);
 				
