@@ -5,6 +5,7 @@
 	use Wiki\Domain\User;
 	use Wiki\Domain\Manager\PageManager;
 	use Wiki\Domain\Page;
+	use Wiki\Exception\PageNotVisibleToCurrentUserException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
