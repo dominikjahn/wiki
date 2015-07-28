@@ -8,6 +8,8 @@
 				$message = "The category name is already taken";
 			}
 			
+			$code = 409; // Conflict
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

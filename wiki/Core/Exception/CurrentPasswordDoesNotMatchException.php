@@ -8,6 +8,8 @@
 				$message = "The current password does not match with your input";
 			}
 			
+			$code = 401;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

@@ -1,34 +1,38 @@
 <?php
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Domain\Manager\UserManager;
+	use Wiki\Exception\UserNotFoundException;
+	use Wiki\Exception\PasswordMismatchException;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$loginname = $_GET["loginname"];
-	$password = $_GET["password"]; // This should already be md5'ed
-	$found = false;
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		$userManager = UserManager::GetInstance();
+	class CheckLoginCredentials extends Response
+	{
+		public function Run() {
+			$loginname = $_GET["loginname"];
+			$password = $_GET["password"]; // This should already be md5'ed
+			$found = false;
+			
+			$userManager = UserManager::GetInstance();
+			
+			$user = $userManager->GetByLoginname($loginname);
 		
-		$user = $userManager->GetByLoginname($loginname);
-		
-		if(!$user || !$user->Status === 0 || $user->Password != $password) {
-			$data->status = 401;
-			$data->message = "The login credentials are incorrect";
-		} else {
-			$data->status = 200;
-			$data->message = "The login credentials are correct";
-			$data->user = $user;
+			if(!$user || !$user->Status === 0) {
+				$this->Status = 401;
+				throw new UserNotFoundException("The login credentials are incorrect.");
+			} else if(!$user->MatchPassword($password)) {
+				$this->Status = 401;
+				throw new PasswordMismatchException("The login credentials are incorrect.");
+			}
+			
+			$this->Status = 200;
+			$this->Message = "The login credentials are correct.";
+			$this->Data = ["user" => $user];
 		}
-	} catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

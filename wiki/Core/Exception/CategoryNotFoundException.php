@@ -1,12 +1,14 @@
 <?php
 	namespace Wiki\Exception;
 	
-	class NotAuthorizedToCreateOrEditPagesWithScriptsException extends BaseException
+	class CategoryNotFoundException extends BaseException
 	{
 		public function __construct($message = null, $code = 0, Exception $previous = null) {
 			if(!$message) {
-				$message = "You are not authorized to create or edit pages with scripts";
+				$message = "The category was not found";
 			}
+			
+			$code = 404;
 			
 			parent::__construct($message, $code, $previous);
 		}

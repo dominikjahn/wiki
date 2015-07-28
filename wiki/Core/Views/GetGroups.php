@@ -1,5 +1,7 @@
 <?php
-
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\User;
 	
@@ -8,25 +10,23 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		if(!User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
-			throw new \Exception("You are not authorized to retrieve a list of groups");
+	class GetGroups extends Response
+	{
+		public function Run() {
+		
+			if(!User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
+				$groups = [];
+				
+				// Get list of memberships
+			}
+			
+			$groupManager = GroupManager::GetInstance();
+			
+			$groups = $groupManager->GetAll();
+			
+			$this->Status = 200;
+			$this->Message = count($groups)." groups found";
+			$this->Data = ["groups" => $groups];
 		}
-		
-		$groupManager = GroupManager::GetInstance();
-		
-		$groups = $groupManager->GetAll();
-		
-		$data->status = 200;
-		$data->message = count($groups)." groups found";
-		$data->groups = $groups;
-		
-	} catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

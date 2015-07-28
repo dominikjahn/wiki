@@ -8,6 +8,8 @@
 				$message = "You cannot delete the 'guest' or 'admin' users";
 			}
 			
+			$code = 403;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

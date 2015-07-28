@@ -8,6 +8,8 @@
 				$message = "The name is already taken";
 			}
 			
+			$code = 409;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

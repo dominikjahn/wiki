@@ -1,4 +1,7 @@
 <?php
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
@@ -11,59 +14,64 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$request = Request::GetInstance();
-	
-	$groupID = (int) $request->Body["groupID"];
-	$userIDs = $request->Body["userIDs"];
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		$group = GroupManager::GetInstance()->GetByID($groupID);
+	class SaveGroupMember extends Response
+	{
+		public function Run() {
+			$request = Request::GetInstance();
 		
-		if(!$group || $group->Status === 0) {
-			$data->status = 404;
-			throw new GroupNotFoundException();
-		}
+			$groupID = (int) $request->Body["groupID"];
+			$userIDs = $request->Body["userIDs"];
 		
-		$total_success = false;
-		
-		foreach($userIDs as $userID) {
-			$total_success = true;
+			$group = GroupManager::GetInstance()->GetByID($groupID);
 			
-			$user = UserManager::GetInstance()->GetByID($userID);
-			
-			if(!$user || $user->Status === 0) {
-				$data->status = 404;
-				throw new UserNotFoundException();
-			} else 
-			
-			$success = false;
-			
-			if($request->Method == "PUT") {
-				$success = $user->AddToGroup($group);
-			} else if($request->Method == "DELETE") {
-				$success = $user->RemoveFromGroup($group);
+			if(!$group || $group->Status === 0) {
+				$this->Status = 404;
+				throw new GroupNotFoundException();
 			}
 			
-			if(!$success) {
-				$total_success = false;
-				// rollback
-				throw new \Exception("Something failed");
-				break;
+			$total_success = false;
+			
+			$db = DatabaseConnection::GetInstance();
+			$db->BeginTransaction();
+			$exception = null;
+			
+			foreach($userIDs as $userID) {
+				$total_success = true;
+				
+					try {
+					$user = UserManager::GetInstance()->GetByID($userID);
+					
+					if(!$user || $user->Status === 0) {
+						$this->Status = 404;
+						throw new UserNotFoundException();
+					} else 
+					
+					$success = false;
+					
+					if($request->Method == "PUT") {
+						$success = $user->AddToGroup($group);
+					} else if($request->Method == "DELETE") {
+						$success = $user->RemoveFromGroup($group);
+					}
+				} catch(\Exception $e) {
+					$exception = $e;
+				}
+				
+				if(!$success) {
+					$total_success = false;
+					$db->Rollback();
+					break;
+				}
 			}
+			
+			if(!$total_success) {
+				throw $exception;
+			}
+				
+			$db->Commit();
+				
+			$this->Status = 200;
+			$this->Message = "The users have successfully been ".($request->Method == "PUT" ? "added" : "removed");
 		}
-		
-		$data->status = ($total_success ? 200 : 0);
-		$data->message = "The user has successfully been ".($request->Method == "PUT" ? "added" : "removed");
-		
-	}/* catch(NotAuthorizedToManageUserPermissionsException $e) {
-		$data->status = 401;
-		$data->message = $e->getMessage();
-	}*/ catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

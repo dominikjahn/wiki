@@ -8,6 +8,8 @@
 				$message = "You cannot delete the homepage";
 			}
 			
+			$code = 403;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

@@ -8,6 +8,8 @@
 				$message = "The page does not exist anymore";
 			}
 			
+			$code = 404;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

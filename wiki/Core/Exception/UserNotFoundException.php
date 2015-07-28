@@ -8,6 +8,8 @@
 				$message = "The user was not found";
 			}
 			
+			$code = 404;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

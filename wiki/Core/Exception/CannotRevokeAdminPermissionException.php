@@ -8,6 +8,8 @@
 				$message = "You cannot revoke the implicit permission 'ADMIN'.";
 			}
 			
+			$code = 403;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

@@ -8,6 +8,8 @@
 				$message = "The checksum of the row does not match the calculated checksum. This is a sign that the database has been manipulated!";
 			}
 			
+			$code = 500;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

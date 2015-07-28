@@ -1,5 +1,7 @@
 <?php
-
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
@@ -9,87 +11,83 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
-	$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "INCLUDE");
-	
-	try {
-		if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
-			throw new AuthorizationMissingException(); //\Exception("You are not authorized to retrieve a list of users");
-		}
+	class GetUsers extends Response
+	{
+		public function Run() {
+			$groupID = (isset($_GET["groupID"]) ? (int) $_GET["groupID"] : null);
+			$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "INCLUDE");
 		
-		$userManager = UserManager::GetInstance();
-		
-		$users = [];
-		$group = null;
-		
-		if(is_null($groupID)) {
-			$users = $userManager->GetAll();
-		} else {
-			$groupManager = GroupManager::GetInstance();
-			$groupMemManager = GroupMemberManager::GetInstance();
-			
-			$group = $groupManager->GetByID($groupID);
-			
-			if(!$group || $group->Status === 0) {
-				$data->status = 404;
-				throw new GroupNotFoundException();
+			if(!User::GetCurrentUser()->HasPermission("MANAGE_USERS") && !User::GetCurrentUser()->HasPermission("MANAGE_GROUPS")) {
+				throw new AuthorizationMissingException(); //\Exception("You are not authorized to retrieve a list of users");
 			}
 			
-			$members = $groupMemManager->GetByGroup($group);
+			$userManager = UserManager::GetInstance();
 			
-			if($mode == "INCLUDE") {
-				foreach($members as $member) {
-					$users[] = $member->User;
-				}
+			$users = [];
+			$group = null;
+			
+			if(is_null($groupID)) {
+				$users = $userManager->GetAll();
 			} else {
+				$groupManager = GroupManager::GetInstance();
+				$groupMemManager = GroupMemberManager::GetInstance();
 				
-				$allUsers = $userManager->GetAll();
+				$group = $groupManager->GetByID($groupID);
 				
-				foreach($allUsers as $u => $user) {
-					$isMember = false;
-					
+				if(!$group || $group->Status === 0) {
+					$this->Status = 404;
+					throw new GroupNotFoundException();
+				}
+				
+				$members = $groupMemManager->GetByGroup($group);
+				
+				if($mode == "INCLUDE") {
 					foreach($members as $member) {
-						if($member->User->ID === $user->ID) {
-							$isMember = true;
-							break;
+						$users[] = $member->User;
+					}
+				} else {
+					
+					$allUsers = $userManager->GetAll();
+					
+					foreach($allUsers as $u => $user) {
+						$isMember = false;
+						
+						foreach($members as $member) {
+							if($member->User->ID === $user->ID) {
+								$isMember = true;
+								break;
+							}
+						}
+						
+						if(!$isMember) {
+							$users[] = $user;
 						}
 					}
-					
-					if(!$isMember) {
-						$users[] = $user;
-					}
 				}
+				
+				/*echo "All users:\n";
+				foreach($users as $user) {
+					echo "  * [".$user->ID."] ".$user->Loginname."\n";
+				}
+				
+				echo "\nMembers:\n";
+				foreach($members as $member) {
+					echo "  * [".$member->User->ID."] ".$member->User->Loginname."\n";
+				}
+				
+				echo "\n";*/
+				
 			}
 			
-			/*echo "All users:\n";
-			foreach($users as $user) {
-				echo "  * [".$user->ID."] ".$user->Loginname."\n";
+			$users = array_values($users);
+			
+			$this->Status = 200;
+			$this->Message = count($users)." users found";
+			$data = ["users" => $users];
+			if($group) {
+				$data["group"] = $group;
 			}
-			
-			echo "\nMembers:\n";
-			foreach($members as $member) {
-				echo "  * [".$member->User->ID."] ".$member->User->Loginname."\n";
-			}
-			
-			echo "\n";*/
-			
+			$this->Data = $data;
 		}
-		
-		$users = array_values($users);
-		
-		$data->status = 200;
-		$data->message = count($users)." users found";
-		$data->users = $users;
-		if($group) {
-			$data->group = $group;
-		}
-		
-	} catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

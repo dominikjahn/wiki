@@ -6,11 +6,11 @@
 	use Wiki\Exception\GroupNotFoundException;
 	use Wiki\Exception\LoginnameContainsIllegalCharactersException;
 	use Wiki\Exception\LoginnameAlreadyTakenException;
+	
 	use Wiki\Domain\Manager\GroupManager;
 	use Wiki\Domain\Manager\UserPermissionManager;
 	use Wiki\Domain\Manager\GroupMemberManager;
 	use Wiki\Domain\Manager\UserManager;
-	use Wiki\Domain\GroupNotFoundException;
 	
 	/**
 	 * @table user

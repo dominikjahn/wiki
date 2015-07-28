@@ -1,4 +1,7 @@
 <?php
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\User;
 	use Wiki\Domain\Page;
@@ -10,39 +13,30 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	 
-	$pagename = (int) $_GET["page"];
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		$pageManager = PageManager::GetInstance();
-		$versionManager = VersionManager::GetInstance();
+	class GetVersions extends Response
+	{
+		public function Run() {
+			$pagename = (int) $_GET["page"];
 		
-		$currentUser = User::GetCurrentUser();
-		
-		$page = $pageManager->GetByName($pagename);
-		
-		if(!$page) {
-			throw new PageNotFoundException();
-			//$data->status = 404;
-			//$data->message = "The page you are trying to get versions from doesn't exist";
-		} else if(!$page->IsVisible) {
-			throw new AuthorizationMissingException();
-			//$data->status = 401;
-			//$data->message = "You are not authorized to see the versions of this page";
-		} else {
+			$pageManager = PageManager::GetInstance();
+			$versionManager = VersionManager::GetInstance();
+			
+			$currentUser = User::GetCurrentUser();
+			
+			$page = $pageManager->GetByName($pagename);
+			
+			if(!$page) {
+				throw new PageNotFoundException("The page you are trying to get versions from doesn't exist");
+			} else if(!$page->IsVisible) {
+				throw new AuthorizationMissingException("You are not authorized to see the versions of this page");
+			}
+			
 			$versions = $versionManager->GetByPage($page);
 			
-			$data->status = 200;
-			$data->message = count($versions)." versions found";
-			$data->page = $page;
-			$data->versions = $versions;
+			$this->Status = 200;
+			$this->Message = count($versions)." versions found";
+			$this->Data = ["page" => $page, "versions" => $versions];
 		}
-		
-	} catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
+		
 ?>

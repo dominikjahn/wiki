@@ -1,4 +1,7 @@
 <?php
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Tools\Request;
@@ -8,33 +11,29 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$request = Request::GetInstance();
-	
-	$userID = (int) $request->Body["userID"];
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		$user = UserManager::GetInstance()->GetByID($userID);
-		
-		if(!$user || $user->Status === 0) {
-			$this->status = 404;
-			throw new \Exception("The user doesn't exist");
+	class DeleteUser extends Response
+	{
+		public function Run() {
+			$request = Request::GetInstance();
+			
+			$userID = (int) $request->Body["userID"];
+			
+			$user = UserManager::GetInstance()->GetByID($userID);
+				
+			if(!$user || $user->Status === 0) {
+				$this->Status = 404;
+				throw new UserNotFoundException();
+			}
+			
+			$success = $user->Delete();
+			
+			if(!$success) {
+				$this->Status = 500;
+				throw new \Exception("Deleting the user failed");
+			}
+			
+			$this->Status = 200;
+			$this->Message = "The user was deleted successfully";
 		}
-		
-		$success = $user->Delete();
-		
-		if(!$success) {
-			throw new \Exception("Deleting the user failed");
-		}
-		
-		$data->status = 200;
-		$data->message = "The user was deleted successfully";
-		
-	} catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

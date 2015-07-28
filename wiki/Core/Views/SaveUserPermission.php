@@ -1,4 +1,7 @@
 <?php
+	namespace Wiki\Views;
+	
+	use Wiki\Response;
 	use Wiki\Database\DatabaseConnection;
 	use Wiki\Domain\Manager\UserManager;
 	use Wiki\Exception\UserNotFoundException;
@@ -9,50 +12,55 @@
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	
-	$request = Request::GetInstance();
-	
-	$userID = (int) $request->Body["userID"];
-	$permissions = $request->Body["permissions"];
-	
-	$data = (object) ["status" => 500, "message" => "An unknown error occured"];
-	
-	try {
-		$user = UserManager::GetInstance()->GetByID($userID);
-		
-		if(!$user || $user->Status === 0) {
-			$data->status = 404;
-			throw new UserNotFoundException();
-		}
-		
-		$total_success = false;
-		
-		foreach($permissions as $permissionName) {
-			$total_success = true;
+	class SaveUserPermission extends Response
+	{
+		public function Run() {
+			$request = Request::GetInstance();
 			
-			if($request->Method == "PUT") {
-				$success = $user->GrantPermission($permissionName);
-			} else if($request->Method == "DELETE") {
-				$success = $user->RevokePermission($permissionName);
+			$userID = (int) $request->Body["userID"];
+			$permissions = $request->Body["permissions"];
+		
+			$user = UserManager::GetInstance()->GetByID($userID);
+			
+			if(!$user || $user->Status === 0) {
+				$this->Status = 404;
+				throw new UserNotFoundException();
 			}
 			
-			if(!$success) {
-				$total_success = false;
-				// rollback
-				throw new \Exception("Something failed");
-				break;
+			$total_success = false;
+			
+			$db = DatabaseConnection::GetInstance();
+			$db->BeginTransaction();
+			$exception = null;
+			
+			foreach($permissions as $permissionName) {
+				$total_success = true;
+				
+				try {
+					if($request->Method == "PUT") {
+						$success = $user->GrantPermission($permissionName);
+					} else if($request->Method == "DELETE") {
+						$success = $user->RevokePermission($permissionName);
+					}
+				} catch(\Exception $e) {
+					$exception = $e;
+				}
+				
+				if(!$success) {
+					$total_success = false;
+					$db->Rollback();
+					break;
+				}
 			}
+			
+			if(!$total_success) {
+				throw $exception;
+			}
+			
+			$db->Commit();
+			
+			$this->Status = 200;
+			$this->Message = "The permissions have successfully been ".($request->Method == "PUT" ? "granted" : "revoked");
 		}
-		
-		$data->status = ($total_success ? 200 : 0);
-		$data->message = "The permission has successfully been ".($request->Method == "PUT" ? "granted" : "revoked");
-		
-	}/* catch(NotAuthorizedToManageUserPermissionsException $e) {
-		$data->status = 401;
-		$data->message = $e->getMessage();
-	}*/ catch(\Exception $e) {
-		$data->message = $e->getMessage();
 	}
-	
-	print json_encode($data);
 ?>

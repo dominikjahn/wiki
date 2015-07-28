@@ -8,6 +8,8 @@
 				$message = "You are not authorized to perform this action.";
 			}
 			
+			$code = 403;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

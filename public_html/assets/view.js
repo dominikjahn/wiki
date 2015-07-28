@@ -408,7 +408,7 @@ var GoToPage = function(pagename) {
 var GetPageFromCache = function(pagename, error, response_or_xhr) {
 	if(pagename in cache) {
 		DisplayPage(cache[pagename]);
-		UpdateWindow(cache[pagename].page.title + ' (from cache)', 'Cache:'+pagename+'.html');
+		UpdateWindow(cache[pagename].page.title + ' (from cache)', pagename+'.html');
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
 	} else {

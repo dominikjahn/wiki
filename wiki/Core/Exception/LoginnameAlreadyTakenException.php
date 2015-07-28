@@ -8,6 +8,8 @@
 				$message = "The loginname is already taken";
 			}
 			
+			$code = 409;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

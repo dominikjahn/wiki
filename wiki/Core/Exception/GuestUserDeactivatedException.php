@@ -8,6 +8,8 @@
 				$message = "The guest user cannot be deleted. Please reactivate the user.";
 			}
 			
+			$code = 500;
+			
 			parent::__construct($message, $code, $previous);
 		}
 	}

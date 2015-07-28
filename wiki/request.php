@@ -19,6 +19,9 @@
 	try {
 		Wiki\Application::Main();
 	} catch(\Exception $e) {
+		if($e->getCode() > 0) {
+			http_response_code($e->getCode());
+		}
 		print json_encode(["status" => 500, "message" => $e->getMessage(), "details" => $e->getTraceAsString()]);
 	}
 ?>

@@ -1,12 +1,14 @@
 <?php
 	namespace Wiki\Exception;
 	
-	class NotAuthorizedToCreateNewUsersException extends BaseException
+	class GroupNotFoundException extends BaseException
 	{
 		public function __construct($message = null, $code = 0, Exception $previous = null) {
 			if(!$message) {
-				$message = "You are not authorized to create new users";
+				$message = "The group was not found";
 			}
+			
+			$code = 404;
 			
 			parent::__construct($message, $code, $previous);
 		}
