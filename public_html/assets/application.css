@@ -44,7 +44,7 @@ body
 
 #ChangePasswordForm,
 #PageNotFound, #NotAuthorized, #Offline, #Error,
-#DisplayPage, #EditPage, #NewPage, #PreviewPage,
+#DisplayPage, #EditPageForm, #PreviewPage,
 #Versions,
 #NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
 #NavPublicPage, #NavProtectedPage, #NavPrivatePage,
@@ -59,8 +59,7 @@ body
 	display: none !important;
 }
 
-#NewPage-InputContent-Editor,
-#EditPage-InputContent-Editor {
+#EditPageForm-InputContent-Editor {
 	width: 100%;
 	min-height: 400px;
 	font-size: 11pt;

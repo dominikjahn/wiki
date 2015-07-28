@@ -16,10 +16,6 @@ var EditPageEditor = null;
 
 var wiki;
 
-var DoSomething = function() {
-	//wiki.GetPageByName('Homepage', false, function(response) { alert(response.page.title); });
-}
-
 $(function()
 {
 	var fromCache = localStorage.getItem("wiki_cache");

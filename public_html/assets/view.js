@@ -127,8 +127,8 @@ var Reset = function() {
 	//$("#SignUpForm").hide();
 	$("#ChangePasswordForm").hide();
 	$("#DisplayPage").hide();
-	$("#NewPage").hide();
-	$("#EditPage").hide();
+	//$("#NewPage").hide();
+	$("#EditPageForm").hide();
 	$("#Versions").hide();
 	$("#SearchForm").hide();
 	$("#SearchResults").hide();
@@ -453,38 +453,28 @@ var DisplayPage = function(response) {
 	HideLoading();
 }
 
-var GoToEditPageForm = function(pagename) {
+var DisplayNewPageForm = function(e) {
 	Reset();
+	UpdateWindow("Create a new page", "NewPage.html");
 	
-	wiki.GetPageByName(pagename, DisplayEditPageForm);
+	$("#EditPageForm-Title").html("New page");
 	
-	return false;
-}
-
-var DisplayEditPageForm = function(response) {
-	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
-	
-	$("#EditPage").data("pageid", response.page.page_id);
-	
-	$("#EditPage-Title").html(response.page.title);
-	$("#EditPage-InputTitle").val(response.page.title);
-	$("#EditPage-InputContent").val(response.page.content).hide();
-	$("#EditPage-InputSummary").val("");
-	$("#EditPage-Visibility-"+response.page.visibility).attr("checked",true);
-	$("#EditPage-Manipulation-"+response.page.manipulation).attr("checked",true);
-	$("#EditPage-MinorChange").attr("checked",false);
-	$("#EditPage-Owner").empty();
-	$("#EditPage-Group").empty();
-	
-	var currentOwner = response.page.owner;
-	var currentGroup = response.page.group;
+	$("#EditPageForm-InputTitle").val("");
+	$("#EditPageForm-InputContent").val("").hide();
+	$("#EditPageForm-InputSummary").val("Initialized page");
+	$("#EditPageForm-MinorChange").attr("checked",true);
+	$("#EditPageForm-MinorChangeWrapper").hide();
+	$("#EditPageForm-Visibility-PUBLIC").attr("checked",true);
+	$("#EditPageForm-Manipulation-EVERYONE").attr("checked",true);
+	$("#EditPageForm-DeletePage").hide();
+	InitializeAceEditor("");
 	
 	wiki.GetUsers(
 		function(response) {
 			for(var u = 0; u < response.users.length; u++) {
 				var user = response.users[u];
 					
-				$("#EditPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == currentOwner.user_id ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+				$("#EditPageForm-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == wiki.currentUserID ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
 			}
 		}, function(response) { alert(response.message); }, function() {}
 	);
@@ -494,47 +484,107 @@ var DisplayEditPageForm = function(response) {
 			for(var g = 0; g < response.groups.length; g++) {
 				var group = response.groups[g];
 					
-				$("#EditPage-Group").append('<option value="'+group.group_id+'"'+(group.group_id == currentGroup.group_id ? ' selected="selected"' : '')+'>'+group.name+'</option>');
+				$("#EditPageForm-Group").append('<option value="'+group.group_id+'">'+group.name+'</option>');
+			}
+		}, function(response) { alert(response.message); }, function() {}
+	);
+	
+	
+	HideLoading();
+	$("#EditPageForm").show().data("pageid","");
+	
+	return false;
+}
+
+var GoToEditPageForm = function(pagename) {
+	Reset();
+	
+	wiki.GetPageByName(pagename, DisplayEditPageForm);
+	
+	return false;
+}
+
+var DisplayEditPageForm = function(response) {
+	
+	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
+	
+	$("#EditPageForm").data("pageid", response.page.page_id);
+	
+	$("#EditPageForm-Title").html("Editing page '"+response.page.title+"'");
+	$("#EditPageForm-InputTitle").val(response.page.title);
+	$("#EditPageForm-InputContent").val(response.page.content).hide();
+	$("#EditPageForm-InputSummary").val("");
+	$("#EditPageForm-Visibility-"+response.page.visibility).attr("checked",true);
+	$("#EditPageForm-Manipulation-"+response.page.manipulation).attr("checked",true);
+	$("#EditPageForm-MinorChange").attr("checked",false);
+	$("#EditPageForm-MinorChangeWrapper").show();
+	$("#EditPageForm-Owner").empty();
+	$("#EditPageForm-Group").empty();
+	$("#EditPageForm-DeletePage").show();
+	
+	InitializeAceEditor(response.page.content);
+	
+	var currentOwner = response.page.owner;
+	var currentGroup = response.page.group;
+	
+	wiki.GetUsers(
+		function(response) {
+			for(var u = 0; u < response.users.length; u++) {
+				var user = response.users[u];
+					
+				$("#EditPageForm-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == currentOwner.user_id ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
+			}
+		}, function(response) { alert(response.message); }, function() {}
+	);
+	
+	wiki.GetGroups(
+		function(response) {
+			for(var g = 0; g < response.groups.length; g++) {
+				var group = response.groups[g];
+					
+				$("#EditPageForm-Group").append('<option value="'+group.group_id+'"'+(group.group_id == currentGroup.group_id ? ' selected="selected"' : '')+'>'+group.name+'</option>');
 			}
 		}, function(response) { alert(response.message); }, function() {}
 	);
 	
 	if(response.page.page_id === 1) {
-		$("#EditPage-DeletePage").attr("disabled", true);
+		$("#EditPageForm-DeletePage").attr("disabled", true);
 	} else {
-		$("#EditPage-DeletePage").attr("disabled", false).unbind("click").click(GoToDeletePageDialog);
+		$("#EditPageForm-DeletePage").attr("disabled", false).unbind("click").click(GoToDeletePageDialog);
 	}
 	
 	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
-	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewExistingPage);
-	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveExistingPage);
+	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
+	$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
 	
-	BindKey(83,SaveExistingPage,true); // Ctrl+S
+	BindKey(83,SavePage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC
 	
-	var EditPageEditor = ace.edit("EditPage-InputContent-Editor");
+	HideLoading();
+	$("#EditPageForm").show();
+}
+
+var InitializeAceEditor = function(value) {
+	var EditPageEditor = ace.edit("EditPageForm-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
 	EditPageEditor.getSession().setMode("ace/mode/javascript");
 	EditPageEditor.getSession().setMode("ace/mode/css");
 	EditPageEditor.getSession().setMode("ace/mode/php");
 	//EditPageEditor.getSession().setMode("ace/mode/markdown");
 	EditPageEditor.setOptions({ maxLines: Infinity });
-	EditPageEditor.getSession().setValue($("#EditPage-InputContent").val());
-	
-	HideLoading();
-	$("#EditPage").show();
+	EditPageEditor.getSession().setValue(value);
 }
 
-var PreviewExistingPage = function() {
+var PreviewPage = function() {
 	Reset();
 	
-	var title = $("#EditPage-InputTitle").val();
+	var title = $("#EditPageForm-InputTitle").val();
 	
 	UpdateWindow(title + ' (Preview)');
 	
 	var pagedata = {
 			'title': title,
-			'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
+			'content': ace.edit("EditPageForm-InputContent-Editor").getSession().getValue(),
 		};
 	
 	wiki.PreviewPage(pagedata,
@@ -544,26 +594,30 @@ var PreviewExistingPage = function() {
 						});
 }
 
-var BackToEditPageForm = function() {
+var DropChanges = function() {
 	$("#DisplayPage").hide();
-	$("#EditPage").show();
+	$("#EditPageForm").show();
 	$("#NavBackToComposer").hide();
 	$("#NavDropChanges").css("display","block");
 	$("#NavPreviewChanges").css("display","block");
 	$("#NavSaveChanges").css("display","block");
 }
 
-var SaveExistingPage = function() {
+var SavePage = function(e) {
+	if(e) { e.preventDefault(); }
+	
+	var pageID = $("#EditPageForm").data("pageid");
+	
 	var pagedata = {
-		'pageID': $("#EditPage").data("pageid"),
-		'title': $("#EditPage-InputTitle").val(),
-		'content': ace.edit("EditPage-InputContent-Editor").getSession().getValue(),
-		'summary': $("#EditPage-InputSummary").val(),
-		'minor_edit': ($('#EditPage-MinorChange:checked').length > 0),
-		'visibility': $('input[name=EditPage-Visibility]:checked').val(),
-		'manipulation': $('input[name=EditPage-Manipulation]:checked').val(),
-		'owner': $("#EditPage-Owner").val(),
-		'group': $("#EditPage-Group").val()
+		'pageID': pageID,
+		'title': $("#EditPageForm-InputTitle").val(),
+		'content': ace.edit("EditPageForm-InputContent-Editor").getSession().getValue(),
+		'summary': $("#EditPageForm-InputSummary").val(),
+		'minor_edit': ($('#EditPageForm-MinorChange:checked').length > 0),
+		'visibility': $('input[name=EditPageForm-Visibility]:checked').val(),
+		'manipulation': $('input[name=EditPageForm-Manipulation]:checked').val(),
+		'owner': $("#EditPageForm-Owner").val(),
+		'group': $("#EditPageForm-Group").val()
 	};
 	
 	wiki.CreateOrSavePage(pagedata,
@@ -571,13 +625,12 @@ var SaveExistingPage = function() {
 			alert("The page was saved successfully");
 			
 			GoToPage(response.page.name);
-		},
-		
-		HandleErrorCodes,
-		DisplayError
+		}
 	);
+	
+	return false;
 }
-
+/*
 var DisplayNewPageForm = function() {
 	UpdateWindow("Create a new page", "NewPage.html");
 	Reset();
@@ -630,64 +683,7 @@ var DisplayNewPageForm = function() {
 	$("#NewPage").show();
 	
 	return false;
-}
-
-var PreviewNewPage = function() {
-	Reset();
-	
-	var title = $("#NewPage-InputTitle").val();
-	
-	UpdateWindow(title + ' (Preview)');
-	
-	var pagedata = {
-			'title': title,
-			'content': ace.edit("NewPage-InputContent-Editor").getSession().getValue(),
-		};
-	
-	wiki.PreviewPage(pagedata,
-						function(response) {
-							DisplayPage(response);
-							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToNewPageForm);
-						});
-}
-
-var BackToNewPageForm = function() {
-	$("#DisplayPage").hide();
-	$("#NewPage").show();
-	$("#NavBackToComposer").hide();
-	$("#NavDropChanges").css("display","block");
-	$("#NavPreviewChanges").css("display","block");
-	$("#NavSaveChanges").css("display","block");
-}
-
-var SaveNewPage = function() {
-	var pagedata = {
-		'pageID': null,
-		'title': $("#NewPage-InputTitle").val(),
-		'content': ace.edit("NewPage-InputContent-Editor").getSession().getValue(),
-		'summary': $("#NewPage-InputSummary").val(),
-		'minor_edit': false,
-		'visibility': $('input[name=NewPage-Visibility]:checked').val(),
-		'manipulation': $('input[name=NewPage-Manipulation]:checked').val(),
-		'owner': $("#NewPage-Owner").val(),
-		'group': $("#NewPage-Group").val()
-	};
-	
-	wiki.CreateOrSavePage(pagedata,
-		
-		function(response) {
-			alert("The page was created successfully");
-			
-			GoToPage(response.page.name);
-		},
-		
-		HandleErrorCodes,
-		DisplayError);
-}
-
-var DropChanges = function() {
-	GoBackInHistory();
-}
+}*/
 
 var GoToDeletePageDialog = function(e) {
 	var pageID = $("#EditPage").data("pageid");
@@ -751,6 +747,7 @@ var DisplaySearchResults = function(response) {
 
 var userListPopulated;
 var groupListPopulated;
+
 var GoToUserList = function(e) {
 	if(e) { e.preventDefault(); }
 	

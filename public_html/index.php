@@ -17,7 +17,7 @@
 		
 		<title>Wiki</title>
 		
-		<base dir="<?php echo Wiki\Configuration::WWW_ROOT; ?>" />
+		<base href="<?php echo Wiki\Configuration::WWW_ROOT; ?>" />
 
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 		<link href="assets/application.css" rel="stylesheet" />
@@ -206,7 +206,7 @@
 				<div id="DisplayPage-Content"></div>
 			</div>
 			
-			<form id="NewPage" accept-charset="UTF-8">
+			<!-- form id="NewPage" accept-charset="UTF-8">
 				<h1>Create a new page</h1>
 				
 				<div class="panel panel-default">
@@ -271,34 +271,33 @@
 						</div>
 					</div>
 				</div>
-			</form>
+			</form-->
 			
-			<form id="EditPage" accept-charset="UTF-8" data-pageID="">
-				<input type="hidden" id="EditPage-InputPageID" value="0" />
+			<form id="EditPageForm" accept-charset="UTF-8" data-pageid="">
 				
-				<h1>Edit page &quot;<span id="EditPage-Title"></span>&quot;</h1>
+				<h1 id="EditPageForm-Title">New page</h1>
 				<hr/>
 				
 				<div>
 					<div class="panel panel-default">
   						<div class="panel-body">
 							<ul class="nav nav-tabs" role="tablist">
-								<li role="presentation" class="active"><a href="#EditPage-ContentTab" role="tab" data-toggle="tab">Content</a></li>
-								<li role="presentation"><a href="#EditPage-AccessTab" role="tab" data-toggle="tab">Access</a></li>
+								<li role="presentation" class="active"><a href="#EditPageForm-ContentTab" role="tab" data-toggle="tab">Content</a></li>
+								<li role="presentation"><a href="#EditPageForm-AccessTab" role="tab" data-toggle="tab">Access</a></li>
 							</ul>
 							
 							<div class="tab-content">
-								<div role="tabpanel" class="tab-pane active" id="EditPage-ContentTab">
+								<div role="tabpanel" class="tab-pane active" id="EditPageForm-ContentTab">
 									<div class="form-group">
-										<label for="EditPage-InputTitle">Title</label>
-										<input type="text" class="form-control" id="EditPage-InputTitle" placeholder="The title of the page" />
+										<label for="EditPageForm-InputTitle">Title</label>
+										<input type="text" class="form-control" id="EditPageForm-InputTitle" placeholder="The title of the page" />
 									</div>
 									<div class="form-group">
-										<label for="EditPage-InputContent">Content <button type="button" id="EditPage-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button></label>
-										<textarea class="form-control tab" id="EditPage-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
+										<label for="EditPageForm-InputContent">Content <!-- button type="button" id="EditPageForm-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button --></label>
+										<textarea class="form-control tab" id="EditPageForm-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
 										<div class="panel panel-default">
   											<div class="panel-body">
-  												<div id="EditPage-InputContent-Editor"></div>
+  												<div id="EditPageForm-InputContent-Editor"></div>
   											</div>
   										</div>
 									</div>
@@ -306,51 +305,51 @@
 									<hr/>
 									
 									<div class="form-group">
-										<label for="EditPage-InputSummary" data-toggle="tooltip" data-placement="right" title="This information is helpful when browsing the revision history of this page">Summary of changes</label>
-										<textarea class="form-control" id="EditPage-InputSummary" placeholder="Leave a note explaining what you have changed on this page"></textarea>
+										<label for="EditPageForm-InputSummary" data-toggle="tooltip" data-placement="right" title="This information is helpful when browsing the revision history of this page">Summary of changes</label>
+										<textarea class="form-control" id="EditPageForm-InputSummary" placeholder="Leave a note explaining what you have changed on this page"></textarea>
 									</div>
 									
-									<div class="checkbox"><label data-toggle="tooltip" data-placement="right" title="Check this box if the changes you performed are only minor (e.g. corrected a spelling mistake)"><input type="checkbox" id="EditPage-MinorChange" /> Minor changes only</label></div>
+									<div class="checkbox" id="EditPageForm-MinorChangeWrapper"><label data-toggle="tooltip" data-placement="right" title="Check this box if the changes you performed are only minor (e.g. corrected a spelling mistake)"><input type="checkbox" id="EditPageForm-MinorChange" /> Minor changes only</label></div>
 								</div>
 								
-								<div role="tabpanel" class="tab-pane" id="EditPage-AccessTab">
+								<div role="tabpanel" class="tab-pane" id="EditPageForm-AccessTab">
 									<h4>Visibility</h4>
 									
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PUBLIC" value="PUBLIC"/> Public page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PROTECTED" value="PROTECTED" /> Protected page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group"><input type="radio" name="EditPage-Visibility" id="EditPage-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone who knows the URL to it">  <input type="radio" name="EditPageForm-Visibility" id="EditPageForm-Visibility-PUBLIC" value="PUBLIC"/> Public page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is visible to everyone is signed in on this wiki"><input type="radio" name="EditPageForm-Visibility" id="EditPageForm-Visibility-PROTECTED" value="PROTECTED" /> Protected page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owner">                    <input type="radio" name="EditPageForm-Visibility" id="EditPageForm-Visibility-PRIVATE" value="PRIVATE" /> Private page</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page is only visible to its owning group">             <input type="radio" name="EditPageForm-Visibility" id="EditPageForm-Visibility-GROUPPRIVATE" value="GROUPPRIVATE" /> Group private page</label></div>
 									
 									<hr/>
 						  		
 							  		<h4>Manipulation</h4>
 							  		
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by everyone. If the page is at least protected or only visible to the owner or group this setting will be overwritten."><input type="radio" name="EditPage-Manipulation" id="EditPage-Manipulation-Everyone" value="EVERYONE" /> Everyone</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by every registered user. If the page is only visible by the owner or group this setting will be overwritten."><input type="radio" name="EditPage-Manipulation" id="EditPage-Manipulation-Registered" value="REGISTERED" checked="checked" /> Registered users only</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can only be edited by the owner itself."><input type="radio" name="EditPage-Manipulation" id="EditPage-Manipulation-Owner" value="OWNER" /> The owner only</label></div>
-									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by everyone in the group and the owner (even if he is not in the group)"><input type="radio" name="EditPage-Manipulation" id="EditPage-Manipulation-Group" value="OWNER" /> Users in the group only</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by everyone. If the page is at least protected or only visible to the owner or group this setting will be overwritten."><input type="radio" name="EditPageForm-Manipulation" id="EditPageForm-Manipulation-EVERYONE" value="EVERYONE" /> Everyone</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by every registered user. If the page is only visible by the owner or group this setting will be overwritten.">         <input type="radio" name="EditPageForm-Manipulation" id="EditPageForm-Manipulation-REGISTERED" value="REGISTERED" /> Registered users only</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can only be edited by the owner itself.">                                                                                             <input type="radio" name="EditPageForm-Manipulation" id="EditPageForm-Manipulation-OWNER" value="OWNER" /> The owner only</label></div>
+									<div class="radio"><label data-toggle="tooltip" data-placement="right" title="This page can be edited by everyone in the group and the owner (even if he is not in the group)">                                               <input type="radio" name="EditPageForm-Manipulation" id="EditPageForm-Manipulation-GROUP" value="GROUP" /> Users in the group only</label></div>
 								  
 							  		<hr/>
 									
 									<h4>Ownership</h4>
 									
 									<div class="form-group">
-										<label for="EditPage-Owner">Owner</label>
-										<select id="EditPage-Owner" class="form-control">
+										<label for="EditPageForm-Owner">Owner</label>
+										<select id="EditPageForm-Owner" class="form-control">
 											
 										</select>
 									</div>
 									
 									<div class="form-group">
-										<label for="EditPage-Group">Group</label>
-										<select id="EditPage-Group" class="form-control">
+										<label for="EditPageForm-Group">Group</label>
+										<select id="EditPageForm-Group" class="form-control">
 											
 										</select>
 									</div>
 									
 									<hr/>
 									
-									<button type="button" id="EditPage-DeletePage" class="btn btn-danger">Delete this page</button>
+									<button type="button" id="EditPageForm-DeletePage" class="btn btn-danger">Delete this page</button>
 								</div>
 							</div>
 						</div>
