@@ -46,7 +46,7 @@ body
 #PageNotFound, #NotAuthorized, #Offline, #Error,
 #DisplayPage, #EditPageForm, #PreviewPage,
 #Versions,
-#NavTableOfContents, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
+#NavTableOfContents, #NavNewPage, #NavEditPage, #NavDropChanges, #NavPreviewChanges, #NavSaveChanges, #NavBackToComposer, #NavGetVersions, #NavUsers,
 #NavPublicPage, #NavProtectedPage, #NavPrivatePage,
 
 #UserManagement, #EditPermissions, #EditUserForm, #EditGroupForm, #GroupUsers, #SearchForm, #SearchResults

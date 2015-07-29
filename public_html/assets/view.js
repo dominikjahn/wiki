@@ -24,6 +24,8 @@ $(function() {
 
 var GoToView = function(view) {
 	
+	//UpdateWindow("Loading...",view+".html");
+	
 	var view = view.split('-');
 	
 	switch(view[0]) {
@@ -107,6 +109,10 @@ var GoToView = function(view) {
 		//	DisplayCategory(viewName[1]);
 		//	break;
 			
+		case "Search":
+			DisplaySearchForm();
+			break;
+			
 		default:
 			GoToPage(view[0]);
 	}
@@ -139,6 +145,7 @@ var Reset = function() {
 	$("#GroupUsers").hide();
 	
 	// Navbar
+	$("#NavNewPage").hide();
 	$("#NavEditPage").hide();
 	$("#NavGetVersions").hide();
 	$("#NavDropChanges").hide();
@@ -230,11 +237,17 @@ var ShowUserInfo = function(response) {
 	
 	$('#SignInText').empty().append(preText).append(changePasswordLink).append(postText).append(logoutLink);
 	
-	wiki.UserHasPermission("MANAGE_USERS",
-							function() {
-								$("#NavUsers").css("display","block").unbind("click").click(GoToUserList); },
-							function() {
-								$("#NavUsers").css("display","hide").unbind("click"); });
+	wiki.UserHasPermission("CREATE_USERS,CREATE_GROUPS,ALTER_USERS,ALTER_GROUPS,MANAGE_PERMISSIONS","any",
+			function() {
+				$("#NavUsers").css("display","block").unbind("click").click(GoToUserList); },
+			function() {
+				$("#NavUsers").css("display","hide").unbind("click"); });
+	
+	wiki.UserHasPermission("CREATE_PAGES","all"
+			function() {
+				$("#NavNewPage").css("display","block").unbind("click").click(DisplayNewPageForm); },
+			function() {
+				$("#NavNewPage").css("display","hide").unbind("click"); });
 }
 
 var ShowSignInUpLinks = function() {
@@ -252,6 +265,7 @@ var ShowSignInUpLinks = function() {
 	$('#SignInText').empty().append(loginLink).append(sep).append(signupLink);
 	
 	$("#NavUsers").css("display","hide").unbind("click");
+	$("#NavNewPage").css("display","hide").unbind("click");
 }
 
 /*
@@ -383,6 +397,8 @@ var ChangePassword = function() {
  */
 
 var GoToPage = function(pagename) {
+	UpdateWindow("Loading...",pagename+".html");
+	
 	wiki.DisplayPage(pagename,
 					function(response) {
 							cache[pagename] = response;
@@ -704,6 +720,8 @@ var DeletePage = function() {
 }
 
 var DisplaySearchForm = function() {
+	UpdateWindow("Search","Search.html");
+	
 	Reset();
 	HideLoading();
 	$("#SearchForm").show().unbind("submit").submit(Search);

@@ -223,8 +223,8 @@ var Wiki = function() {
 			
 		},
 		
-		'UserHasPermission': function(permission, positive_callback, negative_callback, error_callback) {
-			this.Request("GET", "request.php?command=UserHasPermission&userID="+this.currentUserID+"&permission="+permission, null, positive_callback, negative_callback, error_callback);
+		'UserHasPermission': function(permissions, mode, positive_callback, negative_callback, error_callback) {
+			this.Request("GET", "request.php?command=UserHasPermission&userID="+this.currentUserID+"&permissions="+permissions+"&mode="+mode, null, positive_callback, negative_callback, error_callback);
 		}
 	}
 };

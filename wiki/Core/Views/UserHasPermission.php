@@ -19,7 +19,8 @@
 			$request = Request::GetInstance();
 			
 			$userID = (int) $_GET["userID"];
-			$permissionName = $_GET["permission"];
+			$permissions = $_GET["permissions"];
+			$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "ALL");
 		
 			$user = UserManager::GetInstance()->GetByID($userID);
 			$currentUser = User::GetCurrentUser();
@@ -34,13 +35,36 @@
 				throw new AuthorizationMissingException("You are not authorized to check the permissions of other users");
 			}
 			
-			if(!$user->HasPermission($permissionName)) {
-				$this->Status = 0;
-				$this->Message = "The user does not have this permission";
-			} else {
-				$this->Status = 200;
-				$this->Message = "The user has the permission";
+			$granted = 0;
+			
+			foreach($permissions as $permission) {
+				
+				if($user->HasPermission($permission)) {
+					$granted++;
+				}
 			}
+			
+			$success = false;
+			
+			if(($mode == "ALL" && $granted == count($permissions)) || ($mode == "ANY" && $granted > 0) || ($mode == "NONE" && $granted === 0)) {
+				$success = true;
+			}
+			
+			$this->Status = ($success ? 200 : 401);
+			switch($mode) {
+				case "ALL":
+					$this->Message = "The user ".($success?"has":"doesn't have")." the permissions.";
+					break;
+					
+				case "ANY":
+					$this->Message = "The user ".($success?"has some or all":"doesn't have any")." of the permissions.";
+					break;
+					
+				case "NONE":
+					$this->Message = "The user ".($success?"doesn't have":"has")." the permissions.";
+					break;
+			}
+			
 		}
 	}
 ?>
