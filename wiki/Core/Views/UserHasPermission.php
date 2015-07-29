@@ -19,7 +19,7 @@
 			$request = Request::GetInstance();
 			
 			$userID = (int) $_GET["userID"];
-			$permissions = $_GET["permissions"];
+			$permissions = explode(",",$_GET["permissions"]);
 			$mode = (isset($_GET["mode"]) ? strtoupper($_GET["mode"]) : "ALL");
 		
 			$user = UserManager::GetInstance()->GetByID($userID);
