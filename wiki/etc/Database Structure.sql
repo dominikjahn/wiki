@@ -110,6 +110,15 @@ CREATE TABLE `%PREFIX%page` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `%PREFIX%pagelink` (
+`pagelink_id` int(10) unsigned NOT NULL,
+  `status` tinyint(3) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
+  `page_from_id` int(10) unsigned NOT NULL,
+  `page_to_id` int(10) unsigned NOT NULL,
+  `text` varchar(560) COLLATE utf8mb4_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 --
 -- Table structure for table `user`
 --
@@ -195,6 +204,12 @@ ALTER TABLE `%PREFIX%log`
 --
 ALTER TABLE `%PREFIX%page`
  ADD PRIMARY KEY (`page_id`), ADD KEY `name` (`name`);
+ 
+ --
+-- Indexes for table `pagelink`
+--
+ALTER TABLE `pagelink`
+ ADD PRIMARY KEY (`pagelink_id`);
 
 --
 -- Indexes for table `user`
@@ -249,6 +264,12 @@ MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 ALTER TABLE `%PREFIX%page`
 MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+
+--
+-- AUTO_INCREMENT for table `pagelink`
+--
+ALTER TABLE `pagelink`
+MODIFY `pagelink_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `user`
 --
