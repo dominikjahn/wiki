@@ -326,8 +326,8 @@ class Page extends Domain
 			$class = null;
 				
 			if(!$page) {
-				$link = $name.".html#NewPage";
-				$click = 'return GoToPage(\''.$name.'\')';
+				$link = "NewPage.html?title=".$text;
+				$click = 'return DisplayNewPageForm(null,decodeURIComponent(\''.rawurlencode($text).'\'))';
 				$class = "link-newpage";
 			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
 				$link = $page->Name.".html";
@@ -351,7 +351,8 @@ class Page extends Domain
 		foreach($links as $link)
 		{
 			$wrapper = $link[0];
-			$name = $link["page"];
+			$title = $link["page"];
+			$name = self::NormalizeTitle($title);
 			$text = $link["text"];
 				
 			$page = $pageManager->GetByName($name);
@@ -361,8 +362,8 @@ class Page extends Domain
 			$class = null;
 				
 			if(!$page) {
-				$link = $name."#NewPage";
-				$click = 'return GoToPage(\''.$name.'\')';
+				$link = "NewPage.html?title=".$title;
+				$click = 'return DisplayNewPageForm(null,decodeURIComponent(\''.rawurlencode($title).'\'))';
 				$class = "link-newpage";
 			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
 				$link = "#";

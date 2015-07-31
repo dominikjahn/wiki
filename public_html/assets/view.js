@@ -469,13 +469,14 @@ var DisplayPage = function(response) {
 	HideLoading();
 }
 
-var DisplayNewPageForm = function(e) {
+var DisplayNewPageForm = function(e, title) {
+	var title = title || "";
 	Reset();
 	UpdateWindow("Create a new page", "NewPage.html");
 	
 	$("#EditPageForm-Title").html("New page");
 	
-	$("#EditPageForm-InputTitle").val("");
+	$("#EditPageForm-InputTitle").val(title);
 	$("#EditPageForm-InputContent").val("").hide();
 	$("#EditPageForm-InputSummary").val("Initialized page");
 	$("#EditPageForm-MinorChange").prop("checked",true);
