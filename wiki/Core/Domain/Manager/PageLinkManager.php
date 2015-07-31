@@ -2,17 +2,16 @@
 	namespace Wiki\Domain\Manager;
 	
 	use Wiki\Database\DatabaseConnection;
-	use Wiki\Domain\Factory\CategoryPageFactory;
-	use Wiki\Domain\Category;
+	use Wiki\Domain\Factory\PageLinkFactory;
 	use Wiki\Domain\Page;
-	use Wiki\Domain\CategoryPage;
+	use Wiki\Domain\PageLink;
 	
 	/**
 	 * @author Dominik Jahn <dominik1991jahn@gmail.com>
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	class CategoryPageManager extends DomainManager
+	class PageLinkManager extends DomainManager
 	{
 		  //
 		 // METHODS
@@ -30,7 +29,7 @@
 		  
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObject = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE categorypage_id = :id";
+			$sqlObject = "SELECT pagelink_id, status, checksum, page_from_id, page_to_id, text FROM %PREFIX%pagelink WHERE pagelink_id = :id";
 			$stmObject = $db->Prepare($sqlObject);
 			$rowObject = $stmObject->ReadSingle(["id" => $id]);
 			
@@ -38,9 +37,9 @@
 				return null;
 			}
 			
-			$objectFactory = CategoryPageFactory::GetInstance();
+			$objectFactory = PageLinkFactory::GetInstance();
 			
-			$object = new CategoryPage();
+			$object = new PageLink();
 			
 			$this->AddToCache($object, $id);
 			
@@ -56,10 +55,10 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public function GetByPage(Page $page) {
+		public function GetByFromPage(Page $page) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE status = 100 AND page_id = :page";
+			$sqlObjects = "SELECT pagelink_id, status, checksum, page_from_id, page_to_id, text FROM %PREFIX%pagelink WHERE status = 100 AND page_from_id = :page";
 			$stmObjects = $db->Prepare($sqlObjects);
 			
 			$resObjects = $stmObjects->Read(["page" => $page]);
@@ -69,10 +68,10 @@
 			}
 			
 			$objects = [];
-			$objectFactory = CategoryPageFactory::GetInstance();
+			$objectFactory = PageLinkFactory::GetInstance();
 			
 			while(($rowObject = $resObjects->NextRow()) != null) {
-				$object = new CategoryPage();
+				$object = new PageLink();
 				$this->AddToCache($object);
 				$objectFactory->FromDataRow($object, $rowObject);
 				
@@ -89,22 +88,23 @@
 		 * @version 0.1
 		 * @since 0.1
 		 */
-		public function GetByCategory(Category $category) {
+		public function GetByToPage(Page $page) {
 			$db = DatabaseConnection::GetInstance();
 			
-			$sqlObjects = "SELECT categorypage_id, status, checksum, category_id, page_id, alias FROM %PREFIX%categorypage WHERE status = 100 AND category_id = :category";
+			$sqlObjects = "SELECT pagelink_id, status, checksum, page_from_id, page_to_id, text FROM %PREFIX%pagelink WHERE status = 100 AND page_to_id = :page";
 			$stmObjects = $db->Prepare($sqlObjects);
-			$resObjects = $stmObjects->Read(["category" => $category]);
+			
+			$resObjects = $stmObjects->Read(["page" => $page]);
 			
 			if(!$resObjects) {
 				return null;
 			}
 			
 			$objects = [];
-			$objectFactory = CategoryPageFactory::GetInstance();
+			$objectFactory = PageLinkFactory::GetInstance();
 			
 			while(($rowObject = $resObjects->NextRow()) != null) {
-				$object = new CategoryPage();
+				$object = new PageLink();
 				$this->AddToCache($object);
 				$objectFactory->FromDataRow($object, $rowObject);
 				
@@ -127,7 +127,7 @@
 		 */
 		public static function GetInstance() {
 			if(!self::$instance) {
-				self::$instance = new CategoryPageManager();
+				self::$instance = new PageLinkManager();
 			}
 			
 			return self::$instance;

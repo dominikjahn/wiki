@@ -243,7 +243,7 @@ var ShowUserInfo = function(response) {
 			function() {
 				$("#NavUsers").css("display","hide").unbind("click"); });
 	
-	wiki.UserHasPermission("CREATE_PAGES","all"
+	wiki.UserHasPermission("CREATE_PAGES","all",
 			function() {
 				$("#NavNewPage").css("display","block").unbind("click").click(DisplayNewPageForm); },
 			function() {

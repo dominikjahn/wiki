@@ -4,6 +4,7 @@ namespace Wiki\Domain;
 use Wiki\Domain\Manager\PageManager;
 use Wiki\Domain\Manager\CategoryManager;
 use Wiki\Domain\Manager\CategoryPageManager;
+use Wiki\Domain\Manager\PageLinkManager;
 use Wiki\Exception\AuthorizationMissingException;
 use Wiki\Exception\PagenameAlreadyTakenException;
 use Wiki\Exception\CannotDeleteHomepageException;
@@ -77,7 +78,11 @@ class Page extends Domain
 		if(!$success) {
 			return false;
 		}
-			
+
+		  //
+		 // CATEGORIES
+		//
+		
 		// Get a list of all categories
 		$categories = [];
 		$matches = [];
@@ -146,7 +151,73 @@ class Page extends Domain
 			//echo "Storing association\n\n";
 		}
 			
+		  //
+		 // PAGE LINKS
+		//
+		
+		// Get a list of all links
+		$links = [];
+		$matches = [];
+		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*\/>/muis", $this->content, $matches, PREG_SET_ORDER);
 			
+		foreach($matches as $match) {
+			$name = self::NormalizeTitle($match["page"]);
+			$title = $match["page"];
+			$links[$name] = (object) ["title" => $title, "text" => ""];
+		}
+			
+		$matches = [];
+		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis", $this->content, $matches, PREG_SET_ORDER);
+			
+		foreach($matches as $match) {
+			$name = self::NormalizeTitle($match["page"]);
+			$title = $match["page"];
+			$links[$name] = (object) ["title" => $title, "text" => $match["text"]];
+		}
+			
+		$pageManager = PageManager::GetInstance();
+			
+		//var_dump($categories);
+		// Get a list of all links from this page
+		if($this->OutgoingLinks) {
+			foreach($this->OutgoingLinks as $pagelink) {
+				//echo $catpage->Category->Name." is already assigned to page with alias ".$catpage->Alias."\n";
+				//var_dump($catpage->Category->Name, $catpage->Alias, $categories);
+					
+				if(!array_key_exists($pagelink->To->Name, $links)) {
+					//echo "Not assigned anymore. Delete\n";
+					$pagelink->Delete();
+				} else if($pagelink->Text != $links[$pagelink->To->Name]->text) {
+					//echo "Still assigned, but alias changed. Change\n";
+					$pagelink->Text = $links[$pagelink->To->Name]->text;
+					$pagelink->Save();
+					unset($links[$pagelink->To->Name]);
+				} else {
+					//echo "Unchanged\n";
+					unset($links[$pagelink->To->Name]);
+				}
+			}
+		}
+			
+		// Add new links
+		foreach($links as $name => $link) {
+			//echo $name." (".$cat->title.") is not assigned\n";
+		
+			$page = $pageManager->GetByName($name);
+		
+			if(!$page || $page->Status === 0) {
+				continue; // Page doesn't exist
+			}
+		
+			$pagelink = new PageLink();
+			$pagelink->Status = 100;
+			$pagelink->From = $this;
+			$pagelink->To = $page;
+			$pagelink->Text = $link->text;
+			$pagelink->Save();
+			//echo "Storing association\n\n";
+		}
+		
 		return true;
 	}
 
@@ -195,362 +266,6 @@ class Page extends Domain
 			
 		return true;
 	}
-
-	function ParseWiki($text, &$noHeadline, &$noNavbar, &$noFooterbar, &$customOutput) {
-		$parsed = $text;
-
-		/*
-		 * NoParse
-		 */
-
-		# <Wiki:NoParse>Content</Wiki:NoParse>
-		$blocks = [];
-		$noparse = [];
-		preg_match_all("/<Wiki:NoParse>(?<content>.+?)<\/Wiki:NoParse>/muis",$parsed,$blocks, PREG_SET_ORDER);
-
-		foreach($blocks as $block)
-		{
-			$wrapper = $block[0];
-			$content = $block["content"];
-
-			$blockID = md5($content.microtime(true));
-
-			$noparse[$blockID] = $content;
-
-			$parsed = str_replace($wrapper, '<!-- NOPARSE:'.$blockID.' -->', $parsed);
-		}
-
-		/*
-			* Scripts
-		*/
-
-		$scripts = array();
-		preg_match_all("/<?php(.+?)?>/msu",$parsed,$scripts,PREG_SET_ORDER);
-
-		if(count($scripts)) {
-			$parsed = EvalScripts($parsed, $scripts);
-		}
-
-		/*
-			* Links
-		*/
-
-		$pageManager = PageManager::GetInstance();
-		$currentUser = User::GetCurrentUser();
-
-		# Basic link <Wiki:Link page="Name_of_page"/>
-		$links = [];
-		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*\/>/muis",$parsed,$links, PREG_SET_ORDER);
-
-		foreach($links as $link)
-		{
-			$wrapper = $link[0];
-			$text = $link["page"];
-			$name = Page::NormalizeTitle($link["page"]);
-
-			$page = $pageManager->GetByName($name);
-
-			$link = null;
-			$click = null;
-			$class = null;
-
-			if(!$page) {
-				$link = $name.".html#NewPage";
-				$click = 'return GoToPage(\''.$name.'\')';
-				$class = "link-newpage";
-			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
-				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
-				$text = $page->Title;
-				$class = "link-notauthorized";
-			} else {
-				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
-				$text = $page->Title;
-				$class = "link-gotopage";
-			}
-				
-			$parsed = str_replace($wrapper, '<a href="'.$link.'" onclick="'.$click.'" class="'.$class.'">'.$text.'</a>', $parsed);
-		}
-			
-		# Link with alternative text <Wiki:Link page="Name_of_page">Text</Wiki:Link>
-		$links = array();
-		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>([a-zA-Z0-9_]+))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
-			
-		foreach($links as $link)
-		{
-			$wrapper = $link[0];
-			$name = $link["page"];
-			$text = $link["text"];
-				
-			$page = $pageManager->GetByName($name);
-				
-			$link = null;
-			$click = null;
-			$class = null;
-				
-			if(!$page) {
-				$link = $name."#NewPage";
-				$click = 'return GoToPage(\''.$name.'\')';
-				$class = "link-newpage";
-			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
-				$link = "#";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
-				$class = "link-notauthorized";
-			} else {
-				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
-				$class = "link-gotopage";
-			}
-				
-			$parsed = str_replace($wrapper, '<a href="'.$link.'" onclick="'.$click.'" class="'.$class.'">'.$text.'</a>', $parsed);
-		}
-
-		/*
-		 * Icons
-		*/
-			
-		# <Wiki:Icon name="Icon"/>
-		$icons = array();
-		preg_match_all("/<Wiki:Icon\s*name=['\"](?<name>[a-zA-Z0-9\-]+)['\"]\s*\/>/muis",$parsed,$icons, PREG_SET_ORDER);
-			
-		foreach($icons as $icon)
-		{
-			$wrapper = $icon[0];
-			$name = $icon["name"];
-				
-			$parsed = str_replace($wrapper, '<span class="glyphicon glyphicon-'.$name.'" aria-hidden="true"></span>', $parsed);
-		}
-
-		/*
-		 * Panels
-		*/
-			
-		# Basic panel <Wiki:Panel>Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-				
-			$panel = '<div class="panel panel-default"><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		# Basic panel with title: <Wiki:Panel title="Title">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$title = $panel["title"];
-				
-			$panel = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">'.$title.'</h3></div><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-
-		# Basic panel with theme: <Wiki:Panel theme="theme">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$theme = $panel["theme"];
-				
-			$panel = '<div class="panel panel-'.$theme.'"><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		# Basic panel with title and theme: <Wiki:Panel theme="theme" title="Title">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$title = $panel["title"];
-			$theme = $panel["theme"];
-				
-			$panel = '<div class="panel panel-'.$theme.'"><div class="panel-heading"><h3 class="panel-title">'.$title.'</h3></div><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		/*
-		 * Alerts
-		*/
-
-		# <Wiki:Alert theme="theme">Content</Wiki:Alert>
-		$alerts = array();
-		preg_match_all("/<Wiki:Alert\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Alert>/muis",$parsed,$alerts, PREG_SET_ORDER);
-			
-		foreach($alerts as $alert)
-		{
-			$wrapper = $alert[0];
-			$content = $alert["content"];
-			$theme = $alert["theme"];
-				
-			$alert = '<div class="alert alert-'.$theme.'" role="alert">'.$content.'</div>';
-				
-			$parsed = str_replace($wrapper, $alert, $parsed);
-		}
-			
-		/*
-		 * Labels
-		*/
-
-		# <Wiki:Label theme="theme">Content</Wiki:Label>
-		$labels = array();
-		preg_match_all("/<Wiki:Label\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Label>/muis",$parsed,$labels, PREG_SET_ORDER);
-
-		foreach($labels as $label)
-		{
-			$wrapper = $label[0];
-			$content = $label["content"];
-			$theme = $label["theme"];
-				
-			$label = '<div class="label label-'.$theme.'">'.$content.'</div>';
-				
-			$parsed = str_replace($wrapper, $label, $parsed);
-		}
-
-		/*
-		 * Remove categories
-		*/
-		$parsed = preg_replace("/<Wiki:Category\s*>(.+?)<\/Wiki:Category>/muis", null, $parsed);
-		$parsed = preg_replace("/<Wiki:Category\s*as=['\"](.+?)['\"]\s*>(.+?)<\/Wiki:Category>/muis", null, $parsed);
-
-		/*
-		 * Don't show a headline
-		*/
-
-		$match = [];
-		if(preg_match("/<Wiki:NoHeadline\s*\/>/msu",$parsed, $match)) {
-			$noHeadline = true;
-			$parsed = str_replace($match[0],null,$parsed);
-		}
-
-		/*
-		 * Don't show a navbar
-		*/
-
-		$match = [];
-		if(preg_match("/<Wiki:NoNavbar\s*\/>/msu",$parsed, $match)) {
-			$noNavbar = true;
-			$parsed = str_replace($match[0],null,$parsed);
-		}
-
-		/*
-		 * Don't show a footerbar
-		*/
-
-		$match = [];
-		if(preg_match("/<Wiki:NoFooterbar\s*\/>/msu",$parsed, $match)) {
-			$noFooterbar = true;
-			$parsed = str_replace($match[0],null,$parsed);
-		}
-
-		/*
-		 * Deactivate JSON-output of page, instead let script take full control over output
-		*/
-
-		$match = [];
-		if(preg_match("/<Wiki:CustomOutput\s*\/>/msu",$parsed, $match)) {
-			$customOutput = true;
-			$parsed = str_replace($match[0],null,$parsed);
-		}
-
-		/*
-		 * Re-insert <Wiki:NoParse>
-		*/
-
-		foreach($noparse as $blockID => $content) {
-			$parsed = str_replace('<!-- NOPARSE:'.$blockID.' -->', $noparse[$blockID], $parsed);
-		}
-
-		return $parsed;
-	}
-
-	/*function EvalScripts($parsed, $scripts) {
-		$pagecode = "ob_start();\t\t/* Page code starts here ×/\t";
-
-		// Search for the first occurence of \<?php
-		$start = strpos($parsed,"<?php");
-			
-		if($start > 0) {
-			$cstart = substr($parsed,0,$start);
-			$pagecode .= "echo \"".addslashes($cstart)."\";";
-		}
-
-		$pos = $start + 5;
-		$a = 0;
-			
-		while(true) {
-			// Look for the corresponding \?\>
-			$end = strpos($parsed, "?>", $pos);
-
-			$code = substr($parsed, $pos, $end - $pos);
-
-			$pagecode .= $code;
-
-			// Next, check if there is more code
-			if($end+2 == strlen($parsed)) {
-				break;
-			}
-
-			// Then, we check if it's only static content
-			$start = strpos($parsed,"<?php", $end+2);
-
-			if(!$start) {
-				$ccontent = substr($parsed, $end+2);
-
-				$pagecode .= "echo \"".addslashes($ccontent)."\";";
-				// The end of the page is reached
-				break;
-			}
-
-			$pos = strpos($parsed, "<?php", $end + 5) + 5;
-
-			if($pos > $end+2) {
-				$ccontent = substr($parsed,$end+2, $pos - $end - 4);
-				$pagecode .= "echo \"".addslashes($ccontent)."\";";
-			}
-		}
-
-		$pagecode .= "\t\t/* Page code ends here ×/\t\$output = ob_get_clean();\treturn array(\"output\" => \$output, \"result\" => true);";
-
-		$result = eval($pagecode);
-			
-		if($result["result"])
-		{
-			$parsed = $result["output"];
-		}
-		else
-		{
-			$lines = explode("\n",$pagecode);
-			$codelines = "<?php ";
-				
-			foreach($lines as $num=>$line)
-			{
-				$codelines .= "/* ".($num+1)." ×/ $line\n";
-			}
-			$codelines .= " ?>";
-				
-			$parsed = highlight_string($codelines, true);
-		}
-
-		return $parsed;
-	}*/
 		
 	public function Render(&$noHeadline, &$noNavbar, &$noFooterbar, &$customOutput) {
 		$parsed = $this->content;
@@ -631,8 +346,8 @@ class Page extends Domain
 			
 		# Link with alternative text <Wiki:Link page="Name_of_page">Text</Wiki:Link>
 		$links = array();
-		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>([a-zA-Z0-9_]+))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
-			
+		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
+		
 		foreach($links as $link)
 		{
 			$wrapper = $link[0];
@@ -951,6 +666,16 @@ class Page extends Domain
 	 *
 	 */
 	protected $categories;
+	
+	/**
+	 * 
+	 */
+	protected $outgoingLinks;
+	
+	/**
+	 * 
+	 */
+	protected $incomingLinks;
 
 	//
 	// GETTERS / SETTERS
@@ -1109,6 +834,26 @@ class Page extends Domain
 		}
 			
 		return $this->categories;
+	}
+	
+	# OutgoingLinks
+	
+	protected function GetOutgoingLinks() {
+		if(!$this->outgoingLinks && $this->ID) {
+			$this->outgoingLinks = PageLinkManager::GetInstance()->GetByFromPage($this);
+		}
+		
+		return $this->outgoingLinks;
+	}
+	
+	# IncomingLinks
+	
+	protected function GetIncomingLinks() {
+		if(!$this->incomingLinks && $this->ID) {
+			$this->incomingLinks = PageLinkManager::GetInstance()->GetByToPage($this);
+		}
+		
+		return $this->incomingLinks;
 	}
 
 	/**
