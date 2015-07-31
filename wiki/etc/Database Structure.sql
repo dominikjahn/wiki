@@ -208,7 +208,7 @@ ALTER TABLE `%PREFIX%page`
  --
 -- Indexes for table `pagelink`
 --
-ALTER TABLE `pagelink`
+ALTER TABLE `%PREFIX%pagelink`
  ADD PRIMARY KEY (`pagelink_id`);
 
 --
@@ -268,7 +268,7 @@ MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `pagelink`
 --
-ALTER TABLE `pagelink`
+ALTER TABLE `%PREFIX%pagelink`
 MODIFY `pagelink_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT for table `user`
