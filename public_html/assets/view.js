@@ -145,7 +145,7 @@ var Reset = function() {
 	$("#GroupUsers").hide();
 	
 	// Navbar
-	$("#NavNewPage").hide();
+	//$("#NavNewPage").hide();
 	$("#NavEditPage").hide();
 	$("#NavGetVersions").hide();
 	$("#NavDropChanges").hide();
