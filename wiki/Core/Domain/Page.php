@@ -604,7 +604,7 @@ class Page extends Domain
 			
 		if($result["result"])
 		{
-			$parsed = $result["output"];
+			$parsed = stripslashes($result["output"]);
 		}
 		else
 		{
