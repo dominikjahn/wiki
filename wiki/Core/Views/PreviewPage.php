@@ -45,9 +45,29 @@
 			$content = $page->Render($noHeadline, $noNavbar, $noFooterbar, $customOutput);
 			
 			if(!$customOutput) {
+				/* Exclude <script> and <style> */
+				$blocks = [];
+				$nomarkdown = [];
+				preg_match_all("/<(script|style).*?>.+?<\/\1>/muis",$content,$blocks, PREG_SET_ORDER);
+					
+				foreach($blocks as $block)
+				{
+					$wrapper = $block[0];
+				
+					$blockID = md5($wrapper.microtime(true));
+				
+					$nomarkdown[$blockID] = $wrapper;
+				
+					$content = str_replace($wrapper, '<!-- NOMARKDOWN:'.$blockID.' -->', $content);
+				}
+				
 				$parseDown = new \ParsedownExtra;
 				$content = $parseDown->text($content);
 				$content = str_replace("<table>","<table class='table table-bordered'>",$content);
+				
+				foreach($nomarkdown as $blockID => $block) {
+					$content = str_replace('<!-- NOMARKDOWN:'.$blockID.' -->', $block, $content);
+				}
 			}
 			
 			$page->Content = $content;
