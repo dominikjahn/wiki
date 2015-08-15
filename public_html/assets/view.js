@@ -506,6 +506,13 @@ var DisplayNewPageForm = function(e, title) {
 		}, function(response) { alert(response.message); }, function() {}
 	);
 	
+
+	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
+	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
+	$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
+	
+	BindKey(83,SavePage,true); // Ctrl+S
+	BindKey(27,DropChanges,false); // ESC	
 	
 	HideLoading();
 	$("#EditPageForm").show().data("pageid","");
