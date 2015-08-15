@@ -544,7 +544,7 @@ class Page extends Domain
 		/* Exclude <script> and <style> */
 		$blocks = [];
 		$nomarkdown = [];
-		preg_match_all("/<(script|style).*?>.+?<\/\\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
+		preg_match_all("/<(script|style|Wiki:NoMarkdown).*?>.+?<\/\\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
 		
 		foreach($blocks as $block)
 		{
