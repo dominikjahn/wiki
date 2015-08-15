@@ -480,7 +480,6 @@ class Page extends Domain
 		/*
 		 * Labels
 		*/
-
 		# <Wiki:Label theme="theme">Content</Wiki:Label>
 		$labels = array();
 		preg_match_all("/<Wiki:Label\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Label>/muis",$parsed,$labels, PREG_SET_ORDER);
@@ -594,7 +593,7 @@ class Page extends Domain
 			$pos = strpos($parsed, "<?php", $end + 5) + 5;
 
 			if($pos > $end+2) {
-				$ccontent = substr($parsed,$end+2, $pos - $end - 4);
+				$ccontent = substr($parsed,$end+2, $pos - $end - 7);
 				$pagecode .= "echo \"".addslashes($ccontent)."\";";
 			}
 		}
