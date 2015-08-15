@@ -544,7 +544,7 @@ class Page extends Domain
 		/* Exclude <script> and <style> */
 		$blocks = [];
 		$nomarkdown = [];
-		preg_match_all("/<(script|style).*?>.+?<\/\1>/muis",$content,$blocks, PREG_SET_ORDER);
+		preg_match_all("/<(script|style).*?>.+?<\/\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
 		
 		foreach($blocks as $block)
 		{
@@ -554,7 +554,7 @@ class Page extends Domain
 				
 			$nomarkdown[$blockID] = $wrapper;
 				
-			$content = str_replace($wrapper, '<!-- NOMARKDOWN:'.$blockID.' -->', $content);
+			$parsed = str_replace($wrapper, '<!-- NOMARKDOWN:'.$blockID.' -->', $parsed);
 		}
 
 		/*
@@ -570,8 +570,8 @@ class Page extends Domain
 			require_once "Core/ThirdParty/ParsedownExtra.php";
 			
 			$parseDown = new \ParsedownExtra;
-			$content = $parseDown->text($content);
-			$content = str_replace("<table>","<table class='table table-bordered'>",$content);
+			$parsed = $parseDown->text($parsed);
+			$parsed = str_replace("<table>","<table class='table table-bordered'>",$parsed);
 		}
 		
 		/*
@@ -579,7 +579,7 @@ class Page extends Domain
 		 */
 			
 		foreach($nomarkdown as $blockID => $block) {
-			$content = str_replace('<!-- NOMARKDOWN:'.$blockID.' -->', $block, $content);
+			$parsed = str_replace('<!-- NOMARKDOWN:'.$blockID.' -->', $block, $parsed);
 		}
 
 		return $parsed;
