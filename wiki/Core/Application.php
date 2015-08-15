@@ -21,6 +21,8 @@
 		//
 		
 		public function Run() {
+			date_default_timezone_set(TIMEZONE);
+			
 			header("Content-Type: application/json; charset=UTF-8");
 			http_response_code(200);
 			Request::GetInstance();

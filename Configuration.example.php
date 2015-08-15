@@ -22,6 +22,7 @@
 		
 		const DOC_ROOT = "/";
 		const WWW_ROOT = "http://localhost".self::DOC_ROOT;
+		const TIMEZONE = "America/Los_Angeles";
 		
 		  //
 		 // SECURITY SETTINGS
