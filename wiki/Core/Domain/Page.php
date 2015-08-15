@@ -544,7 +544,7 @@ class Page extends Domain
 		/* Exclude <script> and <style> */
 		$blocks = [];
 		$nomarkdown = [];
-		preg_match_all("/<(script|style).*?>.+?<\/\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
+		preg_match_all("/<(script|style).*?>.+?<\/\\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
 		
 		foreach($blocks as $block)
 		{
@@ -556,14 +556,6 @@ class Page extends Domain
 				
 			$parsed = str_replace($wrapper, '<!-- NOMARKDOWN:'.$blockID.' -->', $parsed);
 		}
-
-		/*
-		 * Re-insert <Wiki:NoParse>
-		*/
-
-		foreach($noparse as $blockID => $content) {
-			$parsed = str_replace('<!-- NOPARSE:'.$blockID.' -->', $noparse[$blockID], $parsed);
-		}
 		
 		if(!$customOutput) {
 			require_once "Core/ThirdParty/ParseDown.php";
@@ -572,6 +564,14 @@ class Page extends Domain
 			$parseDown = new \ParsedownExtra;
 			$parsed = $parseDown->text($parsed);
 			$parsed = str_replace("<table>","<table class='table table-bordered'>",$parsed);
+		}
+
+		/*
+		 * Re-insert <Wiki:NoParse>
+		*/
+
+		foreach($noparse as $blockID => $content) {
+			$parsed = str_replace('<!-- NOPARSE:'.$blockID.' -->', $noparse[$blockID], $parsed);
 		}
 		
 		/*
