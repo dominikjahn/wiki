@@ -21,7 +21,7 @@
 		//
 		
 		public function Run() {
-			date_default_timezone_set(Wiki\Configuration::TIMEZONE);
+			date_default_timezone_set(Configuration::TIMEZONE);
 			
 			header("Content-Type: application/json; charset=UTF-8");
 			http_response_code(200);
