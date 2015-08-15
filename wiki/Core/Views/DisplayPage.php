@@ -48,9 +48,11 @@
 				$content = $page->Content;
 				$content = $page->Render($noHeadline, $noNavbar, $noFooterbar, $customOutput);
 					
-				$parseDown = new \ParsedownExtra;
-				$content = $parseDown->text($content);
-				$content = str_replace("<table>","<table class='table table-bordered'>",$content);
+				if(!$customOutput) {
+					$parseDown = new \ParsedownExtra;
+					$content = $parseDown->text($content);
+					$content = str_replace("<table>","<table class='table table-bordered'>",$content);
+				}
 				
 				$page->Content = $content;
 				
