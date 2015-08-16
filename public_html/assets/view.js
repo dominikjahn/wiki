@@ -20,7 +20,30 @@ $(function() {
 	{
 		cache = $.parseJSON(fromCache);
 	}
+	
+	/*$('.nav-collapse').click('li', function() {
+	    $('.nav-collapse').collapse('hide');
+	});*/
+	
+	/*$(".nav-link").click(function() {
+		// If the navbar is collapsed, hide it too
+		if($('#navbar[aria-expanded=true]').length>0)
+		{
+			 $('.nav-collapse').collapse('hide');
+		}
+		
+		if($('#navbar-footer[aria-expanded=true]').length>0)
+		{
+			 $('.nav-collapse').collapse('hide');
+		}
+	});*/
 });
+
+var CloseNavbars = function() {
+	//$(".navbar-nav li a").click(function(event) {
+		$(".navbar-collapse").collapse('hide');
+	//});
+}
 
 var GoToView = function(view) {
 	
@@ -119,6 +142,8 @@ var GoToView = function(view) {
 }
 
 var Reset = function() {
+	CloseNavbars();
+	
 	$('#Navbar').show();
 	$('#content').css("margin-top","60px");
 	$('#FooterBar').show();
@@ -266,6 +291,8 @@ var ShowSignInUpLinks = function() {
 	
 	$("#NavUsers").css("display","hide").unbind("click");
 	$("#NavNewPage").css("display","hide").unbind("click");
+	
+	
 }
 
 /*
@@ -408,6 +435,8 @@ var GoToPage = function(pagename) {
 							if(response.page.can_edit) {
 								$("#NavEditPage").css("display","block").unbind("click").click(function() { GoToEditPageForm(pagename); }).attr("href","./EditPage-"+pagename+".html");
 								$("#NavGetVersions").css("display","block").unbind("click").click(function() { GoToVersions(pagename); }).attr("href","./Versions-"+pagename+".html");
+								
+								
 							}
 							
 							UpdateWindow(response.page.title, response.page.name+".html");
@@ -466,6 +495,8 @@ var DisplayPage = function(response) {
 	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
 	$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
 	
+	
+	
 	HideLoading();
 }
 
@@ -516,6 +547,8 @@ var DisplayNewPageForm = function(e, title) {
 	
 	HideLoading();
 	$("#EditPageForm").show().data("pageid","");
+	
+	
 	
 	return false;
 }
@@ -585,6 +618,9 @@ var DisplayEditPageForm = function(response) {
 	BindKey(27,DropChanges,false); // ESC
 	
 	HideLoading();
+	
+	
+	 
 	$("#EditPageForm").show();
 }
 
@@ -595,7 +631,7 @@ var InitializeAceEditor = function(value) {
 	EditPageEditor.getSession().setMode("ace/mode/css");
 	EditPageEditor.getSession().setMode("ace/mode/php");
 	//EditPageEditor.getSession().setMode("ace/mode/markdown");
-	EditPageEditor.setOptions({ maxLines: Infinity });
+	//EditPageEditor.setOptions({ maxLines: Infinity });
 	EditPageEditor.getSession().setValue(value);
 }
 
@@ -615,6 +651,7 @@ var PreviewPage = function() {
 						function(response) {
 							DisplayPage(response);
 							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToEditPageForm);
+							
 						});
 }
 
@@ -654,60 +691,6 @@ var SavePage = function(e) {
 	
 	return false;
 }
-/*
-var DisplayNewPageForm = function() {
-	UpdateWindow("Create a new page", "NewPage.html");
-	Reset();
-	
-	$("#NewPage-InputTitle").val("");
-	$("#NewPage-InputContent").val("").hide();
-	$("#NewPage-InputSummary").val("Initialized page");
-	$("#NewPage-Visibility-Public").attr("checked",true);
-	$("#NewPage-Manipulation-Everyone").attr("checked",true);
-	$("#NewPage-Owner").empty();
-	$("#NewPage-Group").empty();
-	
-	wiki.GetUsers(
-		function(response) {
-			for(var u = 0; u < response.users.length; u++) {
-				var user = response.users[u];
-					
-				$("#NewPage-Owner").append('<option value="'+user.user_id+'"'+(user.user_id == wiki.currentUserID ? ' selected="selected"' : '')+'>'+user.loginname+'</option>');
-			}
-		}
-	);
-	
-	wiki.GetGroups(
-		function(response) {
-			for(var g = 0; g < response.groups.length; g++) {
-				var group = response.groups[g];
-					
-				$("#NewPage-Group").append('<option value="'+group.group_id+'">'+group.name+'</option>');
-			}
-		}
-	);
-	
-	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
-	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewNewPage);
-	$("#NavSaveChanges").css("display","block").unbind("click").click(SaveNewPage);
-	
-	BindKey(83,SaveNewPage,true); // Ctrl+S
-	BindKey(27,DropChanges,false); // ESC
-	
-	NewPageEditor = ace.edit("NewPage-InputContent-Editor");
-	NewPageEditor.getSession().setMode("ace/mode/html");
-	NewPageEditor.getSession().setMode("ace/mode/javascript");
-	NewPageEditor.getSession().setMode("ace/mode/css");
-	NewPageEditor.getSession().setMode("ace/mode/php");
-	//NewPageEditor.getSession().setMode("ace/mode/markdown");
-	NewPageEditor.setOptions({ maxLines: Infinity });
-	NewPageEditor.getSession().setValue("");
-	
-	HideLoading();
-	$("#NewPage").show();
-	
-	return false;
-}*/
 
 var GoToDeletePageDialog = function(e) {
 	var pageID = $("#EditPage").data("pageid");
