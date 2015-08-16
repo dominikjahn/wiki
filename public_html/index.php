@@ -51,7 +51,7 @@
 						<li data-toggle="tooltip" title="This page is private to its group" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavGroupPrivatePage"><i class="glyphicon glyphicon-lock"></i></a></li>
 						
 						<li><a href="#TableOfContents" role="button" aria-expanded="false" id="NavTableOfContents"><i class="glyphicon glyphicon-th-list"></i> &#160; Table of Contents</a></li>
-						<li><a href="./EditPage-Homepage.html" onclick="return GoToEditPageForm('Homepage')" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
+						<li><a href="./EditPage-Homepage.html" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
 						<li><a href="./Versions-Homepage.html" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavDropChanges"><i class="glyphicon glyphicon-remove" style="color:#FF5742"></i> &#160; Drop changes</a></li>
 						<li><a href="#" role="button" aria-expanded="false" id="NavPreviewChanges"><i class="glyphicon glyphicon-eye-open" style="color:#FF8800"></i> &#160; Preview changes</a></li>

@@ -433,9 +433,17 @@ var GoToPage = function(pagename) {
 							DisplayPage(response);
 							
 							if(response.page.can_edit) {
-								$("#NavEditPage").css("display","block").unbind("click").click(function() { GoToEditPageForm(pagename); }).attr("href","./EditPage-"+pagename+".html");
-								$("#NavGetVersions").css("display","block").unbind("click").click(function() { GoToVersions(pagename); }).attr("href","./Versions-"+pagename+".html");
 								
+								$("#NavEditPage")
+									.css("display","block")
+									.unbind("click")
+									.click(function(e) { e.preventDefault(); GoToEditPageForm(pagename); })
+									.attr("href","./EditPage-"+pagename+".html");
+								$("#NavGetVersions")
+									.css("display","block")
+									.unbind("click")
+									.click(function(e) { e.preventDefault(); GoToVersions(pagename); })
+									.attr("href","./Versions-"+pagename+".html");
 								
 							}
 							
