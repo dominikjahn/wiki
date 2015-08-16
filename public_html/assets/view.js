@@ -20,29 +20,12 @@ $(function() {
 	{
 		cache = $.parseJSON(fromCache);
 	}
-	
-	/*$('.nav-collapse').click('li', function() {
-	    $('.nav-collapse').collapse('hide');
-	});*/
-	
-	/*$(".nav-link").click(function() {
-		// If the navbar is collapsed, hide it too
-		if($('#navbar[aria-expanded=true]').length>0)
-		{
-			 $('.nav-collapse').collapse('hide');
-		}
-		
-		if($('#navbar-footer[aria-expanded=true]').length>0)
-		{
-			 $('.nav-collapse').collapse('hide');
-		}
-	});*/
 });
 
 var CloseNavbars = function() {
-	//$(".navbar-nav li a").click(function(event) {
+	if($('.navbar[aria-expanded=true]').length>0) {
 		$(".navbar-collapse").collapse('hide');
-	//});
+	}
 }
 
 var GoToView = function(view) {
