@@ -207,10 +207,14 @@
 							<label for="EditPageForm-InputTitle">Title</label>
 							<input type="text" class="form-control" id="EditPageForm-InputTitle" placeholder="The title of the page" />
 						</div>
-						<div class="form-group">
+						
+						
+						<div class="form-group" id="EditPageForm-EditorPanel">
 							<label for="EditPageForm-InputContent">Content <!-- button type="button" id="EditPageForm-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button --></label>
 							<textarea class="form-control tab" id="EditPageForm-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
 							<div id="EditPageForm-InputContent-Editor"></div>
+							
+							<a href="#" id="EditPageForm-FullscreenToggle">Fullscreen</a>
   						</div>
 									
 						<hr/>

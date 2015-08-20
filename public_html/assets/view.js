@@ -539,6 +539,8 @@ var DisplayNewPageForm = function(e, title) {
 	HideLoading();
 	$("#EditPageForm").show().data("pageid","");
 	
+	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
+	
 	
 	
 	return false;
@@ -609,14 +611,49 @@ var DisplayEditPageForm = function(response) {
 	BindKey(27,DropChanges,false); // ESC
 	
 	HideLoading();
-	
-	
 	 
 	$("#EditPageForm").show();
+	
+	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
 }
 
+var editorPrevHeight, editorPanePrevHeight;
+
+var FullscreenEditor = function(e) {
+	e.preventDefault();
+	
+	if (document.webkitFullscreenEnabled) {
+		document.getElementById("EditPageForm-EditorPanel").webkitRequestFullscreen();
+		
+		editorPanePrevHeight = $("#EditPageForm-EditorPanel").height();
+		editorPrevHeight = $("#EditPageForm-InputContent-Editor").height();
+		
+		$("#EditPageForm-FullscreenToggle").text("Close fullscreen").unbind("click").click(UnfullscreenEditor);
+		$("#EditPageForm-EditorPanel").css("width","100%").css("height","100vh");
+		$("#EditPageForm-InputContent-Editor").css("height","90%");
+	}
+	
+	return false;
+}
+
+var UnfullscreenEditor = function(e) {
+	e.preventDefault();
+	
+	if (document.webkitFullscreenEnabled) {
+		document.webkitExitFullscreen();
+		
+		$("#EditPageForm-FullscreenToggle").text("Fullscreen").unbind("click").click(FullscreenEditor);
+		$("#EditPageForm-EditorPanel").css("width","100%").css("height",editorPanePrevHeight);
+		$("#EditPageForm-InputContent-Editor").css("width","100%").css("height",editorPrevHeight);
+	}
+	
+	return false;
+}
+
+var EditPageEditor;
+
 var InitializeAceEditor = function(value) {
-	var EditPageEditor = ace.edit("EditPageForm-InputContent-Editor");
+	EditPageEditor = ace.edit("EditPageForm-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
 	EditPageEditor.getSession().setMode("ace/mode/javascript");
 	EditPageEditor.getSession().setMode("ace/mode/css");
