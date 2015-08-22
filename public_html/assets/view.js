@@ -20,6 +20,8 @@ $(function() {
 	{
 		cache = $.parseJSON(fromCache);
 	}
+	
+	$(window).on('popstate', GoToState);
 });
 
 var CloseNavbars = function() {
@@ -30,7 +32,9 @@ var CloseNavbars = function() {
 
 var GoToView = function(view) {
 	
-	//UpdateWindow("Loading...",view+".html");
+	//if(view.substring(0,1) == "#") {
+	//	view = view.substring(1);
+	//}
 	
 	var view = view.split('-');
 	
@@ -191,13 +195,29 @@ var ExtractPageName = function(url) {
 
 var wikiHistory = [];
 
-var UpdateWindow = function(title, url) {
+var UpdateWindow = function(title, state, url) {
 	document.title = title;
 	
+	var state = {"title": title, "body": $("body")[0].outerHTML };
+	
 	if(url) {
-		window.history.replaceState({}, title, './'+url);
+		window.history.pushState(state, title, './'+url);
+		//window.history.replaceState({}, title, './'+url);
 		
-		wikiHistory.push(url);
+		//wikiHistory.push(url);
+	} else {
+		window.history.pushState(state, title);
+	}
+}
+
+var GoToState = function(e) {
+	var state = e.originalEvent.state;
+	
+	if(state) {
+		document.title = state.title;
+		$("body")[0].outerHTML = state.body;
+		
+		//alert(state.title + "\n\n" + state.body);
 	}
 }
 
@@ -225,7 +245,7 @@ var HandleErrorCodes = function(response) {
 			break;
 			
 		case 404:
-			DisplayNotFoundError();
+			DisplayNotFoundError(response);
 			break;
 	}
 }
@@ -283,13 +303,16 @@ var ShowSignInUpLinks = function() {
  */
 
 var DisplaySignInForm = function(e) {
+	
+	
 	if(e) { e.preventDefault(); }
 	
 	/*Reset();
 	HideLoading();*/
 	
-	//UpdateWindow("Sign in");
 	$("#SignInForm").modal("show").unbind("submit").submit(SignIn);
+	
+	UpdateWindow("Sign in","SignIn.html");
 	
 	return false;
 }
@@ -300,9 +323,9 @@ var DisplaySignUpForm = function(e) {
 	Reset();
 	HideLoading();
 	
-	//UpdateWindow("Sign up");
 	
 	$("#SignUpForm").modal("show").unbind("submit").submit(SignUp);
+	UpdateWindow("Sign up","SignUp.html");
 	
 	return false;
 }
@@ -313,8 +336,8 @@ var DisplayChangePasswordForm = function(e) {
 	Reset();
 	HideLoading();
 	
-	UpdateWindow("Change password", "ChangePassword.html");
 	$("#ChangePasswordForm").show().unbind("submit").submit(ChangePassword);
+	UpdateWindow("Change password", "ChangePassword.html");
 	
 	return false;
 }
@@ -407,7 +430,6 @@ var ChangePassword = function() {
  */
 
 var GoToPage = function(pagename) {
-	UpdateWindow("Loading...",pagename+".html");
 	
 	wiki.DisplayPage(pagename,
 					function(response) {
@@ -429,22 +451,21 @@ var GoToPage = function(pagename) {
 									.attr("href","./Versions-"+pagename+".html");
 								
 							}
-							
-							UpdateWindow(response.page.title, response.page.name+".html");
 					},
 					HandleErrorCodes,
 					//function(response) { GetPageFromCache(pagename, false, response); },
 					
-					function(xhr, type, message) { GetPageFromCache(pagename, true, xhr, type, message); }
+					function(xhr, type, message) { GetPageFromCache(pagename, null, true, xhr, type, message); }
 	);
 	
 	return false;
 }
 
-var GetPageFromCache = function(pagename, error, response_or_xhr) {
-	if(pagename in cache) {
-		DisplayPage(cache[pagename]);
-		UpdateWindow(cache[pagename].page.title + ' (from cache)', pagename+'.html');
+var GetPageFromCache = function(pagename, data, error, response_or_xhr) {
+	if(pagename in cache || data) {
+		var data = data || cache[pagename];
+		
+		DisplayPage(data);
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
 	} else {
@@ -486,15 +507,14 @@ var DisplayPage = function(response) {
 	$('#DisplayPage-LastEdit-Timestamp').html(response.page.last_edit.timestamp);
 	$('#DisplayPage-LastEdit-User').html(response.page.last_edit.user);
 	
-	
-	
 	HideLoading();
+	
+	UpdateWindow(response.page.title, response.page.name+".html");
 }
 
 var DisplayNewPageForm = function(e, title) {
 	var title = title || "";
 	Reset();
-	UpdateWindow("Create a new page", "NewPage.html");
 	
 	$("#EditPageForm-Title").html("New page");
 	
@@ -536,12 +556,14 @@ var DisplayNewPageForm = function(e, title) {
 	BindKey(83,SavePage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC	
 	
+	$("#EditPageForm-ShowEditingHelp").unbind("click").click(DisplayEditingHelp);
+	
 	HideLoading();
 	$("#EditPageForm").show().data("pageid","");
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
-	
-	
+
+	UpdateWindow("Create a new page", "NewPage.html");
 	
 	return false;
 }
@@ -555,8 +577,6 @@ var GoToEditPageForm = function(pagename) {
 }
 
 var DisplayEditPageForm = function(response) {
-	
-	UpdateWindow('Editing page \''+response.page.title+'\'','EditPage-'+response.page.name+'.html');
 	
 	$("#EditPageForm").data("pageid", response.page.page_id);
 	
@@ -610,11 +630,15 @@ var DisplayEditPageForm = function(response) {
 	BindKey(83,SavePage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC
 	
+	$("#EditPageForm-ShowEditingHelp").unbind("click").click(DisplayEditingHelp);
+	
 	HideLoading();
 	 
 	$("#EditPageForm").show();
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
+
+	UpdateWindow('Editing page \''+response.page.title+'\'', 'EditPage-'+response.page.name+'.html');
 }
 
 var editorPrevHeight, editorPanePrevHeight;
@@ -629,8 +653,8 @@ var FullscreenEditor = function(e) {
 		editorPrevHeight = $("#EditPageForm-InputContent-Editor").height();
 		
 		$("#EditPageForm-FullscreenToggle").text("Close fullscreen").unbind("click").click(UnfullscreenEditor);
-		$("#EditPageForm-EditorPanel").css("width","100%").css("height","100vh");
-		$("#EditPageForm-InputContent-Editor").css("height","90%");
+		$("#EditPageForm-EditorPanel").css("width","100%").css("height","100vh").css("padding","15px");
+		$("#EditPageForm-InputContent-Editor").css("height","96%");
 	}
 	
 	return false;
@@ -643,7 +667,7 @@ var UnfullscreenEditor = function(e) {
 		document.webkitExitFullscreen();
 		
 		$("#EditPageForm-FullscreenToggle").text("Fullscreen").unbind("click").click(FullscreenEditor);
-		$("#EditPageForm-EditorPanel").css("width","100%").css("height",editorPanePrevHeight);
+		$("#EditPageForm-EditorPanel").css("width","100%").css("height",editorPanePrevHeight).css("padding","0");
 		$("#EditPageForm-InputContent-Editor").css("width","100%").css("height",editorPrevHeight);
 	}
 	
@@ -663,12 +687,14 @@ var InitializeAceEditor = function(value) {
 	EditPageEditor.getSession().setValue(value);
 }
 
+var DisplayEditingHelp = function() {
+	var popup = window.open('./Editing_Help.html','_blank');
+}
+
 var PreviewPage = function() {
 	Reset();
 	
 	var title = $("#EditPageForm-InputTitle").val();
-	
-	UpdateWindow(title + ' (Preview)');
 	
 	var pagedata = {
 			'title': title,
@@ -681,6 +707,8 @@ var PreviewPage = function() {
 							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToEditPageForm);
 							
 						});
+	
+	UpdateWindow(title + ' (Preview)');
 }
 
 var DropChanges = function() {
@@ -739,11 +767,12 @@ var DeletePage = function() {
 }
 
 var DisplaySearchForm = function() {
-	UpdateWindow("Search","Search.html");
 	
 	Reset();
 	HideLoading();
 	$("#SearchForm").show().unbind("submit").submit(Search);
+
+	UpdateWindow("Search", "Search.html");
 	
 	return false;
 }
@@ -758,7 +787,6 @@ var Search = function() {
 }
 
 var DisplaySearchResults = function(response) {
-	UpdateWindow("Search results", "Search.html?keywords=");
 	
 	$("#SearchResults-NumberOfResults").html(response.pages.length);
 	$("#SearchResults-List").empty();
@@ -776,6 +804,7 @@ var DisplaySearchResults = function(response) {
 	
 	HideLoading();
 	$("#SearchResults").show();
+	UpdateWindow("Search results", "Search.html?keywords=");
 }
 
 /*
@@ -863,23 +892,23 @@ var DisplayUserList = function() {
 
 	HideLoading();
 	
-	UpdateWindow("User management", "Users.html");
-	
 	$("#UserManagement").show();
 	$("#UserManagement-UserTab").tab("show");
 	
 	FinalizeUserManagement();
+	
+	UpdateWindow("User management", "Users.html");
 }
 
 var DisplayGroupList = function() {
 	
 	HideLoading();
 	
-	UpdateWindow("Group management", "Groups.html");
 	$("#UserManagement").show();
 	$("#UserManagement-GroupTab").tab("show");
 	
 	FinalizeUserManagement();
+	UpdateWindow("Group management", "Groups.html");
 }
 
 var FinalizeUserManagement = function() {
@@ -900,7 +929,6 @@ var FinalizeUserManagement = function() {
 
 var DisplayNewUserForm = function(e) {
 	Reset();
-	UpdateWindow("Create a new user", "NewUser.html");
 	$("#EditUserForm-Title").html("New user");
 	$("#EditUserForm-Button").html('<i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create user');
 	
@@ -910,6 +938,8 @@ var DisplayNewUserForm = function(e) {
 	
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid","");
+	
+	UpdateWindow("Create a new user", "NewUser.html");
 }
 
 var GoToEditUserForm = function() {
@@ -926,7 +956,6 @@ var GoToEditUserFormByLoginname = function(loginname) {
 
 var DisplayEditUserForm = function(response) {
 	Reset();
-	UpdateWindow("Edit user '"+response.user.loginname+"'", "EditUser-"+response.user.loginname+".html");
 	$("#EditUserForm-Title").html("Edit user '"+response.user.loginname+"'");
 	$("#EditUserForm-Button").html('<i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Save user');
 	$("#EditUserForm-InputLoginname").val(response.user.loginname);
@@ -934,6 +963,8 @@ var DisplayEditUserForm = function(response) {
 	$("#EditUserForm-InputConfirmPassword").val("");
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid",response.user.user_id);
+	
+	UpdateWindow("Edit user '"+response.user.loginname+"'", "EditUser-"+response.user.loginname+".html");
 }
 
 var SaveUser = function(e) {
@@ -973,7 +1004,6 @@ var SaveUser = function(e) {
 
 var DisplayNewGroupForm = function(e) {
 	Reset();
-	UpdateWindow("Create a new group", "NewGroup.html");
 	$("#EditGroupForm-Title").html("New group");
 	$("#EditGroupForm-Button").html('<i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Create group');
 	
@@ -981,6 +1011,7 @@ var DisplayNewGroupForm = function(e) {
 	
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid","");
+	UpdateWindow("Create a new group", "NewGroup.html");
 }
 
 var GoToEditGroupForm = function() {
@@ -997,12 +1028,12 @@ var GoToEditGroupFormByName = function(name) {
 
 var DisplayEditGroupForm = function(response) {
 	Reset();
-	UpdateWindow("Edit group '"+response.group.name+"'", "EditGroup-"+response.group.name+".html");
 	$("#EditGroupForm-Title").html("Edit group '"+response.group.name+"'");
 	$("#EditGroupForm-Button").html('<i class="glyphicon glyphicon-edit" aria-hidden="true"></i> Save group');
 	$("#EditGroupForm-InputName").val(response.group.name);
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid",response.group.group_id);
+	UpdateWindow("Edit group '"+response.group.name+"'", "EditGroup-"+response.group.name+".html");
 }
 
 var SaveGroup = function(e) {
@@ -1061,8 +1092,6 @@ var DisplayEditPermissionsForm = function(response) {
 	
 	var user = response.user;
 	
-	UpdateWindow("Edit user permissions", "EditUserPermissions-"+user.loginname+".html");
-	
 	$('#EditPermissions-Loginname').html(user.loginname);
 	$('#UserPermissions-List').empty();
 	
@@ -1083,6 +1112,8 @@ var DisplayEditPermissionsForm = function(response) {
 	HideLoading();
 	
 	$("#EditPermissions").show();
+	
+	UpdateWindow("Edit user permissions", "EditUserPermissions-"+user.loginname+".html");
 }
 
 var GrantOrRevokePermission = function() {
@@ -1221,14 +1252,14 @@ var DisplayGroupMembers = function(response) {
 	
 	$('#GroupUsers-Groupname').html(group.name);
 	
-	UpdateWindow("Assign group members in '"+group.name+"'", "GroupMembers-"+group.name+".html");
-	
 	$("#GroupUsers-Remove").unbind("click").click(RemoveUsersFromGroup);
 	$("#GroupUsers-Add").unbind("click").click(AddUsersToGroup);
 	
 	HideLoading();
 	
 	$("#GroupUsers").show();
+	
+	UpdateWindow("Assign group members in '"+group.name+"'", "GroupMembers-"+group.name+".html");
 }
 
 var RemoveUsersFromGroup = function() {
@@ -1290,18 +1321,31 @@ var DisplayNotAuthorizedError = function() {
 	Reset();
 	HideLoading();
 	$("#NotAuthorized").show();
+	
+	UpdateWindow("Not authorized");
 }
 
-var DisplayNotFoundError = function() {
+var DisplayNotFoundError = function(response) {
 	Reset();
 	HideLoading();
 	$("#PageNotFound").show();
+	
+	if(response.page != 'undefined') {
+		$("#NavEditPage").css("display","block").unbind("click").click(function(e) { e.preventDefault(); DisplayNewPageForm(e, response.page); }).attr("href","./NewPage.html?"+response.page);
+		$("#PageNotFound-NewPage").css("display","inline").unbind("click").click(function(e) { e.preventDefault(); DisplayNewPageForm(e, response.page); });
+	} else {
+		$("#PageNotFound-NewPage").css("display","none");
+	}
+	
+	UpdateWindow("Page not found");
 }
 
 var DisplayError = function(xhr, type, message) {
 	Reset();
 	HideLoading();
 	$("#Error").show();
+	
+	UpdateWindow("Error");
 }
 
 /*

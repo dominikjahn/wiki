@@ -48,10 +48,10 @@
 					
 					<ul class="nav navbar-nav navbar-right">
 						
-						<li data-toggle="tooltip" title="This page is public" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavPublicPage"><i class="glyphicon glyphicon-globe"></i></a></li>
-						<li data-toggle="tooltip" title="This page is protected" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavProtectedPage"><i class="glyphicon glyphicon-eye-open"></i></a></li>
-						<li data-toggle="tooltip" title="This page is private" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavPrivatePage"><i class="glyphicon glyphicon-user"></i></a></li>
-						<li data-toggle="tooltip" title="This page is private to its group" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavGroupPrivatePage"><i class="glyphicon glyphicon-lock"></i></a></li>
+						<li data-toggle="tooltip" title="This page is public" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavPublicPage"><i class="glyphicon glyphicon-globe"></i><span class="mobile-only"> &#160; Public page</span></a></li>
+						<li data-toggle="tooltip" title="This page is protected" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavProtectedPage"><i class="glyphicon glyphicon-eye-open"></i><span class="mobile-only"> &#160; Protected page</span></a></li>
+						<li data-toggle="tooltip" title="This page is private" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavPrivatePage"><i class="glyphicon glyphicon-user"></i><span class="mobile-only"> &#160; Private page</span></a></li>
+						<li data-toggle="tooltip" title="This page is private to its group" data-placement="bottom"><a href="#" role="button" aria-expanded="false" id="NavGroupPrivatePage"><i class="glyphicon glyphicon-lock"></i><span class="mobile-only"> &#160; Group-private page</span></a></li>
 						
 						<li><a href="#TableOfContents" role="button" aria-expanded="false" id="NavTableOfContents"><i class="glyphicon glyphicon-th-list"></i> &#160; Table of Contents</a></li>
 						<li><a href="./EditPage-Homepage.html" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
@@ -92,7 +92,7 @@
 					
 					<p>The page you are looking for does not exist (anymore).</p>
 					
-					<p><a href="Homepage.html" class="btn btn-primary btn-lg">Go back to the homepage</a></p>
+					<p><a href="Homepage.html" class="btn btn-primary btn-lg">Go back to the homepage</a> or <a href="NewPage.html" class="btn btn-success btn-lg" id="PageNotFound-NewPage">Create the page</a></p>
 				</div>
 			</div>
 			
@@ -213,11 +213,11 @@
 						
 						
 						<div class="form-group" id="EditPageForm-EditorPanel">
-							<label for="EditPageForm-InputContent">Content <!-- button type="button" id="EditPageForm-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button --></label>
+							<label for="EditPageForm-InputContent">Content &#160; &#160; <a href="#" class="btn btn-xs btn-primary" id="EditPageForm-FullscreenToggle">Fullscreen</a> &#160; &#160; <button type="button" id="EditPageForm-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button></label>
 							<textarea class="form-control tab" id="EditPageForm-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
 							<div id="EditPageForm-InputContent-Editor"></div>
 							
-							<a href="#" id="EditPageForm-FullscreenToggle">Fullscreen</a>
+							
   						</div>
 									
 						<hr/>
@@ -524,7 +524,7 @@
 						<p class="navbar-text navbar-left" id="SignInText">Not signed in</p>
 						
 						<ul class="nav navbar-nav navbar-right">
-							<li><a href="#" data-toggle="modal" data-target="#AboutWiki"><i class="glyphicon glyphicon-info-sign"></i> About</a>
+							<li><a href="#" data-toggle="modal" data-target="#AboutWiki"><i class="glyphicon glyphicon-info-sign"></i><span class="mobile-only"> &#160; About</span></a>
 						</ul>
 						
 						<p class="navbar-text navbar-right">This page was last edited <strong id="DisplayPage-LastEdit-Timestamp">...</strong> by <span id="DisplayPage-LastEdit-User">...</span>. &#160; </p>

@@ -36,6 +36,11 @@
 			if(!$page || $page->status === 0) {
 				$this->Status = 404;
 				$this->Message = "The page was not found";
+				
+				// This is for "Create this page" button, so we only need this if the page name was used (for the title)
+				if($pagename) {
+					$this->Data = ["page" => $pagename];
+				}
 			} else if(!$page->IsVisible) {
 				$this->Status = 401;
 				$this->Message = "You are not authorized to see the content on this page";

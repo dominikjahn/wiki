@@ -54,9 +54,9 @@ body
 	display: none;
 }
 
-.hide-on-desktop
+.mobile-only
 {
-	display: none !important;
+	display: none;
 }
 
 #EditPageForm-InputContent-Editor {
@@ -79,9 +79,10 @@ a.link-notauthorized { color: #d00; }
 /*480*/
 @media (max-width: 768px) {
 	
-	.hide-on-desktop
+	
+	.mobile-only
 	{
-		display: block;
+		display: inline;
 	}
 	
 	.expanded-navbar
