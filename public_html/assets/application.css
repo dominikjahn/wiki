@@ -1,5 +1,6 @@
-* { box-sizing:border-box; }
+* { box-sizing:border-box; margin: 0; }
 
+html, body { height: 100%; }
 body
 {
 	font-size: 11pt;
@@ -67,6 +68,27 @@ body
 
 a.link-newpage { color: #080; }
 a.link-notauthorized { color: #d00; }
+
+#Wiki {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -100px;
+}
+
+#WikiSpacer, footer {
+	height: 100px;
+}
+
+footer {
+	background-color: #080808;
+	padding: 5px;
+	color: #9d9d9d;
+}
+
+footer a {
+	color: ##9d9d9d;
+}
 
 @media (min-width: 768px)
 {
