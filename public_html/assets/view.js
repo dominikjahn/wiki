@@ -201,8 +201,8 @@ var UpdateWindow = function(title, state, url) {
 	var state = {"title": title, "body": $("body")[0].outerHTML };
 	
 	if(url) {
-		window.history.pushState(state, title, './'+url);
 		//window.history.replaceState({}, title, './'+url);
+		window.history.pushState(state, title, './'+url);
 		
 		//wikiHistory.push(url);
 	} else {
@@ -312,7 +312,7 @@ var DisplaySignInForm = function(e) {
 	
 	$("#SignInForm").modal("show").unbind("submit").submit(SignIn);
 	
-	UpdateWindow("Sign in","SignIn.html");
+	UpdateWindow("Sign in",null,"SignIn.html");
 	
 	return false;
 }
@@ -325,7 +325,7 @@ var DisplaySignUpForm = function(e) {
 	
 	
 	$("#SignUpForm").modal("show").unbind("submit").submit(SignUp);
-	UpdateWindow("Sign up","SignUp.html");
+	UpdateWindow("Sign up",null,"SignUp.html");
 	
 	return false;
 }
@@ -337,7 +337,7 @@ var DisplayChangePasswordForm = function(e) {
 	HideLoading();
 	
 	$("#ChangePasswordForm").show().unbind("submit").submit(ChangePassword);
-	UpdateWindow("Change password", "ChangePassword.html");
+	UpdateWindow("Change password", null, "ChangePassword.html");
 	
 	return false;
 }
@@ -509,7 +509,7 @@ var DisplayPage = function(response) {
 	
 	HideLoading();
 	
-	UpdateWindow(response.page.title, response.page.name+".html");
+	UpdateWindow(response.page.title, null, response.page.name+".html");
 }
 
 var DisplayNewPageForm = function(e, title) {
@@ -549,9 +549,12 @@ var DisplayNewPageForm = function(e, title) {
 	);
 	
 
-	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
-	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
-	$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
+	//$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
+	$("#EditPageForm-Drop").unbind("click").click(DropChanges);
+	//$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
+	$("#EditPageForm-Preview").unbind("click").click(PreviewPage);
+	//$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
+	$("#EditPageForm-Save").unbind("click").click(SavePage);
 	
 	BindKey(83,SavePage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC	
@@ -563,7 +566,7 @@ var DisplayNewPageForm = function(e, title) {
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
 
-	UpdateWindow("Create a new page", "NewPage.html");
+	UpdateWindow("Create a new page", null, "NewPage.html");
 	
 	return false;
 }
@@ -623,9 +626,12 @@ var DisplayEditPageForm = function(response) {
 		$("#EditPageForm-DeletePage").attr("disabled", false).unbind("click").click(GoToDeletePageDialog);
 	}
 	
-	$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
-	$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
-	$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
+	//$("#NavDropChanges").css("display","block").unbind("click").click(DropChanges);
+	$("#EditPageForm-Drop").unbind("click").click(DropChanges);
+	//$("#NavPreviewChanges").css("display","block").unbind("click").click(PreviewPage);
+	$("#EditPageForm-Preview").unbind("click").click(PreviewPage);
+	//$("#NavSaveChanges").css("display","block").unbind("click").click(SavePage);
+	$("#EditPageForm-Save").unbind("click").click(SavePage);
 	
 	BindKey(83,SavePage,true); // Ctrl+S
 	BindKey(27,DropChanges,false); // ESC
@@ -638,7 +644,7 @@ var DisplayEditPageForm = function(response) {
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
 
-	UpdateWindow('Editing page \''+response.page.title+'\'', 'EditPage-'+response.page.name+'.html');
+	UpdateWindow('Editing page \''+response.page.title+'\'', null, 'EditPage-'+response.page.name+'.html');
 }
 
 var editorPrevHeight, editorPanePrevHeight;
@@ -708,7 +714,7 @@ var PreviewPage = function() {
 							
 						});
 	
-	UpdateWindow(title + ' (Preview)');
+	UpdateWindow(title + ' (Preview)', null, "Preview.html");
 }
 
 var DropChanges = function() {
@@ -772,7 +778,7 @@ var DisplaySearchForm = function() {
 	HideLoading();
 	$("#SearchForm").show().unbind("submit").submit(Search);
 
-	UpdateWindow("Search", "Search.html");
+	UpdateWindow("Search", null, "Search.html");
 	
 	return false;
 }
@@ -804,7 +810,7 @@ var DisplaySearchResults = function(response) {
 	
 	HideLoading();
 	$("#SearchResults").show();
-	UpdateWindow("Search results", "Search.html?keywords=");
+	UpdateWindow("Search results", null, "Search.html?keywords=");
 }
 
 /*
@@ -897,7 +903,7 @@ var DisplayUserList = function() {
 	
 	FinalizeUserManagement();
 	
-	UpdateWindow("User management", "Users.html");
+	UpdateWindow("User management", null, "Users.html");
 }
 
 var DisplayGroupList = function() {
@@ -908,7 +914,7 @@ var DisplayGroupList = function() {
 	$("#UserManagement-GroupTab").tab("show");
 	
 	FinalizeUserManagement();
-	UpdateWindow("Group management", "Groups.html");
+	UpdateWindow("Group management", null, "Groups.html");
 }
 
 var FinalizeUserManagement = function() {
@@ -923,8 +929,8 @@ var FinalizeUserManagement = function() {
 	$(".GetGroupUsers").unbind("click").click(GoToGroupMembers);
 	$(".DeleteGroup").unbind("click").click(GoToDeleteGroupDialog);
 	
-	$("#UserManagement-UserTab").on("shown.bs.tab", function() { UpdateWindow("User management", "Users.html"); } );
-	$("#UserManagement-GroupTab").on("shown.bs.tab", function() { UpdateWindow("Group management", "Groups.html"); } );
+	$("#UserManagement-UserTab").on("shown.bs.tab", function() { UpdateWindow("User management", null, "Users.html"); } );
+	$("#UserManagement-GroupTab").on("shown.bs.tab", function() { UpdateWindow("Group management", null, "Groups.html"); } );
 }
 
 var DisplayNewUserForm = function(e) {
@@ -939,7 +945,7 @@ var DisplayNewUserForm = function(e) {
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid","");
 	
-	UpdateWindow("Create a new user", "NewUser.html");
+	UpdateWindow("Create a new user", null, "NewUser.html");
 }
 
 var GoToEditUserForm = function() {
@@ -964,7 +970,7 @@ var DisplayEditUserForm = function(response) {
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid",response.user.user_id);
 	
-	UpdateWindow("Edit user '"+response.user.loginname+"'", "EditUser-"+response.user.loginname+".html");
+	UpdateWindow("Edit user '"+response.user.loginname+"'", null, "EditUser-"+response.user.loginname+".html");
 }
 
 var SaveUser = function(e) {
@@ -1011,7 +1017,7 @@ var DisplayNewGroupForm = function(e) {
 	
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid","");
-	UpdateWindow("Create a new group", "NewGroup.html");
+	UpdateWindow("Create a new group", null, "NewGroup.html");
 }
 
 var GoToEditGroupForm = function() {
@@ -1033,7 +1039,7 @@ var DisplayEditGroupForm = function(response) {
 	$("#EditGroupForm-InputName").val(response.group.name);
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid",response.group.group_id);
-	UpdateWindow("Edit group '"+response.group.name+"'", "EditGroup-"+response.group.name+".html");
+	UpdateWindow("Edit group '"+response.group.name+"'", null, "EditGroup-"+response.group.name+".html");
 }
 
 var SaveGroup = function(e) {
@@ -1113,7 +1119,7 @@ var DisplayEditPermissionsForm = function(response) {
 	
 	$("#EditPermissions").show();
 	
-	UpdateWindow("Edit user permissions", "EditUserPermissions-"+user.loginname+".html");
+	UpdateWindow("Edit user permissions", null, "EditUserPermissions-"+user.loginname+".html");
 }
 
 var GrantOrRevokePermission = function() {
@@ -1259,7 +1265,7 @@ var DisplayGroupMembers = function(response) {
 	
 	$("#GroupUsers").show();
 	
-	UpdateWindow("Assign group members in '"+group.name+"'", "GroupMembers-"+group.name+".html");
+	UpdateWindow("Assign group members in '"+group.name+"'", null, "GroupMembers-"+group.name+".html");
 }
 
 var RemoveUsersFromGroup = function() {

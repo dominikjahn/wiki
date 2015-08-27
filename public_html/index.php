@@ -56,9 +56,9 @@
 							<li><a href="#TableOfContents" role="button" aria-expanded="false" id="NavTableOfContents"><i class="glyphicon glyphicon-th-list"></i> &#160; Table of Contents</a></li>
 							<li><a href="./EditPage-Homepage.html" role="button" aria-expanded="false" id="NavEditPage"><i class="glyphicon glyphicon-pencil" style="color:#833477"></i> &#160; Edit</a></li>
 							<li><a href="./Versions-Homepage.html" role="button" aria-expanded="false" id="NavGetVersions"><i class="glyphicon glyphicon-repeat"></i> &#160; Versions</a></li>
-							<li><a href="#" role="button" aria-expanded="false" id="NavDropChanges"><i class="glyphicon glyphicon-remove" style="color:#FF5742"></i> &#160; Drop changes</a></li>
+							<!--li><a href="#" role="button" aria-expanded="false" id="NavDropChanges"><i class="glyphicon glyphicon-remove" style="color:#FF5742"></i> &#160; Drop changes</a></li>
 							<li><a href="#" role="button" aria-expanded="false" id="NavPreviewChanges"><i class="glyphicon glyphicon-eye-open" style="color:#FF8800"></i> &#160; Preview changes</a></li>
-							<li><a href="#" role="button" aria-expanded="false" id="NavSaveChanges"><i class="glyphicon glyphicon-floppy-disk" style="color:#8FD55A"></i> &#160; Save changes</a></li>
+							<li><a href="#" role="button" aria-expanded="false" id="NavSaveChanges"><i class="glyphicon glyphicon-floppy-disk" style="color:#8FD55A"></i> &#160; Save changes</a></li-->
 							<li><a href="#" role="button" aria-expanded="false" id="NavBackToComposer"><i class="glyphicon glyphicon-chevron-left" style="color:#8FD55A"></i> &#160; Back to composer</a></li>
 						</ul>
 					</div>
@@ -198,6 +198,15 @@
 					
 					<h1 id="EditPageForm-Title">New page</h1>
 					<hr/>
+					
+					<div class="btn-group" role="group">
+						<button class="btn btn-primary btn-lg" id="EditPageForm-Save"><i class="glyphicon glyphicon-floppy-disk"></i> Save changes</button>
+						<button class="btn btn-primary btn-lg" id="EditPageForm-Preview"><i class="glyphicon glyphicon-eye-open"></i> Preview</button>
+						<button class="btn btn-primary btn-lg" id="EditPageForm-Drop"><i class="glyphicon glyphicon-remove"></i> Drop changes</button>
+					</div>
+					
+					<br/>
+					<br/>
 					
 					<ul class="nav nav-tabs" role="tablist">
 						<li role="presentation" class="active"><a href="#EditPageForm-ContentTab" role="tab" data-toggle="tab">Content</a></li>
@@ -515,9 +524,9 @@
 		<footer>
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-10 col-sm-12">This page was last edited <strong id="DisplayPage-LastEdit-Timestamp">...</strong> by <span id="DisplayPage-LastEdit-User">...</span>.</div>
-					<div class="col-md-1 col-sm-12"><span id="SignInText">Not signed in</span></div>
-					<div class="col-md-1 col-sm-12"><a href="#" data-toggle="modal" data-target="#AboutWiki"><i class="glyphicon glyphicon-info-sign"></i> About</a></div>
+					<div class="col-md-9 col-sm-12">This page was last edited <strong id="DisplayPage-LastEdit-Timestamp">...</strong> by <span id="DisplayPage-LastEdit-User">...</span>.</div>
+					<div class="col-md-2 col-sm-12"><span id="SignInText">Not signed in</span></div>
+					<div class="col-md-1 col-sm-12" style="text-align:right"><a href="#" data-toggle="modal" data-target="#AboutWiki"><i class="glyphicon glyphicon-info-sign"></i> About</a></div>
 				</div>
 				
 			</div>
