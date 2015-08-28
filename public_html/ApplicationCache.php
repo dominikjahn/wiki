@@ -57,5 +57,5 @@
 	}
 	
 	file_put_contents("wiki.appcache",$out);
-	echo "File created:\n\n".$out;
+	echo '<p><strong>File created:</strong></p><p><pre>'.$out.'</pre></p><p><a href="wiki.appcache">Go to appcache file</a></p>';
 ?>

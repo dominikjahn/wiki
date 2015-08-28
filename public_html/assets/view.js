@@ -312,7 +312,7 @@ var DisplaySignInForm = function(e) {
 	
 	$("#SignInForm").modal("show").unbind("submit").submit(SignIn);
 	
-	UpdateWindow("Sign in",null,"SignIn.html");
+	UpdateWindow("Sign in",{method:"DisplaySignInForm"},"SignIn.html");
 	
 	return false;
 }
@@ -325,7 +325,7 @@ var DisplaySignUpForm = function(e) {
 	
 	
 	$("#SignUpForm").modal("show").unbind("submit").submit(SignUp);
-	UpdateWindow("Sign up",null,"SignUp.html");
+	UpdateWindow("Sign up",{method:"DisplaySignUpForm"},"SignUp.html");
 	
 	return false;
 }
@@ -337,7 +337,7 @@ var DisplayChangePasswordForm = function(e) {
 	HideLoading();
 	
 	$("#ChangePasswordForm").show().unbind("submit").submit(ChangePassword);
-	UpdateWindow("Change password", null, "ChangePassword.html");
+	UpdateWindow("Change password", {method:"DisplayChangePasswordForm"}, "ChangePassword.html");
 	
 	return false;
 }
@@ -435,7 +435,7 @@ var GoToPage = function(pagename) {
 					function(response) {
 							cache[pagename] = response;
 							localStorage.setItem("wiki_cache", JSON.stringify(cache));
-							DisplayPage(response);
+							DisplayPage(response, false);
 							
 							if(response.page.can_edit) {
 								
@@ -465,7 +465,7 @@ var GetPageFromCache = function(pagename, data, error, response_or_xhr) {
 	if(pagename in cache || data) {
 		var data = data || cache[pagename];
 		
-		DisplayPage(data);
+		DisplayPage(data, true);
 	} else if(!error) {
 		HandleErrorCodes(response_or_xhr);
 	} else {
@@ -473,7 +473,7 @@ var GetPageFromCache = function(pagename, data, error, response_or_xhr) {
 	}
 }
 
-var DisplayPage = function(response) {
+var DisplayPage = function(response, fromCache) {
 	Reset();
 	
 	$("#DisplayPage").show();
@@ -509,7 +509,7 @@ var DisplayPage = function(response) {
 	
 	HideLoading();
 	
-	UpdateWindow(response.page.title, null, response.page.name+".html");
+	UpdateWindow(response.page.title, {method:"DisplayPage",args:[response, fromCache]}, response.page.name+".html");
 }
 
 var DisplayNewPageForm = function(e, title) {
@@ -566,7 +566,7 @@ var DisplayNewPageForm = function(e, title) {
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
 
-	UpdateWindow("Create a new page", null, "NewPage.html");
+	UpdateWindow("Create a new page", {method:"DisplayNewPageForm", args:[null, title]}, "NewPage.html");
 	
 	return false;
 }
@@ -644,7 +644,7 @@ var DisplayEditPageForm = function(response) {
 	
 	$("#EditPageForm-FullscreenToggle").click(FullscreenEditor);
 
-	UpdateWindow('Editing page \''+response.page.title+'\'', null, 'EditPage-'+response.page.name+'.html');
+	UpdateWindow('Editing page \''+response.page.title+'\'', {method:"DisplayEditPageForm", args:[response]}, 'EditPage-'+response.page.name+'.html');
 }
 
 var editorPrevHeight, editorPanePrevHeight;
@@ -707,14 +707,13 @@ var PreviewPage = function() {
 			'content': ace.edit("EditPageForm-InputContent-Editor").getSession().getValue(),
 		};
 	
-	wiki.PreviewPage(pagedata,
-						function(response) {
-							DisplayPage(response);
-							$("#NavBackToComposer").css("display","block").unbind("click").click(BackToEditPageForm);
-							
-						});
-	
-	UpdateWindow(title + ' (Preview)', null, "Preview.html");
+	wiki.PreviewPage(pagedata, DisplayPagePreview);
+}
+
+var DisplayPagePreview = function(response) {
+	DisplayPage(response);
+	$("#NavBackToComposer").css("display","block").unbind("click").click(BackToEditPageForm);
+	UpdateWindow(title + ' (Preview)', {method:"DisplayPagePreview", args:[response]}, "Preview.html");
 }
 
 var DropChanges = function() {
@@ -772,13 +771,19 @@ var DeletePage = function() {
 					}, HandleErrorCodes, DisplayError);
 }
 
-var DisplaySearchForm = function() {
+var DisplaySearchForm = function(terms) {
+	
+	var terms = terms || "";
+	
+	if(terms != "") {
+		$("#SearchForm-Keywords").val(terms);
+	}
 	
 	Reset();
 	HideLoading();
 	$("#SearchForm").show().unbind("submit").submit(Search);
 
-	UpdateWindow("Search", null, "Search.html");
+	UpdateWindow("Search", {method:"DisplaySearchForm", args: [terms]}, "Search.html");
 	
 	return false;
 }
@@ -810,7 +815,7 @@ var DisplaySearchResults = function(response) {
 	
 	HideLoading();
 	$("#SearchResults").show();
-	UpdateWindow("Search results", null, "Search.html?keywords=");
+	UpdateWindow("Search results", {method:"DisplaySearchResults",args:[response]}, "Search.html?keywords=");
 }
 
 /*
@@ -903,7 +908,7 @@ var DisplayUserList = function() {
 	
 	FinalizeUserManagement();
 	
-	UpdateWindow("User management", null, "Users.html");
+	UpdateWindow("User management", {method:"DisplayUserList", args: []}, "Users.html");
 }
 
 var DisplayGroupList = function() {
@@ -914,7 +919,7 @@ var DisplayGroupList = function() {
 	$("#UserManagement-GroupTab").tab("show");
 	
 	FinalizeUserManagement();
-	UpdateWindow("Group management", null, "Groups.html");
+	UpdateWindow("Group management", {method:"DisplayGroupList", args: []}, "Groups.html");
 }
 
 var FinalizeUserManagement = function() {
@@ -945,7 +950,7 @@ var DisplayNewUserForm = function(e) {
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid","");
 	
-	UpdateWindow("Create a new user", null, "NewUser.html");
+	UpdateWindow("Create a new user", {method:"DisplayNewUserForm", args:[null]}, "NewUser.html");
 }
 
 var GoToEditUserForm = function() {
@@ -970,7 +975,7 @@ var DisplayEditUserForm = function(response) {
 	HideLoading();
 	$("#EditUserForm").show().unbind("submit").submit(SaveUser).data("userid",response.user.user_id);
 	
-	UpdateWindow("Edit user '"+response.user.loginname+"'", null, "EditUser-"+response.user.loginname+".html");
+	UpdateWindow("Edit user '"+response.user.loginname+"'", {method:"DisplayEditUserForm", args: [response]}, "EditUser-"+response.user.loginname+".html");
 }
 
 var SaveUser = function(e) {
@@ -1017,7 +1022,7 @@ var DisplayNewGroupForm = function(e) {
 	
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid","");
-	UpdateWindow("Create a new group", null, "NewGroup.html");
+	UpdateWindow("Create a new group", {method:"DisplayNewGroupForm", args: [null]}, "NewGroup.html");
 }
 
 var GoToEditGroupForm = function() {
@@ -1039,7 +1044,7 @@ var DisplayEditGroupForm = function(response) {
 	$("#EditGroupForm-InputName").val(response.group.name);
 	HideLoading();
 	$("#EditGroupForm").show().unbind("submit").submit(SaveGroup).data("groupid",response.group.group_id);
-	UpdateWindow("Edit group '"+response.group.name+"'", null, "EditGroup-"+response.group.name+".html");
+	UpdateWindow("Edit group '"+response.group.name+"'", {method:"DisplayEditGroupForm", args: [response]}, "EditGroup-"+response.group.name+".html");
 }
 
 var SaveGroup = function(e) {
@@ -1119,7 +1124,7 @@ var DisplayEditPermissionsForm = function(response) {
 	
 	$("#EditPermissions").show();
 	
-	UpdateWindow("Edit user permissions", null, "EditUserPermissions-"+user.loginname+".html");
+	UpdateWindow("Edit user permissions", {method: "DisplayEditPermissionsForm", args: [response]}, "EditUserPermissions-"+user.loginname+".html");
 }
 
 var GrantOrRevokePermission = function() {
@@ -1265,7 +1270,7 @@ var DisplayGroupMembers = function(response) {
 	
 	$("#GroupUsers").show();
 	
-	UpdateWindow("Assign group members in '"+group.name+"'", null, "GroupMembers-"+group.name+".html");
+	UpdateWindow("Assign group members in '"+group.name+"'", {method:"DisplayGroupMembers", args: [response]}, "GroupMembers-"+group.name+".html");
 }
 
 var RemoveUsersFromGroup = function() {
