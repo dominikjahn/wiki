@@ -200,9 +200,9 @@
 					<hr/>
 					
 					<div class="btn-group" role="group">
-						<button class="btn btn-primary btn-lg" id="EditPageForm-Save"><i class="glyphicon glyphicon-floppy-disk"></i> Save changes</button>
-						<button class="btn btn-primary btn-lg" id="EditPageForm-Preview"><i class="glyphicon glyphicon-eye-open"></i> Preview</button>
-						<button class="btn btn-primary btn-lg" id="EditPageForm-Drop"><i class="glyphicon glyphicon-remove"></i> Drop changes</button>
+						<button class="btn btn-primary" id="EditPageForm-Save"><i class="glyphicon glyphicon-floppy-disk"></i> Save changes</button>
+						<button class="btn btn-primary" id="EditPageForm-Preview"><i class="glyphicon glyphicon-eye-open"></i> Preview</button>
+						<button class="btn btn-primary" id="EditPageForm-Drop"><i class="glyphicon glyphicon-remove"></i> Drop changes</button>
 					</div>
 					
 					<br/>
