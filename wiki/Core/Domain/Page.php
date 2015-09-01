@@ -494,6 +494,30 @@ class Page extends Domain
 				
 			$parsed = str_replace($wrapper, $label, $parsed);
 		}
+		
+		/*
+		 * Checklist
+		 */
+		$blocks = [];
+		preg_match_all("/<Wiki:Checklist>(?<items>.+?)<\/Wiki:Checklist>/muis",$parsed,$blocks, PREG_SET_ORDER);
+			
+		foreach($blocks as $block)
+		{
+			$wrapper = $block[0];
+			$items = trim($block["items"]);
+			$checklist = "";
+			
+			$items = explode("\n", $items);
+			
+			foreach($items as $item) {
+				$identifier = md5(trim($item));
+				
+				$checklist .= '<input type="checkbox" name="page['.$this->ID.'][checklists]['.$identifier.']" value="1" /> '.$item.'<br/>';
+			}
+			
+			$parsed = str_replace($wrapper, $checklist, $parsed);
+		}
+		
 
 		/*
 		 * Remove categories

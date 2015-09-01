@@ -1,3 +1,15 @@
+### For contributors
+
+**Current milestone:** Pre 0.1 Release Candidate
+
+Please checkout branch **0.1 RC** for contribution to next milestone.
+
+**No commits without an issue!**
+
+Always reference the issue in the commit message, e.g. "#11 Fixed bug in page rendering".
+
+**Don't assign milestones to any issues!**
+
 # What is this?
 
 This repository is for a wiki software. It is in no way meant to be a competition to MediaWiki or any other wiki software out there. Instead, it is specifically for private use or internal company use. Of course you can make a public wiki website with it, but you might find that it lacks some features for it.
