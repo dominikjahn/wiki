@@ -22,6 +22,8 @@ $(function() {
 	}
 	
 	$(window).on('popstate', GoToState);
+
+	$("#NavSearchForm").show().unbind("submit").submit(Search);
 });
 
 var CloseNavbars = function() {
@@ -790,7 +792,7 @@ var DisplaySearchForm = function(terms) {
 
 var Search = function() {
 	Reset();
-	var keywords = $("#SearchForm-Keywords").val();
+	var keywords = $(this).find("input[type~=text],input[type~=search],textarea").val();
 	
 	wiki.GetPagesByKeywords(keywords, DisplaySearchResults);
 	
