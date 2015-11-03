@@ -793,9 +793,13 @@ var DisplaySearchForm = function(terms) {
 var Search = function() {
 	Reset();
 	var keywords = $(this).find("input[type~=text],input[type~=search],textarea").val();
-	
-	wiki.GetPagesByKeywords(keywords, DisplaySearchResults);
-	
+
+	if(keywords == "") {
+		DisplaySearchForm("");
+	} else {
+		wiki.GetPagesByKeywords(keywords, DisplaySearchResults);
+	}
+
 	return false;
 }
 

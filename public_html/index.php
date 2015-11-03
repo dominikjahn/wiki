@@ -41,7 +41,7 @@
 					</div>
 					<div id="navbar" class="collapse navbar-collapse">
 						<ul class="nav navbar-nav navbar-left">
-							<li><a href="./Search.html" onclick="return DisplaySearchForm();" role="button" aria-expanded="false" id="NavSearch"><i class="glyphicon glyphicon-search"></i> &#160; Search</a></li>
+							<!--li><a href="./Search.html" onclick="return DisplaySearchForm();" role="button" aria-expanded="false" id="NavSearch"><i class="glyphicon glyphicon-search"></i> &#160; Search</a></li-->
 							<li><a href="./NewPage.html" onclick="return DisplayNewPageForm();" role="button" aria-expanded="false" id="NavNewPage"><i class="glyphicon glyphicon-plus"></i> &#160; New page</a></li>
 							<li><a href="./Users.html" onclick="return DisplayUserList();" role="button" aria-expanded="false" id="NavUsers"><i class="glyphicon glyphicon-user"></i> &#160; User management</a></li>
 						</ul>
