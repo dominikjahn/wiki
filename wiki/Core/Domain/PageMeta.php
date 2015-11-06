@@ -123,7 +123,7 @@ class PageMeta extends Domain
 	 * @version 0.1
 	 * @since 0.1
 	 */
-	protected function SetUser(User $value) {
+	protected function SetUser(User $value = null) {
 		$this->user = $value;
 	}
 
@@ -151,17 +151,41 @@ class PageMeta extends Domain
 	 // FUNCTIONS
 	//
 
-	public static function LoadMetaData(Page $page, User $user)
+	private static function PrepareMetaData(Page $page, User $user = null)
 	{
 		$metaManager = PageMetaManager::GetInstance();
 
-		if(!self::$currentGlobalPageMeta) {
+		if(!self::$currentGlobalPageMeta)
+		{
 			self::$currentGlobalPageMeta = $metaManager->GetGlobalByPage($page);
 		}
 
-		if(!self::$currentUserPageMeta) {
+		// If it's still null, create it
+		if(!self::$currentGlobalPageMeta)
+		{
+			self::$currentGlobalPageMeta = new PageMeta();
+			self::$currentGlobalPageMeta->Status = 100;
+			self::$currentGlobalPageMeta->Page = $page;
+		}
+
+		if(!self::$currentUserPageMeta && $user)
+		{
 			self::$currentUserPageMeta = $metaManager->GetByPageAndUser($page, $user);
 		}
+
+		// If it's still null, create it
+		if(!self::$currentUserPageMeta && $user)
+		{
+			self::$currentUserPageMeta = new PageMeta();
+			self::$currentUserPageMeta->Status = 100;
+			self::$currentUserPageMeta->Page = $page;
+			self::$currentUserPageMeta->User = $user;
+		}
+	}
+
+	public static function LoadMetaData(Page $page, User $user)
+	{
+		self::PrepareMetaData($page,$user);
 
 		$globalMeta = self::$currentGlobalPageMeta;
 		$userMeta = self::$currentUserPageMeta;
@@ -181,26 +205,36 @@ class PageMeta extends Domain
 			$userMeta = [];
 		}
 
-		$meta = (object)array_merge_recursive((array)$globalMeta, (array)$userMeta);
+		$meta = (object)array_merge((array)$globalMeta, (array)$userMeta);
 
 		return $meta;
 	}
 
 	public static function AddMetaData($key, $value, Page $page, User $user = null)
 	{
-		$metaManager = PageMetaManager::GetInstance();
-
-		if(!self::$currentGlobalPageMeta) {
-			self::$currentGlobalPageMeta = $metaManager->GetGlobalByPage($page);
-		}
-
-		if(!self::$currentUserPageMeta) {
-			self::$currentUserPageMeta = $metaManager->GetByPageAndUser($page, $user);
-		}
+		self::PrepareMetaData($page,$user);
 
 		$meta = ($user ? self::$currentUserPageMeta : self::$currentGlobalPageMeta);
 
-		$meta->Data->$key = $value;
+		$data = $meta->Data;
+		$data->$key = $value;
+		$meta->Data = $data;
+
+		$meta->Save();
+
+		return $meta->Data;
+	}
+
+	public static function RemoveMetaData($key, Page $page, User $user = null)
+	{
+		self::PrepareMetaData($page,$user);
+
+		$meta = ($user ? self::$currentUserPageMeta : self::$currentGlobalPageMeta);
+
+		$data = (array) $meta->Data;
+
+		unset($data[$key]);
+		$meta->Data = (object) $data;
 
 		$meta->Save();
 
