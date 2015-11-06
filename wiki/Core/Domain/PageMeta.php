@@ -183,7 +183,7 @@ class PageMeta extends Domain
 		}
 	}
 
-	public static function LoadMetaData(Page $page, User $user)
+	public static function LoadMetaData(Page $page, User $user = null)
 	{
 		self::PrepareMetaData($page,$user);
 
@@ -196,7 +196,7 @@ class PageMeta extends Domain
 			$globalMeta = [];
 		}
 
-		if($userMeta)
+		if($userMeta && $user)
 		{
 			$userMeta = $userMeta->Data;
 		}
@@ -210,13 +210,14 @@ class PageMeta extends Domain
 		return $meta;
 	}
 
-	public static function AddMetaData($key, $value, Page $page, User $user = null)
+	public static function AddGlobalMetaData($key, $value, Page $page)
 	{
-		self::PrepareMetaData($page,$user);
+		self::PrepareMetaData($page);
 
-		$meta = ($user ? self::$currentUserPageMeta : self::$currentGlobalPageMeta);
+		$meta = self::$currentGlobalPageMeta;
 
-		$data = $meta->Data;
+		$data = $meta->Data ?: new \stdClass();
+
 		$data->$key = $value;
 		$meta->Data = $data;
 
@@ -225,11 +226,45 @@ class PageMeta extends Domain
 		return $meta->Data;
 	}
 
-	public static function RemoveMetaData($key, Page $page, User $user = null)
+	public static function AddUserMetaData($key, $value, Page $page, User $user)
 	{
 		self::PrepareMetaData($page,$user);
 
-		$meta = ($user ? self::$currentUserPageMeta : self::$currentGlobalPageMeta);
+		$meta = self::$currentUserPageMeta;
+
+		$data = $meta->Data;
+
+		$data = $meta->Data ?: new \stdClass();
+
+		$data->$key = $value;
+		$meta->Data = $data;
+
+		$meta->Save();
+
+		return $meta->Data;
+	}
+
+	public static function RemoveGlobalMetaData($key, Page $page)
+	{
+		self::PrepareMetaData($page);
+
+		$meta = self::$currentGlobalPageMeta;
+
+		$data = (array) $meta->Data;
+
+		unset($data[$key]);
+		$meta->Data = (object) $data;
+
+		$meta->Save();
+
+		return $meta->Data;
+	}
+
+	public static function RemoveUserMetaData($key, Page $page, User $user)
+	{
+		self::PrepareMetaData($page,$user);
+
+		$meta = self::$currentUserPageMeta;
 
 		$data = (array) $meta->Data;
 
