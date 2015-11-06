@@ -284,6 +284,11 @@ MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 ALTER TABLE `%PREFIX%page`
 MODIFY `page_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+--
+-- AUTO_INCREMENT for table `pagemeta`
+--
+ALTER TABLE `%PREFIX%pagemeta`
+MODIFY `pagemeta_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 
 --
 -- AUTO_INCREMENT for table `pagelink`
