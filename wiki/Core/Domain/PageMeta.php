@@ -167,14 +167,14 @@ class PageMeta extends Domain
 		$userMeta = self::$currentUserPageMeta;
 
 		if($globalMeta) {
-			$globalMeta = json_decode($globalMeta->Data);
+			$globalMeta = $globalMeta->Data;
 		} else {
 			$globalMeta = [];
 		}
 
 		if($userMeta)
 		{
-			$userMeta = json_decode($userMeta->Data);
+			$userMeta = $userMeta->Data;
 		}
 		else
 		{
