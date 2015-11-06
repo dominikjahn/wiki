@@ -108,6 +108,20 @@ CREATE TABLE `%PREFIX%page` (
   `manipulation` enum('EVERYONE','REGISTERED','OWNER','GROUP') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'REGISTERED'
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Table structure for table `pagemeta`
+--
+
+DROP TABLE IF EXISTS `%PREFIX%pagemeta`;
+CREATE TABLE `%PREFIX5pagemeta` (
+  `pagemeta_id` int(10) unsigned NOT NULL,
+  `status` tinyint(4) unsigned NOT NULL,
+  `checksum` char(32) CHARACTER SET ascii NOT NULL,
+  `page_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned,
+  `data` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `%PREFIX%pagelink` (
@@ -204,6 +218,12 @@ ALTER TABLE `%PREFIX%log`
 --
 ALTER TABLE `%PREFIX%page`
  ADD PRIMARY KEY (`page_id`), ADD KEY `name` (`name`);
+
+--
+-- Indexes for table `pagemeta`
+--
+ALTER TABLE `%PREFIX%pagemeta`
+ ADD PRIMARY KEY (`pagemeta_id`);
  
  --
 -- Indexes for table `pagelink`

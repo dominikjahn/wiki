@@ -38,24 +38,24 @@ class Page extends Domain
 	public function jsonSerialize() {
 			
 		return [
-		"page_id" => $this->id,
-		"name" => $this->name,
-		"title" => $this->title,
-		"content" => $this->content,
-		"visibility" => $this->visibility,
-		"manipulation" => $this->manipulation,
-		"owner" => $this->owner,
-		"group" => $this->group,
-		"categories" => $this->Categories,
-		"can_edit" => $this->CanEdit,
-		"last_edit" => [
-		"timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
-		"user" => $this->logModified->User->Loginname
-		],
-		"created" => [
-		"timestamp" => $this->logCreated->Timestamp->format("Y-m-d H:i:s"),
-		"user" => $this->logCreated->User->Loginname
-		]
+			"page_id" => $this->id,
+			"name" => $this->name,
+			"title" => $this->title,
+			"content" => $this->content,
+			"visibility" => $this->visibility,
+			"manipulation" => $this->manipulation,
+			"owner" => $this->owner,
+			"group" => $this->group,
+			"categories" => $this->Categories,
+			"can_edit" => $this->CanEdit,
+			"last_edit" => [
+				"timestamp" => $this->logModified->Timestamp->format("Y-m-d H:i:s"),
+				"user" => $this->logModified->User->Loginname
+			],
+			"created" => [
+				"timestamp" => $this->logCreated->Timestamp->format("Y-m-d H:i:s"),
+				"user" => $this->logCreated->User->Loginname
+			]
 		];
 	}
 
