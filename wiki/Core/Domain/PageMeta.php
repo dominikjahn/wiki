@@ -181,7 +181,7 @@ class PageMeta extends Domain
 			$userMeta = [];
 		}
 
-		$meta = array_merge_recursive($globalMeta, $userMeta);
+		$meta = (object)array_merge_recursive((array)$globalMeta, (array)$userMeta);
 
 		return $meta;
 	}
