@@ -5,6 +5,7 @@ use Wiki\Domain\Manager\PageManager;
 use Wiki\Domain\Manager\CategoryManager;
 use Wiki\Domain\Manager\CategoryPageManager;
 use Wiki\Domain\Manager\PageLinkManager;
+use Wiki\Domain\Manager\PageMetaManager;
 use Wiki\Exception\AuthorizationMissingException;
 use Wiki\Exception\PagenameAlreadyTakenException;
 use Wiki\Exception\CannotDeleteHomepageException;
@@ -43,8 +44,12 @@ class PageMeta extends Domain
 	}
 
 	public function Save() {
-			
-		return parent::Save();
+
+		$this->data = json_encode($this->data);
+		$success = parent::Save();
+		$this->data = json_decode($this->data);
+
+		return $success;
 	}
 
 	public function Delete() {
@@ -53,6 +58,10 @@ class PageMeta extends Domain
 
 	protected function CalculateChecksum() {
 		return md5($this->Status.$this->page->ID.$this->user->ID.$this->data);
+	}
+
+	public function __tostring() {
+		return (string) $this->data;
 	}
 
 	//
@@ -137,6 +146,73 @@ class PageMeta extends Domain
 	protected function SetData($value) {
 		$this->data = $value;
 	}
+
+	  //
+	 // FUNCTIONS
+	//
+
+	public static function LoadMetaData(Page $page, User $user)
+	{
+		$metaManager = PageMetaManager::GetInstance();
+
+		if(!self::$currentGlobalPageMeta) {
+			self::$currentGlobalPageMeta = $metaManager->GetGlobalByPage($page);
+		}
+
+		if(!self::$currentUserPageMeta) {
+			self::$currentUserPageMeta = $metaManager->GetByPageAndUser($page, $user);
+		}
+
+		$globalMeta = self::$currentGlobalPageMeta;
+		$userMeta = self::$currentUserPageMeta;
+
+		if($globalMeta) {
+			$globalMeta = json_decode($globalMeta->Data);
+		} else {
+			$globalMeta = [];
+		}
+
+		if($userMeta)
+		{
+			$userMeta = json_decode($userMeta->Data);
+		}
+		else
+		{
+			$userMeta = [];
+		}
+
+		$meta = array_merge_recursive($globalMeta, $userMeta);
+
+		return $meta;
+	}
+
+	public static function AddMetaData($key, $value, Page $page, User $user = null)
+	{
+		$metaManager = PageMetaManager::GetInstance();
+
+		if(!self::$currentGlobalPageMeta) {
+			self::$currentGlobalPageMeta = $metaManager->GetGlobalByPage($page);
+		}
+
+		if(!self::$currentUserPageMeta) {
+			self::$currentUserPageMeta = $metaManager->GetByPageAndUser($page, $user);
+		}
+
+		$meta = ($user ? self::$currentUserPageMeta : self::$currentGlobalPageMeta);
+
+		$meta->Data->$key = $value;
+
+		$meta->Save();
+
+		return $meta->Data;
+	}
+
+	  //
+	 // VARIABLES
+	//
+
+	private static $currentGlobalPageMeta;
+	private static $currentUserPageMeta;
 
 	  //
 	 // CONSTANTS

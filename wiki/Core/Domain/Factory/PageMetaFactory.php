@@ -34,7 +34,7 @@
 			$object->Status = $row->status->Integer;
 			$object->Page = $pageManager->GetByID($row->page_id->Integer);
 			$object->User = $userManager->GetByID($row->user_id->Integer);
-			$object->Data = $row->data->String;
+			$object->Data = json_decode($row->data->String);
 			
 			$object->LogCreated = $logManager->GetByObjectAndType($object, Log::TYPE_CREATE);
 			$object->LogModified = $logManager->GetByObjectAndType($object, Log::TYPE_MODIFY);
