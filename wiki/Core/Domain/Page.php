@@ -611,7 +611,7 @@ class Page extends Domain
 	}
 		
 	private function EvalScripts($parsed, $scripts) {
-		$pagecode = "ob_start();\t\$currentPage = Wiki\\Domain\\Page::GetCurrentUser();\t\$currentUser = Wiki\\Domain\\User::GetCurrentUser();\t/* Page code starts here */\t";
+		$pagecode = "ob_start();\t\$currentPage = Wiki\\Domain\\Page::GetCurrentPage();\t\$currentUser = Wiki\\Domain\\User::GetCurrentUser();\t/* Page code starts here */\t";
 
 		// Search for the first occurence of \<?php
 		$start = strpos($parsed,"<?php");
