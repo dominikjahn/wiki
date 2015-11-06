@@ -5,6 +5,7 @@ use Wiki\Domain\Manager\PageManager;
 use Wiki\Domain\Manager\CategoryManager;
 use Wiki\Domain\Manager\CategoryPageManager;
 use Wiki\Domain\Manager\PageLinkManager;
+use Wiki\Domain\Manager\PageMetaManager;
 use Wiki\Exception\AuthorizationMissingException;
 use Wiki\Exception\PagenameAlreadyTakenException;
 use Wiki\Exception\CannotDeleteHomepageException;
@@ -611,6 +612,9 @@ class Page extends Domain
 		
 	private function EvalScripts($parsed, $scripts) {
 		$pagecode = "ob_start();\t\t/* Page code starts here */\t";
+
+		// Preload meta manager
+		PageMetaManager::GetInstance();
 
 		// Search for the first occurence of \<?php
 		$start = strpos($parsed,"<?php");
