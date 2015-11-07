@@ -23,7 +23,8 @@ $(function() {
 	
 	$(window).on('popstate', GoToState);
 
-	$("#NavSearchForm").show().unbind("submit").submit(Search);
+	$("#NavSearchForm-Uncollapsed").unbind("submit").submit(Search);
+	$("#NavSearchForm-Collapsed").unbind("submit").submit(Search);
 });
 
 var CloseNavbars = function() {

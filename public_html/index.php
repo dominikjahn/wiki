@@ -40,6 +40,17 @@
 						<a class="navbar-brand" href="./Homepage.html" onclick="return GoToPage('Homepage');"><i class="glyphicon glyphicon-home navbar-logo" aria-hidden="true" id="logo"></i></a>
 					</div>
 					<div id="navbar" class="collapse navbar-collapse">
+						<div class="nav navbar-nav navbar-left">
+							<form class="navbar-form" role="search" id="NavSearchForm-Collapsed">
+								<div class="input-group">
+									<input type="search" class="form-control" placeholder="Search">
+									<div class="input-group-btn">
+										<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+									</div>
+								</div>
+							</form>
+						</div>
+
 						<ul class="nav navbar-nav navbar-left">
 							<!--li><a href="./Search.html" onclick="return DisplaySearchForm();" role="button" aria-expanded="false" id="NavSearch"><i class="glyphicon glyphicon-search"></i> &#160; Search</a></li-->
 							<li><a href="./NewPage.html" onclick="return DisplayNewPageForm();" role="button" aria-expanded="false" id="NavNewPage"><i class="glyphicon glyphicon-plus"></i> &#160; New page</a></li>
@@ -47,9 +58,9 @@
 						</ul>
 
 						<div class="nav navbar-nav navbar-right">
-							<form class="navbar-form" role="search" id="NavSearchForm">
+							<form class="navbar-form" role="search" id="NavSearchForm-Uncollapsed">
 								<div class="input-group">
-									<input type="search" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+									<input type="search" class="form-control" placeholder="Search">
 									<div class="input-group-btn">
 										<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
 									</div>
