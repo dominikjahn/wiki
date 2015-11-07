@@ -349,151 +349,33 @@ class Page extends Domain
 		$links = array();
 		preg_match_all("/<Wiki:Link\s*page=['\"](?<page>(.+?))['\"]\s*>(?<text>.+?)<\/Wiki:Link>/muis",$parsed,$links, PREG_SET_ORDER);
 		
-		foreach($links as $link)
-		{
+		foreach($links as $link) {
 			$wrapper = $link[0];
 			$title = $link["page"];
 			$name = self::NormalizeTitle($title);
 			$text = $link["text"];
-				
+
 			$page = $pageManager->GetByName($name);
-				
+
 			$link = null;
 			$click = null;
 			$class = null;
-				
-			if(!$page) {
-				$link = "NewPage.html?title=".$title;
-				$click = 'return DisplayNewPageForm(null,decodeURIComponent(\''.rawurlencode($title).'\'))';
+
+			if (!$page) {
+				$link = "NewPage.html?title=" . $title;
+				$click = 'return DisplayNewPageForm(null,decodeURIComponent(\'' . rawurlencode($title) . '\'))';
 				$class = "link-newpage";
-			} else if($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
+			} else if ($page && (($page->Visibility == Page::VIS_PROTECTED && !$currentUser) || ($page->Visibility == Page::VIS_PRIVATE && $page->Owner->ID != $currentUser->ID))) {
 				$link = "#";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
+				$click = 'return GoToPage(\'' . $page->Name . '\')';
 				$class = "link-notauthorized";
 			} else {
-				$link = $page->Name.".html";
-				$click = 'return GoToPage(\''.$page->Name.'\')';
+				$link = $page->Name . ".html";
+				$click = 'return GoToPage(\'' . $page->Name . '\')';
 				$class = "link-gotopage";
 			}
-				
-			$parsed = str_replace($wrapper, '<a href="'.$link.'" onclick="'.$click.'" class="'.$class.'">'.$text.'</a>', $parsed);
-		}
 
-		/*
-		 * Icons
-		*/
-			
-		# <Wiki:Icon name="Icon"/>
-		$icons = array();
-		preg_match_all("/<Wiki:Icon\s*name=['\"](?<name>[a-zA-Z0-9\-]+)['\"]\s*\/>/muis",$parsed,$icons, PREG_SET_ORDER);
-			
-		foreach($icons as $icon)
-		{
-			$wrapper = $icon[0];
-			$name = $icon["name"];
-				
-			$parsed = str_replace($wrapper, '<span class="glyphicon glyphicon-'.$name.'" aria-hidden="true"></span>', $parsed);
-		}
-
-		/*
-		 * Panels
-		*/
-			
-		# Basic panel <Wiki:Panel>Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-				
-			$panel = '<div class="panel panel-default"><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		# Basic panel with title: <Wiki:Panel title="Title">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$title = $panel["title"];
-				
-			$panel = '<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">'.$title.'</h3></div><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-
-		# Basic panel with theme: <Wiki:Panel theme="theme">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$theme = $panel["theme"];
-				
-			$panel = '<div class="panel panel-'.$theme.'"><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		# Basic panel with title and theme: <Wiki:Panel theme="theme" title="Title">Content</Wiki:Panel>
-		$panels = array();
-		preg_match_all("/<Wiki:Panel\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*title=['\"](?<title>.+?)['\"]\s*>(?<content>.+?)<\/Wiki:Panel>/muis",$parsed,$panels, PREG_SET_ORDER);
-			
-		foreach($panels as $panel)
-		{
-			$wrapper = $panel[0];
-			$content = $panel["content"];
-			$title = $panel["title"];
-			$theme = $panel["theme"];
-				
-			$panel = '<div class="panel panel-'.$theme.'"><div class="panel-heading"><h3 class="panel-title">'.$title.'</h3></div><div class="panel-body">'.$content.'</div></div>';
-				
-			$parsed = str_replace($wrapper, $panel, $parsed);
-		}
-			
-		/*
-		 * Alerts
-		*/
-
-		# <Wiki:Alert theme="theme">Content</Wiki:Alert>
-		$alerts = array();
-		preg_match_all("/<Wiki:Alert\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Alert>/muis",$parsed,$alerts, PREG_SET_ORDER);
-			
-		foreach($alerts as $alert)
-		{
-			$wrapper = $alert[0];
-			$content = $alert["content"];
-			$theme = $alert["theme"];
-				
-			$alert = '<div class="alert alert-'.$theme.'" role="alert">'.$content.'</div>';
-				
-			$parsed = str_replace($wrapper, $alert, $parsed);
-		}
-			
-		/*
-		 * Labels
-		*/
-		# <Wiki:Label theme="theme">Content</Wiki:Label>
-		$labels = array();
-		preg_match_all("/<Wiki:Label\s*theme=['\"](?<theme>([a-zA-Z]+))['\"]\s*>(?<content>.+?)<\/Wiki:Label>/muis",$parsed,$labels, PREG_SET_ORDER);
-
-		foreach($labels as $label)
-		{
-			$wrapper = $label[0];
-			$content = $label["content"];
-			$theme = $label["theme"];
-				
-			$label = '<div class="label label-'.$theme.'">'.$content.'</div>';
-				
-			$parsed = str_replace($wrapper, $label, $parsed);
+			$parsed = str_replace($wrapper, '<a href="' . $link . '" onclick="' . $click . '" class="' . $class . '">' . $text . '</a>', $parsed);
 		}
 		
 		/*
@@ -565,20 +447,20 @@ class Page extends Domain
 			$customOutput = true;
 			$parsed = str_replace($match[0],null,$parsed);
 		}
-		
+
 		/* Exclude <script> and <style> */
 		$blocks = [];
 		$nomarkdown = [];
 		preg_match_all("/<(script|style|Wiki:NoMarkdown).*?>.+?<\/\\1>/muis",$parsed,$blocks, PREG_SET_ORDER);
-		
+
 		foreach($blocks as $block)
 		{
 			$wrapper = $block[0];
-				
+
 			$blockID = md5($wrapper.microtime(true));
-				
+
 			$nomarkdown[$blockID] = $wrapper;
-				
+
 			$parsed = str_replace($wrapper, '<!-- NOMARKDOWN:'.$blockID.' -->', $parsed);
 		}
 		

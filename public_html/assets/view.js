@@ -438,22 +438,32 @@ var GoToPage = function(pagename) {
 					function(response) {
 							cache[pagename] = response;
 							localStorage.setItem("wiki_cache", JSON.stringify(cache));
-							DisplayPage(response, false);
-							
-							if(response.page.can_edit) {
-								
-								$("#NavEditPage")
-									.css("display","block")
-									.unbind("click")
-									.click(function(e) { e.preventDefault(); GoToEditPageForm(pagename); })
-									.attr("href","./EditPage-"+pagename+".html");
-								$("#NavGetVersions")
-									.css("display","block")
-									.unbind("click")
-									.click(function(e) { e.preventDefault(); GoToVersions(pagename); })
-									.attr("href","./Versions-"+pagename+".html");
-								
-							}
+							RenderPage(response,
+								function(response) {
+									DisplayPage(response, false);
+
+									if (response.page.can_edit) {
+
+										$("#NavEditPage")
+											.css("display", "block")
+											.unbind("click")
+											.click(function (e) {
+												e.preventDefault();
+												GoToEditPageForm(pagename);
+											})
+											.attr("href", "./EditPage-" + pagename + ".html");
+										$("#NavGetVersions")
+											.css("display", "block")
+											.unbind("click")
+											.click(function (e) {
+												e.preventDefault();
+												GoToVersions(pagename);
+											})
+											.attr("href", "./Versions-" + pagename + ".html");
+
+									}
+								}
+							);
 					},
 					HandleErrorCodes,
 					//function(response) { GetPageFromCache(pagename, false, response); },
@@ -476,9 +486,24 @@ var GetPageFromCache = function(pagename, data, error, response_or_xhr) {
 	}
 }
 
+var RenderPage = function(data, callback)
+{
+	$.ajax({
+		type: 'POST',
+		url: 'render.php',
+		data: {data:JSON.stringify(data)},
+		dataType: 'json',
+		success:
+			function(response)
+			{
+				callback(response);
+			}
+	});
+}
+
 var DisplayPage = function(response, fromCache) {
 	Reset();
-	
+
 	$("#DisplayPage").show();
 	$("#DisplayPage-Title").html(response.page.title);
 	$("#DisplayPage-Content").html(response.page.content);
