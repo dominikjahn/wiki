@@ -246,9 +246,6 @@
 							<div class="form-group" id="EditPageForm-EditorPanel">
 								<label for="EditPageForm-InputContent">Content &#160; &#160; <a href="#" class="btn btn-xs btn-primary" id="EditPageForm-FullscreenToggle">Fullscreen</a> &#160; &#160; <button type="button" id="EditPageForm-ShowEditingHelp" class="btn btn-xs btn-primary">Show editing help (in a new window)</button></label>
 								<textarea class="form-control tab" id="EditPageForm-InputContent" style="min-height:400px" placeholder="The content of the page"></textarea>
-								<div id="EditPageForm-InputContent-Editor"></div>
-								
-								
 	  						</div>
 										
 							<hr/>
