@@ -545,7 +545,7 @@ var DisplayNewPageForm = function(e, title) {
 	$("#EditPageForm-Title").html("New page");
 	
 	$("#EditPageForm-InputTitle").val(title);
-	$("#EditPageForm-InputContent").val("").hide();
+	$("#EditPageForm-InputContent").val("");
 	$("#EditPageForm-InputSummary").val("Initialized page");
 	$("#EditPageForm-MinorChange").prop("checked",true);
 	$("#EditPageForm-MinorChangeWrapper").hide();
@@ -611,7 +611,7 @@ var DisplayEditPageForm = function(response) {
 	
 	$("#EditPageForm-Title").html("Editing page '"+response.page.title+"'");
 	$("#EditPageForm-InputTitle").val(response.page.title);
-	$("#EditPageForm-InputContent").val(response.page.content).hide();
+	$("#EditPageForm-InputContent").val(response.page.content);
 	$("#EditPageForm-InputSummary").val("");
 	$("#EditPageForm-Visibility-"+response.page.visibility).prop("checked",true);
 	$("#EditPageForm-Manipulation-"+response.page.manipulation).prop("checked",true);
@@ -730,7 +730,7 @@ var PreviewPage = function() {
 	
 	var pagedata = {
 			'title': title,
-			'content': ace.edit("EditPageForm-InputContent-Editor").getSession().getValue(),
+			'content': $("#EditPageForm-InputContent-Editor").val(),
 		};
 	
 	wiki.PreviewPage(pagedata, DisplayPagePreview);
@@ -759,7 +759,7 @@ var SavePage = function(e) {
 	var pagedata = {
 		'pageID': pageID,
 		'title': $("#EditPageForm-InputTitle").val(),
-		'content': ace.edit("EditPageForm-InputContent-Editor").getSession().getValue(),
+		'content': $("#EditPageForm-InputContent-Editor").val(),
 		'summary': $("#EditPageForm-InputSummary").val(),
 		'minor_edit': ($('#EditPageForm-MinorChange:checked').length > 0),
 		'visibility': $('input[name=EditPageForm-Visibility]:checked').val(),
