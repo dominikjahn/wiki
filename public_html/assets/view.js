@@ -297,8 +297,6 @@ var ShowSignInUpLinks = function() {
 	
 	$("#NavUsers").css("display","hide").unbind("click");
 	$("#NavNewPage").css("display","hide").unbind("click");
-	
-	
 }
 
 /*
@@ -554,7 +552,7 @@ var DisplayNewPageForm = function(e, title) {
 	$("#EditPageForm-Visibility-PUBLIC").prop("checked",true);
 	$("#EditPageForm-Manipulation-EVERYONE").prop("checked",true);
 	$("#EditPageForm-DeletePage").hide();
-	InitializeAceEditor("");
+	//InitializeAceEditor("");
 	
 	wiki.GetUsers(
 		function(response) {
@@ -623,7 +621,7 @@ var DisplayEditPageForm = function(response) {
 	$("#EditPageForm-Group").empty();
 	$("#EditPageForm-DeletePage").show();
 	
-	InitializeAceEditor(response.page.content);
+	//InitializeAceEditor(response.page.content);
 	
 	var currentOwner = response.page.owner;
 	var currentGroup = response.page.group;
@@ -710,7 +708,7 @@ var UnfullscreenEditor = function(e) {
 
 var EditPageEditor;
 
-var InitializeAceEditor = function(value) {
+/*var InitializeAceEditor = function(value) {
 	EditPageEditor = ace.edit("EditPageForm-InputContent-Editor");
 	EditPageEditor.getSession().setMode("ace/mode/html");
 	EditPageEditor.getSession().setMode("ace/mode/javascript");
@@ -719,7 +717,7 @@ var InitializeAceEditor = function(value) {
 	//EditPageEditor.getSession().setMode("ace/mode/markdown");
 	//EditPageEditor.setOptions({ maxLines: Infinity });
 	EditPageEditor.getSession().setValue(value);
-}
+}*/
 
 var DisplayEditingHelp = function() {
 	var popup = window.open('./Editing_Help.html','_blank');
