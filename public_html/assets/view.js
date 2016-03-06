@@ -682,11 +682,11 @@ var FullscreenEditor = function(e) {
 		document.getElementById("EditPageForm-EditorPanel").webkitRequestFullscreen();
 		
 		editorPanePrevHeight = $("#EditPageForm-EditorPanel").height();
-		editorPrevHeight = $("#EditPageForm-InputContent-Editor").height();
+		editorPrevHeight = $("#EditPageForm-InputContent").height();
 		
 		$("#EditPageForm-FullscreenToggle").text("Close fullscreen").unbind("click").click(UnfullscreenEditor);
 		$("#EditPageForm-EditorPanel").css("width","100%").css("height","100vh").css("padding","15px");
-		$("#EditPageForm-InputContent-Editor").css("height","96%");
+		$("#EditPageForm-InputContent").css("height","96%");
 	}
 	
 	return false;
@@ -700,7 +700,7 @@ var UnfullscreenEditor = function(e) {
 		
 		$("#EditPageForm-FullscreenToggle").text("Fullscreen").unbind("click").click(FullscreenEditor);
 		$("#EditPageForm-EditorPanel").css("width","100%").css("height",editorPanePrevHeight).css("padding","0");
-		$("#EditPageForm-InputContent-Editor").css("width","100%").css("height",editorPrevHeight);
+		$("#EditPageForm-InputContent").css("width","100%").css("height",editorPrevHeight);
 	}
 	
 	return false;
@@ -730,7 +730,7 @@ var PreviewPage = function() {
 	
 	var pagedata = {
 			'title': title,
-			'content': $("#EditPageForm-InputContent-Editor").val(),
+			'content': $("#EditPageForm-InputContent").val(),
 		};
 	
 	wiki.PreviewPage(pagedata, DisplayPagePreview);
@@ -759,7 +759,7 @@ var SavePage = function(e) {
 	var pagedata = {
 		'pageID': pageID,
 		'title': $("#EditPageForm-InputTitle").val(),
-		'content': $("#EditPageForm-InputContent-Editor").val(),
+		'content': $("#EditPageForm-InputContent").val(),
 		'summary': $("#EditPageForm-InputSummary").val(),
 		'minor_edit': ($('#EditPageForm-MinorChange:checked').length > 0),
 		'visibility': $('input[name=EditPageForm-Visibility]:checked').val(),
