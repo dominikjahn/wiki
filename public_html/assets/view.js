@@ -12,7 +12,7 @@ $(function() {
 	wiki.defaultNegativeHandler = HandleErrorCodes;
 	wiki.defaultErrorHandler = DisplayError;
 	
-	wiki.SignIn(loginname, password, function(response) { ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
+	wiki.SignIn(loginname, password, function(response) { SetCookie('loginname', loginname); SetCookie('password', password); ShowUserInfo(response); GoToView(view); }, function(response) { ShowSignInUpLinks(response); GoToView(view); } );
 	
 	var fromCache = localStorage.getItem("wiki_cache");
 	
